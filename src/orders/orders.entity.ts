@@ -4,6 +4,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { StatusEnum } from '../../shared/status.enum';
 
 @Entity('orders')
 export class OrdersEntity {
@@ -13,7 +14,7 @@ export class OrdersEntity {
 
   // userId
 
-  // products
+  // products[]
 
-  @Column('text') status: string;
+  @Column('text', {default: StatusEnum.PROCESSING}) status : string;
 }

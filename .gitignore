@@ -280,8 +280,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# db connection
-orm.config.ts
 
 .idea
 
