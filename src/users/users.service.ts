@@ -12,7 +12,7 @@ export class UsersService {
   ) {}
 
   async showAll(): Promise<UsersRO[]> {
-    const users = await this.userRepository.find();
+    const users = await this.userRepository.find({relations: ['orders']});
     return users.map(user => user.toResponseObject(false));
   }
 

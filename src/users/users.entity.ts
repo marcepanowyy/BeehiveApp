@@ -3,12 +3,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { UsersRO } from './users.dto';
+import { OrdersEntity } from '../orders/orders.entity';
 
 @Entity('users')
 export class UsersEntity {
@@ -27,6 +29,11 @@ export class UsersEntity {
   })
   password: string;
 
+  // relationships
+
+  @OneToMany(type => OrdersEntity, order => order.customer)
+  orders: OrdersEntity[];
+
   @BeforeInsert()
   async hashPassword() {
     this.password = await bcrypt.hash(this.password, 10);
@@ -36,6 +43,7 @@ export class UsersEntity {
     const { id, created, username, token } = this;
     const responseObject: any = { id, created, username };
     if (showToken) responseObject.token = token;
+    if (this.orders) responseObject.orders = this.orders
     return responseObject;
   }
 
