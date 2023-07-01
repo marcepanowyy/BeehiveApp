@@ -54,5 +54,4 @@ export class UsersEntity {
       { expiresIn: '15min' },
     );
   }
-
 }
