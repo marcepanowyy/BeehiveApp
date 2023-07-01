@@ -39,8 +39,6 @@ export class OrdersService {
   async create(data: OrdersDto, userId: string): Promise<OrdersRo> {
     const user = await this.usersRepository.findOne({ where: { id: userId } });
     const order = this.ordersRepository.create({ ...data, customer: user });
-    console.log(user);
-    console.log(order);
     await this.ordersRepository.save(order);
     return this.toResponseObject(order);
   }
