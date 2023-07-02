@@ -13,6 +13,6 @@ export class UsersDto {
 export class UsersRO {
   id: string;
   username: string;
-  created: Date;
+  created?: Date;
   token?: string;
 }

@@ -1,9 +1,6 @@
-import {
-  ArrayNotEmpty,
-  IsNotEmpty,
-} from 'class-validator';
+import { ArrayNotEmpty, IsNotEmpty } from 'class-validator';
 import { UsersRO } from '../users/users.dto';
-import { ProductItem } from '../products/products.dto';
+import { ProductItem, ProductsRo } from '../products/products.dto';
 
 export class OrdersDto {
   @ArrayNotEmpty()
@@ -21,4 +18,5 @@ export class OrdersRo {
   created: Date;
   status: string;
   customer: UsersRO;
+  products: ProductsRo;
 }

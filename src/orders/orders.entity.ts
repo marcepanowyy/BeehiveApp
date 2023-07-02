@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { StatusEnum } from '../../shared/status.enum';
 import { UsersEntity } from '../users/users.entity';
-import { ProductsEntity } from '../products/products.entity';
+import { OrderDetailsEntity } from '../order.details/order.details.entity';
 
 @Entity('orders')
 export class OrdersEntity {
@@ -26,8 +26,8 @@ export class OrdersEntity {
   @ManyToOne(type => UsersEntity, customer => customer.orders)
   customer: UsersEntity;
 
-  @OneToMany(type => ProductsEntity, products => products.order, {cascade: true})
-  // @JoinTable({name: "Array of products' id & quantity"})
-  products: ProductsEntity[];
-  // productsArray: ProductItem[]
+  @OneToMany(() => OrderDetailsEntity, orderDetail => orderDetail.order, {
+    cascade: true,
+  })
+  orderDetails: OrderDetailsEntity[];
 }

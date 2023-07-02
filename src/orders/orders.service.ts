@@ -5,9 +5,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { OrdersDto, OrdersRo } from './orders.dto';
 import { UsersEntity } from '../users/users.entity';
 import { ProductsEntity } from '../products/products.entity';
-import { ProductWithQuantity } from '../products/products.dto';
+import { OrderDetailsEntity } from '../order.details/order.details.entity';
 
 // TODO - redis lock on order creating
+// TODO - add types for returned values
 
 @Injectable()
 export class OrdersService {
@@ -18,38 +19,66 @@ export class OrdersService {
     private usersRepository: Repository<UsersEntity>,
     @InjectRepository(ProductsEntity)
     private productsRepository: Repository<ProductsEntity>,
+    @InjectRepository(OrderDetailsEntity)
+    private orderDetailsRepository: Repository<OrderDetailsEntity>,
   ) {}
 
-  private toResponseObject(order: OrdersEntity): OrdersRo {
+  private async toResponseObject(order: OrdersEntity): Promise<OrdersRo> {
+    const { id, created, status } = order;
+
+    const orderProducts = await this.getProductsForOrder(order);
+
+    const products = orderProducts.map(orderProduct => ({
+      productId: orderProduct.product.id,
+      name: orderProduct.product.name,
+      price: orderProduct.product.price,
+      quantity: orderProduct.quantity,
+    }));
+
+    const customer = this.toResponseClient(order.customer);
+
     const responseObject: any = {
-      ...order,
-      customer: this.toResponseClient(order.customer),
+      orderId: id,
+      created,
+      status,
+      customer,
+      products,
     };
+
     return responseObject;
   }
 
   private toResponseClient(client: UsersEntity) {
-    const { username, id, ...sth } = client;
+    const { username, id } = client;
     return { username, id };
   }
 
-  private ensureOwnership(idea: OrdersEntity, userId: string) {
-    if (idea.customer.id !== userId) {
-      throw new HttpException('Incorrect user', HttpStatus.UNAUTHORIZED);
-    }
+  private async getProductsForOrder(order: OrdersEntity) {
+    return await this.orderDetailsRepository
+      .createQueryBuilder('orderDetails')
+      .leftJoin('orderDetails.product', 'product')
+      .select([
+        'product.id',
+        'product.name',
+        'product.price',
+        'orderDetails.quantity',
+      ])
+      .where({ order: order })
+      .getMany();
   }
 
-  async showAll(): Promise<OrdersRo[]> {
+
+  // TODO - not working
+  async showAll() {
     const orders = await this.ordersRepository.find({
       relations: ['customer'],
     });
+
     return orders.map(order => this.toResponseObject(order));
   }
 
   async create(data: OrdersDto, userId: string) {
     const { productsArray } = data;
-    const products2: ProductWithQuantity[] = [];
-    const products: ProductsEntity[] = [];
     for (const productItem of productsArray) {
       const product = await this.productsRepository.findOne({
         where: { id: productItem.productId },
@@ -59,12 +88,12 @@ export class OrdersService {
       }
       if (product.unitsOnStock - productItem.quantity < 0) {
         throw new HttpException('Insufficient stock', HttpStatus.BAD_REQUEST);
-      } else {
-        products2.push({ product, quantity: productItem.quantity });
-        products.push({ ...product });
       }
     }
+
     const user = await this.usersRepository.findOne({ where: { id: userId } });
+    const order = await this.ordersRepository.create({ customer: user });
+    await this.ordersRepository.save(order);
 
     for (const productItem of productsArray) {
       const product = await this.productsRepository.findOne({
@@ -73,18 +102,16 @@ export class OrdersService {
       await this.productsRepository.update(product.id, {
         unitsOnStock: product.unitsOnStock - productItem.quantity,
       });
+
+      const orderDetails = await this.orderDetailsRepository.create({
+        product,
+        order,
+        quantity: productItem.quantity,
+      });
+
+      await this.orderDetailsRepository.save(orderDetails);
     }
-
-    // console.log(products);
-    // console.log(products2);
-
-    const order = await this.ordersRepository.create({
-      products,
-      customer: user,
-    });
-
-    await this.ordersRepository.save(order);
-    return order;
+    return this.toResponseObject(order);
   }
 
   async read(orderId: string): Promise<OrdersRo> {
@@ -118,7 +145,12 @@ export class OrdersService {
     if (!order) {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
-    this.ensureOwnership(order, userId);
+    if (!(order.customer.id !== userId)) {
+      throw new HttpException(
+        'Order does not belong to user',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     await this.ordersRepository.delete({ id: orderId });
     return this.toResponseObject(order);
   }

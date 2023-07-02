@@ -1,12 +1,14 @@
 import {
   Column,
   CreateDateColumn,
-  Entity, ManyToOne,
+  Entity,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { CategoriesEntity } from '../categories/categories.entity';
-import { OrdersEntity } from '../orders/orders.entity';
+import { OrderDetailsEntity } from '../order.details/order.details.entity';
 
 @Entity('products')
 export class ProductsEntity {
@@ -22,14 +24,13 @@ export class ProductsEntity {
 
   @Column('integer') unitsOnStock: number;
 
-  @Column('numeric', {precision: 10, scale: 2}) price: number;
+  @Column('numeric', { precision: 10, scale: 2 }) price: number;
 
   // relationships
 
   @ManyToOne(type => CategoriesEntity, category => category.products)
-  category: CategoriesEntity
+  category: CategoriesEntity;
 
-  @ManyToOne(type => OrdersEntity, order => order.products)
-  order: OrdersEntity
-
+  @OneToMany(() => OrderDetailsEntity, orderDetail => orderDetail.product)
+  orderDetails: OrderDetailsEntity[];
 }

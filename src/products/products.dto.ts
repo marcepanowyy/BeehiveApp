@@ -30,10 +30,9 @@ export class ProductsRo {
   updated?: Date;
   name: string;
   description: string;
-  unitsOnStock: number;
+  unitsOnStock?: number;
   price: number;
   category: CategoriesEntity | string;
-  quantity?: number;
 }
 
 export class ProductItem {
