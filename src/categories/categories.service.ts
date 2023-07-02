@@ -5,30 +5,33 @@ import { Repository } from 'typeorm';
 import { CategoriesDto, CategoriesRo } from './categories.dto';
 import { ProductsEntity } from '../products/products.entity';
 import { ProductsRo } from '../products/products.dto';
-// import { ProductsService} from '../products/products.service';
 
 @Injectable()
 export class CategoriesService {
   constructor(
     @InjectRepository(CategoriesEntity)
     private categoriesRepository: Repository<CategoriesEntity>,
-    // private productsService: ProductsService
   ) {}
 
   private toResponseObject(category: CategoriesEntity): CategoriesRo {
-    const {created, updated, ...responseObject} = category
-    if(!responseObject.products) return {...responseObject}
-    const products = responseObject.products
-    return {...responseObject, products: products.map(product => this.toResponseProduct(product))}
+    const { created, updated, ...responseObject } = category;
+    if (!responseObject.products) return { ...responseObject };
+    const products = responseObject.products;
+    return {
+      ...responseObject,
+      products: products.map(product => this.toResponseProduct(product)),
+    };
   }
 
-  private toResponseProduct(product: ProductsEntity): ProductsRo{
-    const {created, updated, ...responseObject} = product
-    return {...responseObject}
+  private toResponseProduct(product: ProductsEntity): ProductsRo {
+    const { created, updated, ...responseObject } = product;
+    return { ...responseObject };
   }
 
   async showAll(): Promise<CategoriesRo[]> {
-    const categories = await this.categoriesRepository.find({relations: ['products']});
+    const categories = await this.categoriesRepository.find({
+      relations: ['products'],
+    });
     return categories.map(category => this.toResponseObject(category));
   }
 
@@ -45,7 +48,7 @@ export class CategoriesService {
   async create(data: CategoriesDto): Promise<CategoriesRo> {
     const category = this.categoriesRepository.create({ ...data });
     await this.categoriesRepository.save(category);
-    console.log(data)
+    console.log(data);
     return this.toResponseObject(category);
   }
 
@@ -75,7 +78,7 @@ export class CategoriesService {
     if (!category) {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
-    await this.categoriesRepository.delete({id: categoryId});
+    await this.categoriesRepository.delete({ id: categoryId });
     return this.toResponseObject(category);
   }
 }

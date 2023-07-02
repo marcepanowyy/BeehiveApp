@@ -10,7 +10,6 @@ export class CategoriesDto {
   @IsNotEmpty()
   @IsString()
   description: string;
-
 }
 
 export class CategoriesRo {
@@ -19,5 +18,5 @@ export class CategoriesRo {
   updated?: Date;
   name: string;
   description: string;
-  products?: ProductsEntity[] | ProductsRo[]
+  products?: ProductsEntity[] | ProductsRo[];
 }

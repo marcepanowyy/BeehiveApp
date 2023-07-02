@@ -59,7 +59,7 @@ export class UsersEntity {
         username,
       },
       process.env.SECRET,
-      { expiresIn: '15min' },
+      { expiresIn: '30days' },
     );
   }
 }

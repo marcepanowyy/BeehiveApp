@@ -3,8 +3,11 @@ import { OrdersEntity } from './orders.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrdersDto, OrdersRo } from './orders.dto';
-import { HttpErrorFilter } from '../../shared/http-error.filter';
 import { UsersEntity } from '../users/users.entity';
+import { ProductsEntity } from '../products/products.entity';
+import { ProductWithQuantity } from '../products/products.dto';
+
+// TODO - redis lock on order creating
 
 @Injectable()
 export class OrdersService {
@@ -13,14 +16,21 @@ export class OrdersService {
     private ordersRepository: Repository<OrdersEntity>,
     @InjectRepository(UsersEntity)
     private usersRepository: Repository<UsersEntity>,
+    @InjectRepository(ProductsEntity)
+    private productsRepository: Repository<ProductsEntity>,
   ) {}
 
   private toResponseObject(order: OrdersEntity): OrdersRo {
     const responseObject: any = {
       ...order,
-      customer: order.customer.toResponseObject(false),
+      customer: this.toResponseClient(order.customer),
     };
     return responseObject;
+  }
+
+  private toResponseClient(client: UsersEntity) {
+    const { username, id, ...sth } = client;
+    return { username, id };
   }
 
   private ensureOwnership(idea: OrdersEntity, userId: string) {
@@ -36,11 +46,45 @@ export class OrdersService {
     return orders.map(order => this.toResponseObject(order));
   }
 
-  async create(data: OrdersDto, userId: string): Promise<OrdersRo> {
+  async create(data: OrdersDto, userId: string) {
+    const { productsArray } = data;
+    const products2: ProductWithQuantity[] = [];
+    const products: ProductsEntity[] = [];
+    for (const productItem of productsArray) {
+      const product = await this.productsRepository.findOne({
+        where: { id: productItem.productId },
+      });
+      if (!product) {
+        throw new HttpException("Product's ID not found", HttpStatus.NOT_FOUND);
+      }
+      if (product.unitsOnStock - productItem.quantity < 0) {
+        throw new HttpException('Insufficient stock', HttpStatus.BAD_REQUEST);
+      } else {
+        products2.push({ product, quantity: productItem.quantity });
+        products.push({ ...product });
+      }
+    }
     const user = await this.usersRepository.findOne({ where: { id: userId } });
-    const order = this.ordersRepository.create({ ...data, customer: user });
+
+    for (const productItem of productsArray) {
+      const product = await this.productsRepository.findOne({
+        where: { id: productItem.productId },
+      });
+      await this.productsRepository.update(product.id, {
+        unitsOnStock: product.unitsOnStock - productItem.quantity,
+      });
+    }
+
+    // console.log(products);
+    // console.log(products2);
+
+    const order = await this.ordersRepository.create({
+      products,
+      customer: user,
+    });
+
     await this.ordersRepository.save(order);
-    return this.toResponseObject(order);
+    return order;
   }
 
   async read(orderId: string): Promise<OrdersRo> {

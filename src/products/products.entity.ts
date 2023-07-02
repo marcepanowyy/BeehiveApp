@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { CategoriesEntity } from '../categories/categories.entity';
+import { OrdersEntity } from '../orders/orders.entity';
 
 @Entity('products')
 export class ProductsEntity {
@@ -27,5 +28,8 @@ export class ProductsEntity {
 
   @ManyToOne(type => CategoriesEntity, category => category.products)
   category: CategoriesEntity
+
+  @ManyToOne(type => OrdersEntity, order => order.products)
+  order: OrdersEntity
 
 }

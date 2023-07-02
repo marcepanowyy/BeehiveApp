@@ -1,27 +1,24 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsNotEmpty,
+} from 'class-validator';
 import { UsersRO } from '../users/users.dto';
+import { ProductItem } from '../products/products.dto';
 
 export class OrdersDto {
-
-  // TODO
-  // user: usersdto
-  // products: productsdto[]
+  @ArrayNotEmpty()
+  @IsNotEmpty({ each: true })
+  productsArray: ProductItem[];
 
   // @IsNotEmpty()
   // @IsString()
   status?: string;
-
 }
 
-export class OrdersRo{
-
+export class OrdersRo {
   id?: string;
-  updated: Date;
+  updated?: Date;
   created: Date;
   status: string;
-  customer: UsersRO
-
-
+  customer: UsersRO;
 }
-
-
