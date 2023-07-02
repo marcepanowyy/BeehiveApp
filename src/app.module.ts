@@ -8,13 +8,12 @@ import { HttpErrorFilter } from '../shared/http-error.filter';
 import { LoggingInterceptor } from '../shared/logging.interceptor';
 import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
-import { ProductsController } from './products/products.controller';
 import { ProductsService } from './products/products.service';
 import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [databaseModule, OrdersModule, UsersModule, CategoriesModule, ProductsModule],
-  controllers: [AppController, ProductsController],
+  controllers: [AppController],
   providers: [
     AppService,
     {
@@ -25,7 +24,6 @@ import { ProductsModule } from './products/products.module';
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
     },
-    ProductsService,
   ],
 })
 export class AppModule {}

@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, IsPositive, IsString, Min } from 'class-validator';
+import { IsDecimal, IsInt, IsNotEmpty, IsNumber, IsPositive, IsString, Min } from 'class-validator';
 import { CategoriesEntity } from '../categories/categories.entity';
 
 export class ProductsDto {
@@ -14,17 +14,23 @@ export class ProductsDto {
   @IsInt()
   unitsOnStock: number;
 
-  @IsPositive()
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0.01)
   price: number;
 
-  // category: CategoriesEntity
+  @IsNotEmpty()
+  @IsString()
+  categoryName: string
+
 }
 
 export class ProductsRo {
   id?: string;
-  created: Date;
-  updated: Date;
+  created?: Date;
+  updated?: Date;
   name: string;
   description: string;
-  // category: CategoriesEntity;
+  unitsOnStock: number;
+  price: number
+  category: CategoriesEntity | string;
 }

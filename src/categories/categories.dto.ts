@@ -1,4 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
+import { ProductsEntity } from '../products/products.entity';
+import { ProductsRo } from '../products/products.dto';
 
 export class CategoriesDto {
   @IsNotEmpty()
@@ -12,10 +14,10 @@ export class CategoriesDto {
 }
 
 export class CategoriesRo {
-  id: string;
-  created: Date;
-  updated: Date;
+  id?: string;
+  created?: Date;
+  updated?: Date;
   name: string;
   description: string;
-  // products: ProductEntity[]
+  products?: ProductsEntity[] | ProductsRo[]
 }
