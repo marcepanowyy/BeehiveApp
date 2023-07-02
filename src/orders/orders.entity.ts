@@ -26,8 +26,6 @@ export class OrdersEntity {
   @ManyToOne(type => UsersEntity, customer => customer.orders)
   customer: UsersEntity;
 
-  @OneToMany(() => OrderDetailsEntity, orderDetail => orderDetail.order, {
-    cascade: true,
-  })
+  @OneToMany(() => OrderDetailsEntity, orderDetail => orderDetail.order)
   orderDetails: OrderDetailsEntity[];
 }

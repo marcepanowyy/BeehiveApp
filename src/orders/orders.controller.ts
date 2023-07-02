@@ -31,6 +31,7 @@ export class OrdersController {
       this.logger.log('ORDER: ' + JSON.stringify(options.orderId));
   }
 
+  // TODO - fix me
   @Get()
   showAllOrders() {
     return this.ordersService.showAll();
@@ -38,7 +39,7 @@ export class OrdersController {
 
   @Post()
   @UseGuards(new AuthGuard())
-  // @UsePipes(new ValidationPipe())
+  @UsePipes(new ValidationPipe())
   createOrder(@User('id') userId: string, @Body() data: OrdersDto) {
     this.logData({ userId, data });
     return this.ordersService.create(data, userId);
@@ -49,6 +50,7 @@ export class OrdersController {
     return this.ordersService.read(orderId);
   }
 
+  // TODO - fix me
   @Delete(':id')
   @UseGuards(new AuthGuard())
   destroyOrder(@Param('id') orderId: string, @User('id') userId: string) {

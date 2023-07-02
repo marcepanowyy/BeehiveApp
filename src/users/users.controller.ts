@@ -12,6 +12,7 @@ export class UsersController {
   @Get()
   // @UseGuards(new AuthGuard())
   // showAllUsers(@User() user) {
+  // TODO - admin only
   showAllUsers() {
     return this.usersService.showAll()
   }

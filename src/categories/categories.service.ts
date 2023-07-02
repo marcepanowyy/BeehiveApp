@@ -13,7 +13,7 @@ export class CategoriesService {
     private categoriesRepository: Repository<CategoriesEntity>,
   ) {}
 
-  private toResponseObject(category: CategoriesEntity): CategoriesRo {
+  private toResponseCategory(category: CategoriesEntity): CategoriesRo {
     const { created, updated, ...responseObject } = category;
     if (!responseObject.products) return { ...responseObject };
     const products = responseObject.products;
@@ -23,16 +23,20 @@ export class CategoriesService {
     };
   }
 
+  private toResponseCategories(categories: CategoriesEntity[]): CategoriesRo[]{
+    return categories.map(category => this.toResponseCategory(category));
+  }
+
   private toResponseProduct(product: ProductsEntity): ProductsRo {
     const { created, updated, ...responseObject } = product;
-    return { ...responseObject };
+    return responseObject ;
   }
 
   async showAll(): Promise<CategoriesRo[]> {
     const categories = await this.categoriesRepository.find({
       relations: ['products'],
     });
-    return categories.map(category => this.toResponseObject(category));
+    return this.toResponseCategories(categories)
   }
 
   async read(categoryId: string): Promise<CategoriesRo> {
@@ -42,14 +46,13 @@ export class CategoriesService {
     if (!category) {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
-    return this.toResponseObject(category);
+    return this.toResponseCategory(category);
   }
 
   async create(data: CategoriesDto): Promise<CategoriesRo> {
     const category = this.categoriesRepository.create({ ...data });
     await this.categoriesRepository.save(category);
-    console.log(data);
-    return this.toResponseObject(category);
+    return this.toResponseCategory(category);
   }
 
   async update(
@@ -66,10 +69,10 @@ export class CategoriesService {
     category = await this.categoriesRepository.findOne({
       where: { id: categoryId },
     });
-    return this.toResponseObject(category);
+    return this.toResponseCategory(category);
   }
 
-  // TODO: fix
+  // TODO: fix - cascade deleting
   async delete(categoryId: string): Promise<CategoriesRo> {
     const category = await this.categoriesRepository.findOne({
       where: { id: categoryId },
@@ -79,6 +82,6 @@ export class CategoriesService {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
     await this.categoriesRepository.delete({ id: categoryId });
-    return this.toResponseObject(category);
+    return this.toResponseCategory(category);
   }
 }

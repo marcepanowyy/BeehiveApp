@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsString } from 'class-validator';
+import { OrdersRo } from '../orders/orders.dto';
 
 export class UsersDto {
   @IsNotEmpty()
@@ -15,4 +16,5 @@ export class UsersRO {
   username: string;
   created?: Date;
   token?: string;
+  orders?: OrdersRo[];
 }

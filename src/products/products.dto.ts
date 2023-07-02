@@ -45,7 +45,3 @@ export class ProductItem {
   quantity: number;
 }
 
-export class ProductWithQuantity {
-  product: ProductsEntity;
-  quantity: number;
-}

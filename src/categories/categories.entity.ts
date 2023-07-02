@@ -23,8 +23,6 @@ export class CategoriesEntity {
 
   //relationships
 
-  @OneToMany(type => ProductsEntity, product => product.category, {
-    cascade: true,
-  })
+  @OneToMany(type => ProductsEntity, product => product.category)
   products: ProductsEntity[];
 }

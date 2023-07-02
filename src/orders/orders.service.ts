@@ -6,9 +6,10 @@ import { OrdersDto, OrdersRo } from './orders.dto';
 import { UsersEntity } from '../users/users.entity';
 import { ProductsEntity } from '../products/products.entity';
 import { OrderDetailsEntity } from '../order.details/order.details.entity';
+import { UsersRO } from '../users/users.dto';
+import { ProductsRo } from '../products/products.dto';
 
 // TODO - redis lock on order creating
-// TODO - add types for returned values
 
 @Injectable()
 export class OrdersService {
@@ -23,7 +24,7 @@ export class OrdersService {
     private orderDetailsRepository: Repository<OrderDetailsEntity>,
   ) {}
 
-  private async toResponseObject(order: OrdersEntity): Promise<OrdersRo> {
+  private async toResponseOrder(order: OrdersEntity): Promise<OrdersRo> {
     const { id, created, status } = order;
 
     const orderProducts = await this.getProductsForOrder(order);
@@ -48,10 +49,16 @@ export class OrdersService {
     return responseObject;
   }
 
-  private toResponseClient(client: UsersEntity) {
+  private async toResponseOrders(orders: OrdersEntity[]): Promise<Promise<OrdersRo>[]>{
+    return orders.map(async order => await this.toResponseOrder(order))
+  }
+
+  private toResponseClient(client: UsersEntity): UsersRO {
     const { username, id } = client;
     return { username, id };
   }
+
+  // TODO - fix returning type
 
   private async getProductsForOrder(order: OrdersEntity) {
     return await this.orderDetailsRepository
@@ -73,11 +80,12 @@ export class OrdersService {
     const orders = await this.ordersRepository.find({
       relations: ['customer'],
     });
-
-    return orders.map(order => this.toResponseObject(order));
+    return this.toResponseOrders(orders)
+    // console.log(orders)
+    // return orders.map(order => this.toResponseOrder(order));
   }
 
-  async create(data: OrdersDto, userId: string) {
+  async create(data: OrdersDto, userId: string): Promise<OrdersRo> {
     const { productsArray } = data;
     for (const productItem of productsArray) {
       const product = await this.productsRepository.findOne({
@@ -87,7 +95,7 @@ export class OrdersService {
         throw new HttpException("Product's ID not found", HttpStatus.NOT_FOUND);
       }
       if (product.unitsOnStock - productItem.quantity < 0) {
-        throw new HttpException('Insufficient stock', HttpStatus.BAD_REQUEST);
+        throw new HttpException(`Insufficient stock for product: ${product.name}`, HttpStatus.BAD_REQUEST);
       }
     }
 
@@ -111,7 +119,7 @@ export class OrdersService {
 
       await this.orderDetailsRepository.save(orderDetails);
     }
-    return this.toResponseObject(order);
+    return this.toResponseOrder(order);
   }
 
   async read(orderId: string): Promise<OrdersRo> {
@@ -122,8 +130,10 @@ export class OrdersService {
     if (!order) {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
-    return this.toResponseObject(order);
+    return this.toResponseOrder(order);
   }
+
+  // TODO - updating status???
 
   // async update(orderId: string, data: Partial<OrdersDto>): Promise<OrdersRo> {
   //   let order = await this.ordersRepository.findOne({
@@ -137,6 +147,9 @@ export class OrdersService {
   //   return this.toResponseObject(order);
   // }
 
+
+  // TODO - fix me
+
   async destroy(orderId: string, userId: string) {
     const order = await this.ordersRepository.findOne({
       where: { id: orderId },
@@ -145,13 +158,13 @@ export class OrdersService {
     if (!order) {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
-    if (!(order.customer.id !== userId)) {
+    if (!(order.customer.id === userId)) {
       throw new HttpException(
         'Order does not belong to user',
         HttpStatus.UNAUTHORIZED,
       );
     }
     await this.ordersRepository.delete({ id: orderId });
-    return this.toResponseObject(order);
+    return this.toResponseOrder(order);
   }
 }

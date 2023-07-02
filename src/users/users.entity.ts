@@ -11,6 +11,7 @@ import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { UsersRO } from './users.dto';
 import { OrdersEntity } from '../orders/orders.entity';
+import { OrdersRo } from '../orders/orders.dto';
 
 @Entity('users')
 export class UsersEntity {
@@ -39,19 +40,32 @@ export class UsersEntity {
     this.password = await bcrypt.hash(this.password, 10);
   }
 
-  toResponseObject(showToken: boolean = true): UsersRO {
-    const { id, created, username, token } = this;
-    const responseObject: any = { id, created, username };
-    if (showToken) responseObject.token = token;
-    if (this.orders) responseObject.orders = this.orders
-    return responseObject;
+  // end of relationships
+
+  // private methods here, not in service cuz of token:
+
+  private toResponseOrder(order: OrdersEntity): OrdersRo {
+    const { updated, ...responseOrder } = order;
+    return responseOrder;
   }
 
-  async comparePassword(attempt: string) {
+  private toResponseOrders(orders: OrdersEntity[]): OrdersRo[] {
+    return orders.map(order => this.toResponseOrder(order));
+  }
+
+  toResponseUser(showToken: boolean = true): UsersRO {
+    const { id, created, username, token } = this;
+    const responseUser: any = { id, created, username };
+    if (showToken) responseUser.token = token;
+    if (this.orders) responseUser.orders = this.toResponseOrders(this.orders);
+    return responseUser;
+  }
+
+  async comparePassword(attempt: string): Promise<boolean> {
     return bcrypt.compare(attempt, this.password);
   }
 
-  private get token() {
+  private get token(): string {
     const { id, username } = this;
     return jwt.sign(
       {

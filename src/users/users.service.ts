@@ -13,7 +13,7 @@ export class UsersService {
 
   async showAll(): Promise<UsersRO[]> {
     const users = await this.userRepository.find({relations: ['orders']});
-    return users.map(user => user.toResponseObject(false));
+    return users.map(user => user.toResponseUser(false));
   }
 
   async login(data: UsersDto): Promise<UsersRO>{
@@ -25,7 +25,7 @@ export class UsersService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    return user.toResponseObject()
+    return user.toResponseUser()
   }
 
   async register(data: UsersDto): Promise<UsersRO>{
@@ -39,7 +39,7 @@ export class UsersService {
     }
     user = await this.userRepository.create(data)
     await this.userRepository.save(user)
-    return user.toResponseObject()
+    return user.toResponseUser()
   }
 
 }

@@ -28,9 +28,16 @@ export class ProductsEntity {
 
   // relationships
 
-  @ManyToOne(type => CategoriesEntity, category => category.products)
+  // TODO - cascade deleting
+
+  @ManyToOne(type => CategoriesEntity, category => category.products, {
+    onDelete: 'CASCADE',
+  })
   category: CategoriesEntity;
 
   @OneToMany(() => OrderDetailsEntity, orderDetail => orderDetail.product)
   orderDetails: OrderDetailsEntity[];
+
+  // end of relationships
+
 }

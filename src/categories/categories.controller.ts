@@ -26,11 +26,15 @@ export class CategoriesController {
     return this.categoriesService.read(categoryId);
   }
 
+  // TODO - admin only
+
   @Post()
   @UsePipes(new ValidationPipe())
   createCategory(@Body() data: CategoriesDto) {
     return this.categoriesService.create(data);
   }
+
+  // TODO - admin only
 
   @Put(':id')
   @UsePipes(new ValidationPipe())
@@ -40,6 +44,8 @@ export class CategoriesController {
   ) {
     return this.categoriesService.update(categoryId, data);
   }
+
+  // TODO - admin only
 
   @Delete(':id')
   deleteCategory(@Param('id') categoryId: string) {

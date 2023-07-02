@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UsePipes } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UsePipes,
+} from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ValidationPipe } from '../../shared/validation.pipe';
 import { CategoriesDto } from '../categories/categories.dto';
@@ -6,9 +15,7 @@ import { ProductsDto } from './products.dto';
 
 @Controller('products')
 export class ProductsController {
-
-  constructor(private productsService: ProductsService) {
-  }
+  constructor(private productsService: ProductsService) {}
 
   @Get()
   showAllProducts() {
@@ -17,15 +24,18 @@ export class ProductsController {
 
   @Get(':id')
   readProduct(@Param('id') productId: string) {
-    return this.productsService.read(productId)
+    return this.productsService.read(productId);
   }
+
+  // TODO - admin only
 
   @Post()
   @UsePipes(new ValidationPipe())
   createProduct(@Body() data: ProductsDto) {
-    return this.productsService.create(data)
+    return this.productsService.create(data);
   }
 
+  // TODO - update status - admin only
   // @Put(':id')
   // @UsePipes(new ValidationPipe())
   // updateProduct(
@@ -39,5 +49,4 @@ export class ProductsController {
   // deleteCategory(@Param('id') categoryId: string) {
   //   return this.productsService.delete(categoryId)
   // }
-
 }
