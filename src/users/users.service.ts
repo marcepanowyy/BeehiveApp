@@ -16,13 +16,19 @@ export class UsersService {
     return users.map(user => user.toResponseUser(false));
   }
 
+  async read(userId: string): Promise<UsersRO>{
+    const user = await this.userRepository.findOne({where: {id: userId}, relations: ['orders']});
+    if (!user) throw new HttpException('User\'s id not found', HttpStatus.NOT_FOUND)
+    return user.toResponseUser()
+  }
+
   async login(data: UsersDto): Promise<UsersRO>{
     const { username, password } = data;
     const user = await this.userRepository.findOne({ where: { username } });
     if (!user || !(await user.comparePassword(password))) {
       throw new HttpException(
         'Invalid username or password',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.UNAUTHORIZED,
       );
     }
     return user.toResponseUser()

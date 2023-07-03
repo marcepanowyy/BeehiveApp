@@ -11,7 +11,9 @@ import {
 import { CategoriesService } from './categories.service';
 import { CategoriesDto } from './categories.dto';
 import { ValidationPipe } from '../../shared/validation.pipe';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('categories')
 @Controller('categories')
 export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}

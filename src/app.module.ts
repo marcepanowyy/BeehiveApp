@@ -8,12 +8,18 @@ import { HttpErrorFilter } from '../shared/http-error.filter';
 import { LoggingInterceptor } from '../shared/logging.interceptor';
 import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
-import { ProductsService } from './products/products.service';
 import { ProductsModule } from './products/products.module';
 import { OrderDetailsModule } from './order.details/order.details.module';
 
 @Module({
-  imports: [databaseModule, OrdersModule, UsersModule, CategoriesModule, ProductsModule, OrderDetailsModule],
+  imports: [
+    databaseModule,
+    OrdersModule,
+    UsersModule,
+    CategoriesModule,
+    ProductsModule,
+    OrderDetailsModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,

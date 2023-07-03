@@ -6,11 +6,15 @@ import { ProductsEntity } from '../products/products.entity';
 export class OrderDetailsEntity {
   @PrimaryGeneratedColumn('uuid') id: string;
 
+  // relationships
+
   @ManyToOne(type => OrdersEntity, order => order.orderDetails)
   order: OrdersEntity;
 
   @ManyToOne(type => ProductsEntity, product => product.orderDetails)
   product: ProductsEntity;
+
+  // end of relationships
 
   @Column()
   quantity: number;

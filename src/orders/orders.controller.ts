@@ -15,7 +15,9 @@ import { OrdersDto } from './orders.dto';
 import { ValidationPipe } from '../../shared/validation.pipe';
 import { AuthGuard } from '../../shared/auth.guard';
 import { User } from '../users/users.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('orders')
 @Controller('orders')
 export class OrdersController {
   private logger = new Logger('OrdersController');

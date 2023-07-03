@@ -25,4 +25,6 @@ export class CategoriesEntity {
 
   @OneToMany(type => ProductsEntity, product => product.category)
   products: ProductsEntity[];
+
+  // end of relationships
 }

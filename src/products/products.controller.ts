@@ -10,9 +10,10 @@ import {
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ValidationPipe } from '../../shared/validation.pipe';
-import { CategoriesDto } from '../categories/categories.dto';
 import { ProductsDto } from './products.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('products')
 @Controller('products')
 export class ProductsController {
   constructor(private productsService: ProductsService) {}

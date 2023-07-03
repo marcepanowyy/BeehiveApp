@@ -28,4 +28,6 @@ export class OrdersEntity {
 
   @OneToMany(() => OrderDetailsEntity, orderDetail => orderDetail.order)
   orderDetails: OrderDetailsEntity[];
+
+  // end of relationships
 }
