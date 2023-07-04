@@ -48,9 +48,24 @@ export class OrdersController {
   }
 
   @Get(':id')
-  readOrder(@Param('id') orderId: string) {
-    return this.ordersService.read(orderId);
+  getOrderById(@Param('id') orderId: string) {
+    return this.ordersService.getOrderById(orderId);
   }
+
+  // TODO - change to get method
+  @Post('my-orders')
+  @UseGuards(new AuthGuard())
+  @UsePipes(new ValidationPipe())
+  getOrdersByUser(@User('id') userId: string){
+    return this.ordersService.getOrdersByUser(userId)
+  }
+
+  @Get('my-orders/:status')
+  @UseGuards(new AuthGuard())
+  getOrdersByUserAndStatus(@User('id') userId: string, @Param('status') status: string){
+    return this.ordersService.getOrdersByUserAndStatus(userId, status)
+  }
+
 
   // TODO - fix me
   @Delete(':id')

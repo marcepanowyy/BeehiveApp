@@ -8,6 +8,7 @@ import { OrderDetailsEntity } from '../order.details/order.details.entity';
 import { ProductsRo } from '../products/products.dto';
 import { UsersRO } from '../users/users.dto';
 import { UsersEntity } from '../users/users.entity';
+import { StatusEnum } from '../../shared/enums/status.enum';
 
 // TODO - redis lock on order creating
 
@@ -24,42 +25,6 @@ export class OrdersService {
     private orderDetailsRepository: Repository<OrderDetailsEntity>,
   ) {}
 
-  private async toResponseOrder(order: OrdersEntity): Promise<OrdersRo> {
-    const { id, created, status } = order;
-
-    const orderProducts = await this.getProductsForOrder(order);
-
-    const products = orderProducts.map(orderProduct => ({
-      productId: orderProduct.product.id,
-      name: orderProduct.product.name,
-      price: orderProduct.product.price,
-      quantity: orderProduct.quantity,
-    }));
-
-    const customer = this.toResponseClient(order.customer);
-
-    const responseObject: any = {
-      orderId: id,
-      created,
-      status,
-      customer,
-      products,
-    };
-
-    return responseObject;
-  }
-
-  private async toResponseOrders(orders: OrdersEntity[]): Promise<Promise<OrdersRo>[]>{
-    return orders.map(async order => await this.toResponseOrder(order))
-  }
-
-  private toResponseClient(client: UsersEntity): UsersRO {
-    const { username, id } = client;
-    return { username, id };
-  }
-
-  // TODO - fix returning type
-
   private async getProductsForOrder(order: OrdersEntity) {
     return await this.orderDetailsRepository
       .createQueryBuilder('orderDetails')
@@ -74,15 +39,54 @@ export class OrdersService {
       .getMany();
   }
 
+  private toResponseClient(client: UsersEntity): UsersRO {
+    const { username, id } = client;
+    return { username, id };
+  }
 
-  // TODO - not working
-  async showAll() {
+  private async toResponseOrder(
+    order: OrdersEntity,
+    showCustomer: boolean = true,
+  ): Promise<OrdersRo> {
+    const { id, created, status } = order;
+
+    const orderProducts = await this.getProductsForOrder(order);
+
+    const products = orderProducts.map(orderProduct => ({
+      productId: orderProduct.product.id,
+      name: orderProduct.product.name,
+      price: orderProduct.product.price,
+      quantity: orderProduct.quantity,
+    }));
+
+    const responseObject: any = {
+      orderId: id,
+      created,
+      status,
+      products,
+    };
+
+    if (showCustomer)
+      responseObject.customer = this.toResponseClient(order.customer);
+    return responseObject;
+  }
+
+  private async toResponseOrders(
+    orders: OrdersEntity[],
+    showCustomer: boolean = true,
+  ): Promise<OrdersRo[]> {
+    return await Promise.all(
+      orders.map(
+        async order => await this.toResponseOrder(order, showCustomer),
+      ),
+    );
+  }
+
+  async showAll(): Promise<OrdersRo[]> {
     const orders = await this.ordersRepository.find({
       relations: ['customer'],
     });
-    return this.toResponseOrders(orders)
-    // console.log(orders)
-    // return orders.map(order => this.toResponseOrder(order));
+    return this.toResponseOrders(orders);
   }
 
   async create(data: OrdersDto, userId: string): Promise<OrdersRo> {
@@ -95,7 +99,10 @@ export class OrdersService {
         throw new HttpException("Product's ID not found", HttpStatus.NOT_FOUND);
       }
       if (product.unitsOnStock - productItem.quantity < 0) {
-        throw new HttpException(`Insufficient stock for product: ${product.name}`, HttpStatus.BAD_REQUEST);
+        throw new HttpException(
+          `Insufficient stock for product: ${product.name}`,
+          HttpStatus.BAD_REQUEST,
+        );
       }
     }
 
@@ -122,7 +129,7 @@ export class OrdersService {
     return this.toResponseOrder(order);
   }
 
-  async read(orderId: string): Promise<OrdersRo> {
+  async getOrderById(orderId: string): Promise<OrdersRo> {
     const order = await this.ordersRepository.findOne({
       where: { id: orderId },
       relations: ['customer'],
@@ -131,6 +138,34 @@ export class OrdersService {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
     return this.toResponseOrder(order);
+  }
+
+  async getOrdersByUser(userId: string): Promise<OrdersRo[]> {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    const orders = await this.ordersRepository.find({
+      where: { customer: { id: userId } },
+    });
+    return this.toResponseOrders(orders, false);
+  }
+
+  async getOrdersByUserAndStatus(userId: string, status: string) {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (!Object.values(StatusEnum).includes(status as StatusEnum)) {
+      throw new HttpException('Invalid status', HttpStatus.BAD_REQUEST);
+    }
+
+    const orders = await this.ordersRepository.find({
+      where: { customer: { id: userId }, status },
+    });
+
+    return this.toResponseOrders(orders, false);
   }
 
   // TODO - updating status???
@@ -147,8 +182,7 @@ export class OrdersService {
   //   return this.toResponseObject(order);
   // }
 
-
-  // TODO - fix me
+  // TODO - fix me - cascade deleting
 
   async destroy(orderId: string, userId: string) {
     const order = await this.ordersRepository.findOne({
@@ -165,6 +199,6 @@ export class OrdersService {
       );
     }
     await this.ordersRepository.delete({ id: orderId });
-    return this.toResponseOrder(order);
+    return this.toResponseOrder(order, false);
   }
 }
