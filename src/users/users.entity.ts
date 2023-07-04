@@ -30,19 +30,21 @@ export class UsersEntity {
   })
   password: string;
 
+  @Column({ type: 'integer', default: 1 }) role: number;
+
   // relationships
 
   @OneToMany(type => OrdersEntity, order => order.customer)
   orders: OrdersEntity[];
+
+  // end of relationships
 
   @BeforeInsert()
   async hashPassword() {
     this.password = await bcrypt.hash(this.password, 10);
   }
 
-  // end of relationships
-
-  // private methods here, not in service cuz of token:
+  // private methods here, not in service because of token:
 
   private toResponseOrder(order: OrdersEntity): OrdersRo {
     const { updated, ...responseOrder } = order;
@@ -66,11 +68,14 @@ export class UsersEntity {
   }
 
   private get token(): string {
-    const { id, username } = this;
+    const { id, username, role } = this;
     return jwt.sign(
       {
         id,
         username,
+        // TODO - dont save role to jwt payload, instead, use id to get
+        //  user from db and check for role in decorator
+        role
       },
       process.env.SECRET,
       { expiresIn: '30days' },

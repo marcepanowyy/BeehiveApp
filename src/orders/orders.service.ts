@@ -3,11 +3,11 @@ import { OrdersEntity } from './orders.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrdersDto, OrdersRo } from './orders.dto';
-import { UsersEntity } from '../users/users.entity';
 import { ProductsEntity } from '../products/products.entity';
 import { OrderDetailsEntity } from '../order.details/order.details.entity';
-import { UsersRO } from '../users/users.dto';
 import { ProductsRo } from '../products/products.dto';
+import { UsersRO } from '../users/users.dto';
+import { UsersEntity } from '../users/users.entity';
 
 // TODO - redis lock on order creating
 

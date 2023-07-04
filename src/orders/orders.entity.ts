@@ -7,9 +7,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { StatusEnum } from '../../shared/status.enum';
-import { UsersEntity } from '../users/users.entity';
 import { OrderDetailsEntity } from '../order.details/order.details.entity';
+import { StatusEnum } from '../../shared/enums/status.enum';
+import { UsersEntity } from '../users/users.entity';
 
 @Entity('orders')
 export class OrdersEntity {

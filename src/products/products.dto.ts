@@ -1,6 +1,6 @@
 import { IsInt, IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
 import { CategoriesEntity } from '../categories/categories.entity';
-import { ProductsEntity } from './products.entity';
+import { OrderDetailsEntity } from '../order.details/order.details.entity';
 
 export class ProductsDto {
   @IsNotEmpty()
@@ -33,6 +33,7 @@ export class ProductsRo {
   unitsOnStock?: number;
   price: number;
   category: CategoriesEntity | string;
+  orderDetails?: OrderDetailsEntity[]
 }
 
 export class ProductItem {

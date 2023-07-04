@@ -8,44 +8,51 @@ import { UsersDto, UsersRO } from './users.dto';
 export class UsersService {
   constructor(
     @InjectRepository(UsersEntity)
-    private userRepository: Repository<UsersEntity>,
+    private usersRepository: Repository<UsersEntity>,
   ) {}
 
   async showAll(): Promise<UsersRO[]> {
-    const users = await this.userRepository.find({relations: ['orders']});
+    const users = await this.usersRepository.find({ relations: ['orders'] });
     return users.map(user => user.toResponseUser(false));
   }
 
-  async read(userId: string): Promise<UsersRO>{
-    const user = await this.userRepository.findOne({where: {id: userId}, relations: ['orders']});
-    if (!user) throw new HttpException('User\'s id not found', HttpStatus.NOT_FOUND)
-    return user.toResponseUser()
+  async read(userId: string): Promise<UsersRO> {
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+      relations: ['orders'],
+    });
+    if (!user)
+      throw new HttpException("User's id not found", HttpStatus.NOT_FOUND);
+    return user.toResponseUser();
   }
 
-  async login(data: UsersDto): Promise<UsersRO>{
+  async login(data: UsersDto): Promise<UsersRO> {
     const { username, password } = data;
-    const user = await this.userRepository.findOne({ where: { username } });
+    const user = await this.usersRepository.findOne({ where: { username } });
     if (!user || !(await user.comparePassword(password))) {
       throw new HttpException(
         'Invalid username or password',
         HttpStatus.UNAUTHORIZED,
       );
     }
-    return user.toResponseUser()
+    return user.toResponseUser();
   }
 
-  async register(data: UsersDto): Promise<UsersRO>{
+  async register(data: UsersDto): Promise<UsersRO> {
     const { username } = data;
-    let user = await this.userRepository.findOne({ where: { username } });
-    if (user ) {
-      throw new HttpException(
-        'User already exists',
-        HttpStatus.BAD_REQUEST,
-      );
+    let user = await this.usersRepository.findOne({ where: { username } });
+    if (user) {
+      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
-    user = await this.userRepository.create(data)
-    await this.userRepository.save(user)
-    return user.toResponseUser()
+    user = await this.usersRepository.create(data);
+    await this.usersRepository.save(user);
+    return user.toResponseUser();
   }
 
+  async findById(userId: string) {
+    const user = this.usersRepository.findOne({ where: { id: userId } });
+    if (!user)
+      throw new HttpException("Invalid user's id", HttpStatus.NOT_FOUND);
+    return user;
+  }
 }

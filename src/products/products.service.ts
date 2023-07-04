@@ -15,16 +15,20 @@ export class ProductsService {
     private categoriesRepository: Repository<CategoriesEntity>,
   ) {}
 
-  private toResponseObject(product: ProductsEntity): ProductsRo {
-    const { created, updated, ...responseObject } = product;
-    return {...responseObject, category: product.category.name}
+  private toResponseProduct(product: ProductsEntity): ProductsRo {
+    const { created, updated, orderDetails, ...responseObject } = product;
+    return { ...responseObject, category: product.category.name };
+  }
+
+  private toResponseProducts(products: ProductsEntity[]): ProductsRo[] {
+    return products.map(product => this.toResponseProduct(product));
   }
 
   async showAll() {
     const products = await this.productsRepository.find({
       relations: ['category'],
     });
-    return products.map(product => this.toResponseObject(product));
+    return this.toResponseProducts(products);
   }
 
   async read(productId: string): Promise<ProductsRo> {
@@ -35,7 +39,7 @@ export class ProductsService {
     if (!product) {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
-    return this.toResponseObject(product);
+    return this.toResponseProduct(product);
   }
 
   async create(data: ProductsDto): Promise<ProductsRo> {
@@ -52,6 +56,6 @@ export class ProductsService {
       category: category,
     });
     await this.productsRepository.save(product);
-    return this.toResponseObject(product);
+    return this.toResponseProduct(product);
   }
 }

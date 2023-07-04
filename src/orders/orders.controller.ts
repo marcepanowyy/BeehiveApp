@@ -13,9 +13,9 @@ import {
 import { OrdersService } from './orders.service';
 import { OrdersDto } from './orders.dto';
 import { ValidationPipe } from '../../shared/validation.pipe';
-import { AuthGuard } from '../../shared/auth.guard';
-import { User } from '../users/users.decorator';
+import { User } from '../../shared/decorators/users.decorator';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '../../shared/guards/auth.guard';
 
 @ApiTags('orders')
 @Controller('orders')

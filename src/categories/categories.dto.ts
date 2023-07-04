@@ -1,6 +1,7 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { ProductsEntity } from '../products/products.entity';
 import { ProductsRo } from '../products/products.dto';
+import { OrderDetailsEntity } from '../order.details/order.details.entity';
 
 export class CategoriesDto {
   @IsNotEmpty()
@@ -19,4 +20,5 @@ export class CategoriesRo {
   name: string;
   description: string;
   products?: ProductsEntity[] | ProductsRo[];
+  orderDetails?: OrderDetailsEntity;
 }
