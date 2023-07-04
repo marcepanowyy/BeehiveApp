@@ -48,7 +48,7 @@ export class OrdersController {
   }
 
   @Get(':id')
-  getOrderById(@Param('id') orderId: string) {
+  showOrderById(@Param('id') orderId: string) {
     return this.ordersService.getOrderById(orderId);
   }
 
@@ -56,7 +56,7 @@ export class OrdersController {
   @Post('my-orders')
   @UseGuards(new AuthGuard())
   @UsePipes(new ValidationPipe())
-  getOrdersByUser(@User('id') userId: string){
+  showOrdersByUser(@User('id') userId: string){
     return this.ordersService.getOrdersByUser(userId)
   }
 
@@ -66,6 +66,12 @@ export class OrdersController {
     return this.ordersService.getOrdersByUserAndStatus(userId, status)
   }
 
+  // TODO - members only
+  // @Put('id')
+  // @UseGuards(new AuthGuard())
+  // updateOrderStatusById(@Param('id') orderId: string, @Body('status') status: string){
+  //   return this.ordersService.updateStatusById(orderId, status)
+  // }
 
   // TODO - fix me
   @Delete(':id')

@@ -58,4 +58,5 @@ export class ProductsService {
     await this.productsRepository.save(product);
     return this.toResponseProduct(product);
   }
+
 }

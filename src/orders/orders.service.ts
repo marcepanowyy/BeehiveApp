@@ -107,6 +107,8 @@ export class OrdersService {
     }
 
     const user = await this.usersRepository.findOne({ where: { id: userId } });
+    if(!user) throw new HttpException('Invalid user\'s ID', HttpStatus.NOT_FOUND)
+
     const order = await this.ordersRepository.create({ customer: user });
     await this.ordersRepository.save(order);
 
@@ -147,43 +149,59 @@ export class OrdersService {
     }
     const orders = await this.ordersRepository.find({
       where: { customer: { id: userId } },
+      relations: ['customer'],
     });
     return this.toResponseOrders(orders, false);
   }
 
-  async getOrdersByUserAndStatus(userId: string, status: string) {
+  validateStatus(status: string) {
+    if (!Object.values(StatusEnum).includes(status as StatusEnum)) {
+      throw new HttpException('Invalid status', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async getOrdersByUserAndStatus(
+    userId: string,
+    status: string,
+  ): Promise<OrdersRo[]> {
     const user = await this.usersRepository.findOne({ where: { id: userId } });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
-    if (!Object.values(StatusEnum).includes(status as StatusEnum)) {
-      throw new HttpException('Invalid status', HttpStatus.BAD_REQUEST);
-    }
+    this.validateStatus(status);
 
     const orders = await this.ordersRepository.find({
       where: { customer: { id: userId }, status },
+      relations: ['customer'],
     });
 
     return this.toResponseOrders(orders, false);
   }
 
-  // TODO - updating status???
+  async updateStatusById(orderId: string, status: string, userId: string): Promise<OrdersRo> {
+    let order = await this.ordersRepository.findOne({
+      where: { id: orderId },
+      relations: ['customer'],
+    });
+    if (!order) {
+      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+    }
 
-  // async update(orderId: string, data: Partial<OrdersDto>): Promise<OrdersRo> {
-  //   let order = await this.ordersRepository.findOne({
-  //     where: { id: orderId },
-  //   });
-  //   if (!order) {
-  //     throw new HttpException('Not found', HttpStatus.NOT_FOUND);
-  //   }
-  //   await this.ordersRepository.update({ id: orderId }, data);
-  //   order = await this.ordersRepository.findOne({ where: { id: orderId } });
-  //   return this.toResponseObject(order);
-  // }
+    const user = this.usersRepository.findOne({where: {id: userId}})
+
+    if(order.customer.id !== userId){
+      throw new HttpException('Order does not belong to user', HttpStatus.BAD_REQUEST)
+    }
+
+    this.validateStatus(status)
+
+    await this.ordersRepository.update({ id: orderId }, {status});
+    order = await this.ordersRepository.findOne({ where: { id: orderId } });
+    return this.toResponseOrder(order);
+  }
 
   // TODO - fix me - cascade deleting
-
   async destroy(orderId: string, userId: string) {
     const order = await this.ordersRepository.findOne({
       where: { id: orderId },
@@ -199,6 +217,7 @@ export class OrdersService {
       );
     }
     await this.ordersRepository.delete({ id: orderId });
-    return this.toResponseOrder(order, false);
+    return this.toResponseOrder(order);
   }
+
 }
