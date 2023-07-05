@@ -11,7 +11,7 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
-import { OrdersDto } from './orders.dto';
+import { OrdersDto, OrderStatusDto } from './orders.dto';
 import { ValidationPipe } from '../../shared/validation.pipe';
 import { User } from '../../shared/decorators/users.decorator';
 import { ApiTags } from '@nestjs/swagger';
@@ -67,18 +67,17 @@ export class OrdersController {
     return this.ordersService.getOrdersByUserAndStatus(userId, status)
   }
 
-  // TODO - members only -fix me
-  @Put()
-  @UseGuards(new AuthGuard())
-  updateOrderStatusById(@Body() data){
-    return this.ordersService.updateStatusById(data)
+  // // TODO - members only
+  @Put(':id')
+  // @UseGuards(new AuthGuard())
+  updateOrderStatusById(@Body() data: OrderStatusDto, @Param('id') orderId: string){
+    return this.ordersService.updateStatusById(orderId, data)
   }
 
-  // // TODO - fix me
-  // @Delete(':id')
+  @Delete(':id')
   // @UseGuards(new AuthGuard())
-  // destroyOrder(@Param('id') orderId: string, @User('id') userId: string) {
-  //   this.logData({ orderId, userId });
-  //   return this.ordersService.destroy(orderId, userId);
-  // }
+  destroyOrder(@Param('id') orderId: string, @Body('customerId') customerId: string) {
+    return this.ordersService.destroy(orderId, customerId);
+  }
+
 }

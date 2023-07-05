@@ -3,7 +3,7 @@ import { ProductItem, ProductsRo } from '../products/products.dto';
 import { OrderDetailsEntity } from '../order.details/order.details.entity';
 import { UsersEntity } from '../users/users.entity';
 import { UsersRO } from '../users/users.dto';
-// import { UsersEntity } from '../auth/users/users.entity';
+import { StatusEnum } from '../../shared/enums/status.enum';
 
 export class OrdersDto {
   @ArrayNotEmpty()
@@ -19,4 +19,9 @@ export class OrdersRo {
   customer?: UsersRO | UsersEntity;
   products?: ProductsRo;
   orderDetails?: OrderDetailsEntity[]
+}
+
+export class OrderStatusDto{
+  customerId: string;
+  status: StatusEnum;
 }

@@ -2,10 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { OrdersEntity } from './orders.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { OrdersDto, OrdersRo } from './orders.dto';
+import { OrdersDto, OrdersRo, OrderStatusDto } from './orders.dto';
 import { ProductsEntity } from '../products/products.entity';
 import { OrderDetailsEntity } from '../order.details/order.details.entity';
-import { ProductsRo } from '../products/products.dto';
+import { ProductItem, ProductsRo } from '../products/products.dto';
 import { UsersRO } from '../users/users.dto';
 import { UsersEntity } from '../users/users.entity';
 import { StatusEnum } from '../../shared/enums/status.enum';
@@ -76,9 +76,7 @@ export class OrdersService {
     showCustomer: boolean = true,
   ): Promise<OrdersRo[]> {
     return await Promise.all(
-      orders.map(
-        order => this.toResponseOrder(order, showCustomer),
-      ),
+      orders.map(order => this.toResponseOrder(order, showCustomer)),
     );
   }
 
@@ -89,8 +87,22 @@ export class OrdersService {
     return this.toResponseOrders(orders);
   }
 
+  private validateStatus(status: string): void {
+    if (!Object.values(StatusEnum).includes(status as StatusEnum)) {
+      throw new HttpException('Invalid status', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  private checkForDuplicates(array: ProductItem[]) {
+    const ids = array.map(obj => obj.productId);
+    if (!(new Set(ids).size !== array.length)) {
+      throw new HttpException('Products id duplicated', HttpStatus.BAD_REQUEST);
+    }
+  }
+
   async create(data: OrdersDto, userId: string): Promise<OrdersRo> {
     const { productsArray } = data;
+    this.checkForDuplicates(productsArray);
     for (const productItem of productsArray) {
       const product = await this.productsRepository.findOne({
         where: { id: productItem.productId },
@@ -107,7 +119,8 @@ export class OrdersService {
     }
 
     const user = await this.usersRepository.findOne({ where: { id: userId } });
-    if(!user) throw new HttpException('Invalid user\'s ID', HttpStatus.NOT_FOUND)
+    if (!user)
+      throw new HttpException("Invalid user's ID", HttpStatus.NOT_FOUND);
 
     const order = await this.ordersRepository.create({ customer: user });
     await this.ordersRepository.save(order);
@@ -154,12 +167,6 @@ export class OrdersService {
     return this.toResponseOrders(orders, false);
   }
 
-  private validateStatus(status: string): void {
-    if (!Object.values(StatusEnum).includes(status as StatusEnum)) {
-      throw new HttpException('Invalid status', HttpStatus.BAD_REQUEST);
-    }
-  }
-
   async getOrdersByUserAndStatus(
     userId: string,
     status: string,
@@ -179,8 +186,17 @@ export class OrdersService {
     return this.toResponseOrders(orders, false);
   }
 
-  async updateStatusById(data): Promise<OrdersRo> {
-    const {orderId, userId, status} = data
+  async updateStatusById(orderId: string, data: OrderStatusDto) {
+
+    const { customerId, status } = data;
+
+    const user = await this.usersRepository.findOne({
+      where: { id: customerId },
+    });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
     let order = await this.ordersRepository.findOne({
       where: { id: orderId },
       relations: ['customer'],
@@ -189,36 +205,40 @@ export class OrdersService {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
 
-    const user = this.usersRepository.findOne({where: {id: userId}})
-
-    if(order.customer.id !== userId){
-      throw new HttpException('Order does not belong to user', HttpStatus.BAD_REQUEST)
+    if (order.customer.id !== customerId) {
+      throw new HttpException(
+        'Order does not belong to user',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
-    this.validateStatus(status)
-
-    await this.ordersRepository.update({ id: orderId }, {status});
-    order = await this.ordersRepository.findOne({ where: { id: orderId } });
-    return this.toResponseOrder(order);
+    await this.ordersRepository.update({ id: orderId }, {status})
+    order = await this.ordersRepository.findOne({ where: { id: orderId }, relations: ['customer'] });
+    return this.toResponseOrder(order, false);
   }
 
-  // TODO - fix me - cascade deleting
-  async destroy(orderId: string, userId: string) {
+  async destroy(orderId: string, customerId: string): Promise<OrdersRo> {
+    const user = await this.usersRepository.findOne({
+      where: { id: customerId },
+    });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
     const order = await this.ordersRepository.findOne({
       where: { id: orderId },
       relations: ['customer'],
     });
     if (!order) {
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('Order not found', HttpStatus.NOT_FOUND);
     }
-    if (!(order.customer.id === userId)) {
+    if (order.customer.id !== customerId) {
       throw new HttpException(
         'Order does not belong to user',
         HttpStatus.UNAUTHORIZED,
       );
     }
+    const deleted = this.toResponseOrder({ ...order });
     await this.ordersRepository.delete({ id: orderId });
-    return this.toResponseOrder(order);
+    return deleted;
   }
-
 }
