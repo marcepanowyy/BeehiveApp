@@ -21,7 +21,7 @@ export class ProductsDto {
 
   @IsNotEmpty()
   @IsString()
-  categoryName: string;
+  categoryId: string;
 }
 
 export class ProductsRo {

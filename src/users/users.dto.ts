@@ -1,11 +1,9 @@
-import { IsIn, IsNotEmpty, IsString, Length, Matches } from 'class-validator';
+import { IsEmail, IsIn, IsNotEmpty, IsString, Length, Matches } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { OrdersRo } from '../orders/orders.dto';
 
 export class UsersDto {
-  @IsNotEmpty()
-  @IsString()
-  @Length(6, 14)
+  @IsEmail()
   username!: string;
 
   @IsNotEmpty()

@@ -43,9 +43,9 @@ export class ProductsService {
   }
 
   async create(data: ProductsDto): Promise<ProductsRo> {
-    const { name, description, unitsOnStock, price, categoryName } = data;
+    const { name, description, unitsOnStock, price, categoryId } = data;
     const category = await this.categoriesRepository.findOne({
-      where: { name: categoryName },
+      where: { id: categoryId },
     });
     if (!category) {
       throw new HttpException('Category not found', HttpStatus.NOT_FOUND);

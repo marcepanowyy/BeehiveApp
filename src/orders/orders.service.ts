@@ -77,7 +77,7 @@ export class OrdersService {
   ): Promise<OrdersRo[]> {
     return await Promise.all(
       orders.map(
-        async order => await this.toResponseOrder(order, showCustomer),
+        order => this.toResponseOrder(order, showCustomer),
       ),
     );
   }
@@ -154,7 +154,7 @@ export class OrdersService {
     return this.toResponseOrders(orders, false);
   }
 
-  validateStatus(status: string) {
+  private validateStatus(status: string): void {
     if (!Object.values(StatusEnum).includes(status as StatusEnum)) {
       throw new HttpException('Invalid status', HttpStatus.BAD_REQUEST);
     }
@@ -179,7 +179,8 @@ export class OrdersService {
     return this.toResponseOrders(orders, false);
   }
 
-  async updateStatusById(orderId: string, status: string, userId: string): Promise<OrdersRo> {
+  async updateStatusById(data): Promise<OrdersRo> {
+    const {orderId, userId, status} = data
     let order = await this.ordersRepository.findOne({
       where: { id: orderId },
       relations: ['customer'],

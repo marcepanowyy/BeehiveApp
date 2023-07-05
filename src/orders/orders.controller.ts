@@ -17,9 +17,10 @@ import { User } from '../../shared/decorators/users.decorator';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../shared/guards/auth.guard';
 
-@ApiTags('orders')
+// @ApiTags('orders')
 @Controller('orders')
 export class OrdersController {
+
   private logger = new Logger('OrdersController');
 
   constructor(private ordersService: OrdersService) {}
@@ -33,11 +34,12 @@ export class OrdersController {
       this.logger.log('ORDER: ' + JSON.stringify(options.orderId));
   }
 
-  // TODO - fix me
   @Get()
   showAllOrders() {
     return this.ordersService.showAll();
   }
+
+  // TODO - add transaction
 
   @Post()
   @UseGuards(new AuthGuard())
@@ -47,37 +49,36 @@ export class OrdersController {
     return this.ordersService.create(data, userId);
   }
 
-  @Get(':id')
-  showOrderById(@Param('id') orderId: string) {
-    return this.ordersService.getOrderById(orderId);
-  }
-
-  // TODO - change to get method
-  @Post('my-orders')
+  @Get('/user')
   @UseGuards(new AuthGuard())
   @UsePipes(new ValidationPipe())
   showOrdersByUser(@User('id') userId: string){
     return this.ordersService.getOrdersByUser(userId)
   }
 
-  @Get('my-orders/:status')
+  @Get(':id')
+  showOrderById(@Param('id') orderId: string) {
+    return this.ordersService.getOrderById(orderId);
+  }
+
+  @Get('user/:status')
   @UseGuards(new AuthGuard())
   getOrdersByUserAndStatus(@User('id') userId: string, @Param('status') status: string){
     return this.ordersService.getOrdersByUserAndStatus(userId, status)
   }
 
-  // TODO - members only
-  // @Put('id')
-  // @UseGuards(new AuthGuard())
-  // updateOrderStatusById(@Param('id') orderId: string, @Body('status') status: string){
-  //   return this.ordersService.updateStatusById(orderId, status)
-  // }
-
-  // TODO - fix me
-  @Delete(':id')
+  // TODO - members only -fix me
+  @Put()
   @UseGuards(new AuthGuard())
-  destroyOrder(@Param('id') orderId: string, @User('id') userId: string) {
-    this.logData({ orderId, userId });
-    return this.ordersService.destroy(orderId, userId);
+  updateOrderStatusById(@Body() data){
+    return this.ordersService.updateStatusById(data)
   }
+
+  // // TODO - fix me
+  // @Delete(':id')
+  // @UseGuards(new AuthGuard())
+  // destroyOrder(@Param('id') orderId: string, @User('id') userId: string) {
+  //   this.logData({ orderId, userId });
+  //   return this.ordersService.destroy(orderId, userId);
+  // }
 }
