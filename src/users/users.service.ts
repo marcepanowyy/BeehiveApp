@@ -11,6 +11,9 @@ export class UsersService {
     private usersRepository: Repository<UsersEntity>,
   ) {}
 
+  // 5 customers, show for each up to 5 orders -> just to check who ordered sth ...
+  // it will be deleted later
+
   async showAll(page: number = 1): Promise<UsersRO[]> {
     const users = await this.usersRepository.find({
       relations: ['orders'],
@@ -20,14 +23,23 @@ export class UsersService {
     return users.map(user => user.toResponseUser(false, true));
   }
 
-  async getUserById(userId: string): Promise<UsersRO> {
+  async getUserById(userId: string, page: number = 1): Promise<UsersRO> {
     const user = await this.usersRepository.findOne({
       where: { id: userId },
       relations: ['orders'],
     });
     if (!user)
       throw new HttpException("User's id not found", HttpStatus.NOT_FOUND);
-    return user.toResponseUser();
+
+    const take = 5;
+    const skip = take * (page - 1);
+    const paginatedOrders = user.orders.slice(skip, skip + take);
+
+    return {
+      ...user.toResponseUser(false),
+      orders: paginatedOrders,
+    };
+
   }
 
   async login(data: UsersDto): Promise<UsersRO> {
@@ -53,10 +65,4 @@ export class UsersService {
     return user.toResponseUser();
   }
 
-  async findById(userId: string) {
-    const user = this.usersRepository.findOne({ where: { id: userId } });
-    if (!user)
-      throw new HttpException("Invalid user's id", HttpStatus.NOT_FOUND);
-    return user;
-  }
 }

@@ -18,7 +18,7 @@ import { User } from '../../shared/decorators/users.decorator';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../shared/guards/auth.guard';
 
-// @ApiTags('orders')
+@ApiTags('orders')
 @Controller('orders')
 export class OrdersController {
   private logger = new Logger('OrdersController');

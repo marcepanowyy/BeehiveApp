@@ -4,6 +4,12 @@ import { OrdersRo } from '../orders/orders.dto';
 
 export class UsersDto {
   @IsEmail()
+  @Length(6, 18)
+
+  @ApiProperty({
+    description: 'The name of the user',
+    example: 'James123@gmail.com',
+  })
   username!: string;
 
   @IsNotEmpty()
@@ -12,6 +18,12 @@ export class UsersDto {
   @Matches(/^(?=.*\d.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).*$/, {
     message:
       'The password must contain at least one special character, one uppercase letter and two digits',
+  })
+
+  @ApiProperty({
+    description:
+      'The password of the user - must contain at least one special character, one uppercase letter and two digits',
+    example: '#J4n3!Doe#',
   })
   password!: string;
 
