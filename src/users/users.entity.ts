@@ -51,15 +51,19 @@ export class UsersEntity {
     return responseOrder;
   }
 
-  private toResponseOrders(orders: OrdersEntity[]): OrdersRo[] {
-    return orders.map(order => this.toResponseOrder(order));
+  // limit - show up to 5 orders for each customer
+
+  private toResponseOrders(orders: OrdersEntity[], isLimit: boolean = false): OrdersRo[] {
+    const responseOrders = orders.map(order => this.toResponseOrder(order))
+    if (isLimit) return responseOrders.slice(0, 5)
+    return responseOrders
   }
 
-  toResponseUser(showToken: boolean = true): UsersRO {
+  toResponseUser(showToken: boolean = true, isLimit: boolean = false): UsersRO {
     const { id, created, username, token } = this;
     const responseUser: any = { id, created, username };
     if (showToken) responseUser.token = token;
-    if (this.orders) responseUser.orders = this.toResponseOrders(this.orders);
+    if (this.orders) responseUser.orders = this.toResponseOrders(this.orders, isLimit);
     return responseUser;
   }
 

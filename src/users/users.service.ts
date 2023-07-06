@@ -17,7 +17,7 @@ export class UsersService {
       take: 5,
       skip: 5 * (page - 1),
     });
-    return users.map(user => user.toResponseUser(false));
+    return users.map(user => user.toResponseUser(false, true));
   }
 
   async getUserById(userId: string): Promise<UsersRO> {
