@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UsePipes,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
@@ -19,8 +20,8 @@ export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
 
   @Get()
-  showAllCategories() {
-    return this.categoriesService.showAll();
+  showAllCategories(@Query('page') page: number) {
+    return this.categoriesService.showAll(page);
   }
 
   @Get(':id')

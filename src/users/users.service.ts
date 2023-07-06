@@ -11,12 +11,16 @@ export class UsersService {
     private usersRepository: Repository<UsersEntity>,
   ) {}
 
-  async showAll(): Promise<UsersRO[]> {
-    const users = await this.usersRepository.find({ relations: ['orders'] });
+  async showAll(page: number = 1): Promise<UsersRO[]> {
+    const users = await this.usersRepository.find({
+      relations: ['orders'],
+      take: 5,
+      skip: 5 * (page - 1),
+    });
     return users.map(user => user.toResponseUser(false));
   }
 
-  async read(userId: string): Promise<UsersRO> {
+  async getUserById(userId: string): Promise<UsersRO> {
     const user = await this.usersRepository.findOne({
       where: { id: userId },
       relations: ['orders'],

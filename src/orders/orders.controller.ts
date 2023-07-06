@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
@@ -20,7 +21,6 @@ import { AuthGuard } from '../../shared/guards/auth.guard';
 // @ApiTags('orders')
 @Controller('orders')
 export class OrdersController {
-
   private logger = new Logger('OrdersController');
 
   constructor(private ordersService: OrdersService) {}
@@ -35,8 +35,8 @@ export class OrdersController {
   }
 
   @Get()
-  showAllOrders() {
-    return this.ordersService.showAll();
+  showAllOrders(@Query('page') page: number) {
+    return this.ordersService.showAll(page);
   }
 
   // TODO - add transaction
@@ -52,8 +52,8 @@ export class OrdersController {
   @Get('/user')
   @UseGuards(new AuthGuard())
   @UsePipes(new ValidationPipe())
-  showOrdersByUser(@User('id') userId: string){
-    return this.ordersService.getOrdersByUser(userId)
+  showOrdersByUser(@User('id') userId: string, @Query('page') page: number) {
+    return this.ordersService.getOrdersByUser(userId, page);
   }
 
   @Get(':id')
@@ -63,21 +63,30 @@ export class OrdersController {
 
   @Get('user/:status')
   @UseGuards(new AuthGuard())
-  getOrdersByUserAndStatus(@User('id') userId: string, @Param('status') status: string){
-    return this.ordersService.getOrdersByUserAndStatus(userId, status)
+  getOrdersByUserAndStatus(
+    @User('id') userId: string,
+    @Param('status') status: string,
+    @Query('page') page: number,
+  ) {
+    return this.ordersService.getOrdersByUserAndStatus(userId, status, page);
   }
 
   // // TODO - members only
   @Put(':id')
   // @UseGuards(new AuthGuard())
-  updateOrderStatusById(@Body() data: OrderStatusDto, @Param('id') orderId: string){
-    return this.ordersService.updateStatusById(orderId, data)
+  updateOrderStatusById(
+    @Body() data: OrderStatusDto,
+    @Param('id') orderId: string,
+  ) {
+    return this.ordersService.updateStatusById(orderId, data);
   }
 
   @Delete(':id')
   // @UseGuards(new AuthGuard())
-  destroyOrder(@Param('id') orderId: string, @Body('customerId') customerId: string) {
+  destroyOrder(
+    @Param('id') orderId: string,
+    @Body('customerId') customerId: string,
+  ) {
     return this.ordersService.destroy(orderId, customerId);
   }
-
 }

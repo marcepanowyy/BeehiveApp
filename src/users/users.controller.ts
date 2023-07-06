@@ -3,7 +3,7 @@ import {
   Controller,
   Get,
   Param,
-  Post,
+  Post, Query,
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
@@ -32,14 +32,14 @@ export class UsersController {
   @Get()
   @UseGuards(new AuthGuard())
   @Role(1)
-  showAllUsers(@User() user) {
-    return this.usersService.showAll();
+  showAllUsers(@User() user, @Query('page') page: number) {
+    return this.usersService.showAll(page);
   }
 
   // TODO - admin only
   @Get(':id')
   readUser(@Param('id') userId: string) {
-    return this.usersService.read(userId);
+    return this.usersService.getUserById(userId);
   }
 
   @Post('login')

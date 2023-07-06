@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { OrdersDto, OrdersRo, OrderStatusDto } from './orders.dto';
 import { ProductsEntity } from '../products/products.entity';
 import { OrderDetailsEntity } from '../order.details/order.details.entity';
-import { ProductItem, ProductsRo } from '../products/products.dto';
+import { ProductItem } from '../products/products.dto';
 import { UsersRO } from '../users/users.dto';
 import { UsersEntity } from '../users/users.entity';
 import { StatusEnum } from '../../shared/enums/status.enum';
@@ -80,9 +80,11 @@ export class OrdersService {
     );
   }
 
-  async showAll(): Promise<OrdersRo[]> {
+  async showAll(page: number = 1): Promise<OrdersRo[]> {
     const orders = await this.ordersRepository.find({
       relations: ['customer'],
+      take: 10,
+      skip: 10 * (page - 1),
     });
     return this.toResponseOrders(orders);
   }
@@ -155,7 +157,7 @@ export class OrdersService {
     return this.toResponseOrder(order);
   }
 
-  async getOrdersByUser(userId: string): Promise<OrdersRo[]> {
+  async getOrdersByUser(userId: string, page: number = 1): Promise<OrdersRo[]> {
     const user = await this.usersRepository.findOne({ where: { id: userId } });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
@@ -163,6 +165,8 @@ export class OrdersService {
     const orders = await this.ordersRepository.find({
       where: { customer: { id: userId } },
       relations: ['customer'],
+      take: 10,
+      skip: 10 * (page - 1),
     });
     return this.toResponseOrders(orders, false);
   }
@@ -170,6 +174,7 @@ export class OrdersService {
   async getOrdersByUserAndStatus(
     userId: string,
     status: string,
+    page: number = 1,
   ): Promise<OrdersRo[]> {
     const user = await this.usersRepository.findOne({ where: { id: userId } });
     if (!user) {
@@ -181,13 +186,14 @@ export class OrdersService {
     const orders = await this.ordersRepository.find({
       where: { customer: { id: userId }, status },
       relations: ['customer'],
+      take: 10,
+      skip: 10 * (page - 1),
     });
 
     return this.toResponseOrders(orders, false);
   }
 
   async updateStatusById(orderId: string, data: OrderStatusDto) {
-
     const { customerId, status } = data;
 
     const user = await this.usersRepository.findOne({
@@ -212,8 +218,11 @@ export class OrdersService {
       );
     }
 
-    await this.ordersRepository.update({ id: orderId }, {status})
-    order = await this.ordersRepository.findOne({ where: { id: orderId }, relations: ['customer'] });
+    await this.ordersRepository.update({ id: orderId }, { status });
+    order = await this.ordersRepository.findOne({
+      where: { id: orderId },
+      relations: ['customer'],
+    });
     return this.toResponseOrder(order, false);
   }
 

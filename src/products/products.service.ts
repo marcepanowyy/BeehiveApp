@@ -24,9 +24,11 @@ export class ProductsService {
     return products.map(product => this.toResponseProduct(product));
   }
 
-  async showAll() {
+  async showAll(page: number = 1) {
     const products = await this.productsRepository.find({
       relations: ['category'],
+      take: 10,
+      skip: 10 * (page - 1)
     });
     return this.toResponseProducts(products);
   }
@@ -57,6 +59,18 @@ export class ProductsService {
     });
     await this.productsRepository.save(product);
     return this.toResponseProduct(product);
+  }
+
+  async update(productId: string, data: Partial<ProductsDto>){
+
+    let product = await this.productsRepository.findOne({where: {id: productId}})
+    if (!product){
+      throw new HttpException('Product not found by id', HttpStatus.NOT_FOUND)
+    }
+    await this.productsRepository.update({id: productId}, data)
+    product = await this.productsRepository.findOne({where: {id: productId}})
+    return this.toResponseProduct(product)
+
   }
 
 }

@@ -23,20 +23,22 @@ export class CategoriesService {
     };
   }
 
-  private toResponseCategories(categories: CategoriesEntity[]): CategoriesRo[]{
+  private toResponseCategories(categories: CategoriesEntity[]): CategoriesRo[] {
     return categories.map(category => this.toResponseCategory(category));
   }
 
   private toResponseProduct(product: ProductsEntity): ProductsRo {
     const { created, updated, ...responseObject } = product;
-    return responseObject ;
+    return responseObject;
   }
 
-  async showAll(): Promise<CategoriesRo[]> {
+  async showAll(page: number = 1): Promise<CategoriesRo[]> {
     const categories = await this.categoriesRepository.find({
       relations: ['products'],
+      take: 10,
+      skip: 10 * (page - 1),
     });
-    return this.toResponseCategories(categories)
+    return this.toResponseCategories(categories);
   }
 
   async read(categoryId: string): Promise<CategoriesRo> {

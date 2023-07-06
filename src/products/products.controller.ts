@@ -5,7 +5,7 @@ import {
   Get,
   Param,
   Post,
-  Put,
+  Put, Query,
   UsePipes,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
@@ -19,8 +19,8 @@ export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
   @Get()
-  showAllProducts() {
-    return this.productsService.showAll();
+  showAllProducts(@Query('page') page: number) {
+    return this.productsService.showAll(page);
   }
 
   @Get(':id')
@@ -36,7 +36,7 @@ export class ProductsController {
     return this.productsService.create(data);
   }
 
-  // TODO - update status - admin only
+  // // TODO - admin only fix me
   // @Put(':id')
   // @UsePipes(new ValidationPipe())
   // updateProduct(
@@ -45,7 +45,7 @@ export class ProductsController {
   // ) {
   //   return this.productsService.update(productId, data)
   // }
-  //
+
   // @Delete(':id')
   // deleteCategory(@Param('id') categoryId: string) {
   //   return this.productsService.delete(categoryId)
