@@ -2,7 +2,7 @@ import {
   BeforeInsert,
   Column,
   CreateDateColumn,
-  Entity,
+  Entity, ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -12,6 +12,7 @@ import * as jwt from 'jsonwebtoken';
 import { UsersRO } from './users.dto';
 import { OrdersEntity } from '../orders/orders.entity';
 import { OrdersRo } from '../orders/orders.dto';
+import { ProductsReviewEntity } from '../products.review/products.review.entity';
 
 @Entity('users')
 export class UsersEntity {
@@ -36,6 +37,10 @@ export class UsersEntity {
 
   @OneToMany(type => OrdersEntity, order => order.customer)
   orders: OrdersEntity[];
+
+  @ManyToMany(type => ProductsReviewEntity)
+  reviews: ProductsReviewEntity;
+
 
   // end of relationships
 

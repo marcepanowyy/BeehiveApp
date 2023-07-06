@@ -11,6 +11,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
 import { OrderDetailsModule } from './order.details/order.details.module';
 import { RoleGuard } from '../shared/guards/role.guard';
+import { ProductsReviewModule } from './products.review/products.review.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { RoleGuard } from '../shared/guards/role.guard';
     CategoriesModule,
     ProductsModule,
     OrderDetailsModule,
+    ProductsReviewModule,
   ],
   controllers: [AppController],
   providers: [

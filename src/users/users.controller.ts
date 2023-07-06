@@ -37,7 +37,7 @@ export class UsersController {
   @ApiBadRequestResponse({ description: 'Cannot create the user. Try again.' })
   @ApiInternalServerErrorResponse({description: 'Internal server error.'})
 
-  showAllUsers(@User() user, @Query('page') page: number) {
+  showAllUsers(@Query('page') page: number) {
     return this.usersService.showAll(page);
   }
 

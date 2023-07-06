@@ -1,7 +1,7 @@
 import {
   Column,
   CreateDateColumn,
-  Entity,
+  Entity, JoinTable, ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { CategoriesEntity } from '../categories/categories.entity';
 import { OrderDetailsEntity } from '../order.details/order.details.entity';
+import { ProductsReviewEntity } from '../products.review/products.review.entity';
 
 @Entity('products')
 export class ProductsEntity {
@@ -35,8 +36,12 @@ export class ProductsEntity {
   })
   category: CategoriesEntity;
 
-  @OneToMany(() => OrderDetailsEntity, orderDetail => orderDetail.product)
+  @OneToMany(type => OrderDetailsEntity, orderDetail => orderDetail.product)
   orderDetails: OrderDetailsEntity[];
+
+  @ManyToMany(type => ProductsReviewEntity)
+  reviews: ProductsReviewEntity[];
+
 
   // end of relationships
 
