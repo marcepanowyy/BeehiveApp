@@ -2,7 +2,7 @@ import {
   BeforeInsert,
   Column,
   CreateDateColumn,
-  Entity, ManyToMany,
+  Entity, JoinTable, ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -38,7 +38,7 @@ export class UsersEntity {
   @OneToMany(type => OrdersEntity, order => order.customer)
   orders: OrdersEntity[];
 
-  @ManyToMany(type => ProductsReviewEntity, reviews => reviews.products)
+  @OneToMany(type => ProductsReviewEntity, reviews => reviews.product)
   reviews: ProductsReviewEntity[];
 
   // end of relationships

@@ -1,7 +1,7 @@
 import {
   Column,
   CreateDateColumn,
-  Entity, JoinTable, ManyToMany,
+  Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -39,9 +39,8 @@ export class ProductsEntity {
   @OneToMany(type => OrderDetailsEntity, orderDetail => orderDetail.product)
   orderDetails: OrderDetailsEntity[];
 
-  @ManyToMany(type => ProductsReviewEntity, review => review.customers)
+  @OneToMany(type => ProductsReviewEntity, review => review.customer)
   reviews: ProductsReviewEntity[];
-
 
   // end of relationships
 

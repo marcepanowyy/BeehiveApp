@@ -1,18 +1,21 @@
 import {
   Column,
   CreateDateColumn,
-  Entity, JoinTable,
-  ManyToMany,
+  Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 import { UsersEntity } from '../users/users.entity';
-import { JoinColumn } from 'typeorm/browser';
 import { ProductsEntity } from '../products/products.entity';
 
 
+// unique field: (customerId, productId)
+// (customer cant post more than 1 review of certain product)
+
 @Entity('reviews')
+@Unique(['customer', 'product'])
 export class ProductsReviewEntity {
   @PrimaryGeneratedColumn('uuid') id: string;
 
@@ -22,18 +25,15 @@ export class ProductsReviewEntity {
 
   @Column('text') content: string;
 
-  @Column('integer') rating: number
+  @Column('integer') rating: number;
 
   // relationships
 
-  @ManyToMany(type => UsersEntity, customer => customer.reviews)
-  @JoinTable({name: 'review_customer_JT'})
-  customers: UsersEntity[];
+  @ManyToOne(type => UsersEntity, customer => customer.reviews)
+  customer: UsersEntity;
 
-  @ManyToMany(type => ProductsEntity, product => product.reviews)
-  @JoinTable({name: 'review_product_JT'})
-  products: ProductsEntity[];
+  @ManyToOne(type => ProductsEntity, product => product.reviews)
+  product: ProductsEntity;
 
   // end of relationships
-
 }

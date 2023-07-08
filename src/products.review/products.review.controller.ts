@@ -17,7 +17,6 @@ export class ProductsReviewController {
     @Body() data: ProductsReviewDto,
     @Param('id') productId: string,
   ) {
-    console.log(userId, data, productId)
     return this.productsReviewService.create(userId, data, productId);
   }
 }
