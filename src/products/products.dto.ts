@@ -33,7 +33,7 @@ export class ProductsRo {
   description: string;
   unitsOnStock?: number;
   price: number;
-  category: CategoriesEntity | string;
+  category?: CategoriesEntity | string;
   orderDetails?: OrderDetailsEntity[];
   reviews?: ProductsReviewEntity[];
 }
