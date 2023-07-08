@@ -28,11 +28,11 @@ export class ProductsReviewEntity {
 
   @ManyToMany(type => UsersEntity, customer => customer.reviews)
   @JoinTable({name: 'review_customer_JT'})
-  customer: UsersEntity;
+  customers: UsersEntity[];
 
-  @ManyToMany(type => ProductsEntity, products => products.reviews)
+  @ManyToMany(type => ProductsEntity, product => product.reviews)
   @JoinTable({name: 'review_product_JT'})
-  product: ProductsEntity;
+  products: ProductsEntity[];
 
   // end of relationships
 

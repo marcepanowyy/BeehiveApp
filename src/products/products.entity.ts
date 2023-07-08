@@ -39,7 +39,7 @@ export class ProductsEntity {
   @OneToMany(type => OrderDetailsEntity, orderDetail => orderDetail.product)
   orderDetails: OrderDetailsEntity[];
 
-  @ManyToMany(type => ProductsReviewEntity)
+  @ManyToMany(type => ProductsReviewEntity, review => review.customers)
   reviews: ProductsReviewEntity[];
 
 

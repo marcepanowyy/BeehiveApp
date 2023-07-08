@@ -97,7 +97,7 @@ export class OrdersService {
 
   private checkForDuplicates(array: ProductItem[]) {
     const ids = array.map(obj => obj.productId);
-    if (!(new Set(ids).size !== array.length)) {
+    if (new Set(ids).size !== array.length) {
       throw new HttpException('Products id duplicated', HttpStatus.BAD_REQUEST);
     }
   }

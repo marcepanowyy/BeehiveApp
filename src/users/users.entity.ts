@@ -38,9 +38,8 @@ export class UsersEntity {
   @OneToMany(type => OrdersEntity, order => order.customer)
   orders: OrdersEntity[];
 
-  @ManyToMany(type => ProductsReviewEntity)
-  reviews: ProductsReviewEntity;
-
+  @ManyToMany(type => ProductsReviewEntity, reviews => reviews.products)
+  reviews: ProductsReviewEntity[];
 
   // end of relationships
 

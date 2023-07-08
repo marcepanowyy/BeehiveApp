@@ -34,8 +34,8 @@ export class ProductsRo {
   unitsOnStock?: number;
   price: number;
   category: CategoriesEntity | string;
-  orderDetails?: OrderDetailsEntity[]
-  reviews?: ProductsReviewEntity[]
+  orderDetails?: OrderDetailsEntity[];
+  reviews?: ProductsReviewEntity[];
 }
 
 export class ProductItem {
@@ -47,4 +47,3 @@ export class ProductItem {
   @Min(1)
   quantity: number;
 }
-

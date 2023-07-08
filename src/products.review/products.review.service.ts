@@ -34,6 +34,8 @@ export class ProductsReviewService {
       throw new HttpException('Product not found by id', HttpStatus.NOT_FOUND)
     }
 
+    // working fine!
+
     const order = await this.ordersRepository
       .createQueryBuilder('order')
       .innerJoin('order.orderDetails', 'orderDetails')
@@ -46,14 +48,26 @@ export class ProductsReviewService {
       throw new HttpException('User did not purchase the product', HttpStatus.UNAUTHORIZED);
     }
 
-    const review = this.productsReviewRepository.create({
+    const existingReview = await this.productsReviewRepository.createQueryBuilder('review')
+      .innerJoin('review.customers', 'customer')
+      .innerJoin('review.products', 'product')
+      .where('customer.id = :userId', { userId })
+      .andWhere('product.id = :productId', { productId })
+      .getOne();
+
+    if (existingReview) {
+      throw new HttpException('Customer has already submitted a review for this product', HttpStatus.BAD_REQUEST);
+    }
+
+    const review = await this.productsReviewRepository.create({
       content,
       rating,
-      customer,
-      product
+      customers: [customer],
+      products: [product]
     });
-    // review.customer.push(customer)
-    // review.products.push(product);
+
+    await this.productsReviewRepository.save(review)
+    return review
 
   }
 
