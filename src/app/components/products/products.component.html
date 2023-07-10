@@ -5,24 +5,24 @@
 
   <mat-form-field>
     <mat-label>Categories</mat-label>
-    <mat-select [formControl]="chosenCategories" multiple>
+    <mat-select [formControl]="chosenCategories" multiple (selectionChange)="onCategorySelection($event)">
       <mat-option *ngFor="let category of categories" [value]="category">{{category.name}}</mat-option>
     </mat-select>
   </mat-form-field>
 
   <mat-form-field>
     <mat-label>Sort by price</mat-label>
-    <mat-select [(value)]="sorting">
+    <mat-select [(value)]="order" (selectionChange)="onOrderSelection($event)">
       <mat-option>None</mat-option>
-      <mat-option value="option1">Ascending</mat-option>
-      <mat-option value="option2">Descending</mat-option>
+      <mat-option value="ascending">Ascending</mat-option>
+      <mat-option value="descending">Descending</mat-option>
     </mat-select>
   </mat-form-field>
 
 
     <span>Price:</span>
 
-    <mat-slider min="0" max="1000" style="width: 200px" discrete="discrete">
+    <mat-slider min="0" max="1000" style="width: 200px" discrete="discrete" step="10" (input)="onPriceInput($event)">
       <input matSliderStartThumb [(ngModel)]="minPrice">
       <input matSliderEndThumb [(ngModel)]="maxPrice">
     </mat-slider>

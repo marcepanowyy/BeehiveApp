@@ -12,9 +12,10 @@ export class ApiService {
   getProducts(page: number = 1){
     return this.http.get<any>(`http://localhost:4000/products?page=${page}`);
   }
-
-  getProductsByCategoryId(categoryId: string, page: number = 1){
-    return this.http.get<any>(`http://localhost:4000/categories/${categoryId}?page=${page}`);
+  // add data interface
+  getFilteredProducts(data: any, page: number = 1){
+    console.log(data)
+    return this.http.post<any>(`http://localhost:4000/products/filter?page=${page}`, data);
   }
 
   getCategories(){
