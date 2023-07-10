@@ -35,7 +35,7 @@ export class FilteredProductsDto{
 
   @IsNotEmpty()
   @IsString()
-  categoryId: string
+  categoryIdArr: string[]
 
   ascending: boolean = false
   descending: boolean = false

@@ -35,7 +35,7 @@ export class CategoriesService {
   // async showAll(page: number = 1): Promise<CategoriesRo[]> {
   async showAll(): Promise<CategoriesRo[]> {
     const categories = await this.categoriesRepository.find({
-      relations: ['products'],
+      // relations: ['products'],
       // take: 10,
       // skip: 10 * (page - 1),
     });

@@ -17,10 +17,10 @@ export class ProductsService {
 
   private toResponseProduct(product: ProductsEntity): ProductsRo {
     const { created, updated, orderDetails, ...responseObject } = product;
-    if(product.category?.name){
+    if (product.category?.name) {
       return { ...responseObject, category: product.category.name };
     }
-    return {...responseObject}
+    return { ...responseObject };
   }
 
   private toResponseProducts(products: ProductsEntity[]): ProductsRo[] {
@@ -64,23 +64,30 @@ export class ProductsService {
     return this.toResponseProduct(product);
   }
 
-  async getFilteredProducts(data: Partial<FilteredProductsDto>, page: number = 1): Promise<ProductsRo[]> {
-    const { minPrice, maxPrice, categoryId, ascending, descending } = data;
+  async getFilteredProducts(
+    data: Partial<FilteredProductsDto>,
+    page: number = 1,
+  ): Promise<ProductsRo[]> {
+    const { minPrice, maxPrice, categoryIdArr, ascending, descending } = data;
 
-    if(categoryId){
-      const category = await this.categoriesRepository.findOne({
-        where: { id: categoryId },
-      });
+    if (categoryIdArr) {
+      for (const categoryId of categoryIdArr) {
+        let category = await this.categoriesRepository.findOne({
+          where: { id: categoryId },
+        });
 
-      if (!category) {
-        throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
+        if (!category) {
+          throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
+        }
       }
     }
 
     const query = this.productsRepository.createQueryBuilder('product');
 
-    if (categoryId) {
-      query.where('product.categoryId = :categoryId', { categoryId });
+    if (categoryIdArr && categoryIdArr.length > 0) {
+      query.where('product.categoryId IN (:...categoryIds)', {
+        categoryIds: categoryIdArr,
+      });
     }
 
     if (minPrice) {
@@ -97,13 +104,14 @@ export class ProductsService {
       query.orderBy('product.price', 'DESC');
     }
 
+    query.leftJoinAndSelect('product.category', 'category');
+
     const take = 9;
     const skip = take * (page - 1);
 
     query.take(take).skip(skip);
 
     const products = await query.getMany();
-
 
     if (!products) {
       throw new HttpException('No products found', HttpStatus.NOT_FOUND);
