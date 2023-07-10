@@ -1,0 +1,25 @@
+*, *:before, *:after{
+  margin: 0;
+  top: 0;
+  padding: 0;
+}
+
+
+.home-container{
+  background-color: #ffd500;
+  height: calc(100vh - 4rem);
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.photo{
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: cover;
+
+}

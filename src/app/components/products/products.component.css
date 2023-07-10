@@ -1,0 +1,26 @@
+.card-container {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.example-card {
+  max-width: 20rem;
+  margin: 1.5rem;
+}
+
+.example-header-image {
+  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+  background-size: cover;
+}
+
+.paginator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  margin-top: -3rem;
+}
+
+

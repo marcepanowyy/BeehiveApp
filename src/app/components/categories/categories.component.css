@@ -1,0 +1,36 @@
+.table-container{
+  padding: 2rem;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+td, th {
+  width: 25%;
+}
+
+.description-cell {
+  font-size: 0.85rem;
+  color: gray;
+  width: 75%;
+  flex: 0 0 80%;
+
+}
+
+.name-cell{
+  font-size: 0.95rem;
+  flex: 0 0 20%;
+}
+
+
+td.mat-cell, th.mat-header-cell {
+  text-align: center;
+  justify-content:center;
+}
+
+

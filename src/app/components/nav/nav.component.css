@@ -1,0 +1,22 @@
+*, *:before, *:after{
+  margin: 0;
+  top: 0;
+  padding: 0;
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.btn{
+  margin-left: 1rem;
+}
+
+.title{
+  font-size: 1.2rem;
+}
+
+
+a{
+  text-decoration: none;
+}
