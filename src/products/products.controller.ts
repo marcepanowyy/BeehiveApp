@@ -5,12 +5,13 @@ import {
   Get,
   Param,
   Post,
-  Put, Query,
+  Put,
+  Query,
   UsePipes,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ValidationPipe } from '../../shared/validation.pipe';
-import { ProductsDto } from './products.dto';
+import { FilteredProductsDto, ProductsDto } from './products.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('products')
@@ -34,6 +35,11 @@ export class ProductsController {
   @UsePipes(new ValidationPipe())
   createProduct(@Body() data: ProductsDto) {
     return this.productsService.create(data);
+  }
+
+  @Post('filter')
+  showFilteredProducts(@Body() data: Partial<FilteredProductsDto>, @Query('page') page: number) {
+    return this.productsService.getFilteredProducts(data, page);
   }
 
   // // TODO - admin only fix me

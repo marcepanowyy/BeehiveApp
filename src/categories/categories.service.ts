@@ -32,11 +32,12 @@ export class CategoriesService {
     return responseObject;
   }
 
-  async showAll(page: number = 1): Promise<CategoriesRo[]> {
+  // async showAll(page: number = 1): Promise<CategoriesRo[]> {
+  async showAll(): Promise<CategoriesRo[]> {
     const categories = await this.categoriesRepository.find({
       relations: ['products'],
-      take: 10,
-      skip: 10 * (page - 1),
+      // take: 10,
+      // skip: 10 * (page - 1),
     });
     return this.toResponseCategories(categories);
   }

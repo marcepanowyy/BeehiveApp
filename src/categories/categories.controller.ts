@@ -20,8 +20,10 @@ export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
 
   @Get()
-  showAllCategories(@Query('page') page: number) {
-    return this.categoriesService.showAll(page);
+  // showAllCategories(@Query('page') page: number) {
+  showAllCategories() {
+    // return this.categoriesService.showAll(page);
+    return this.categoriesService.showAll();
   }
 
   @Get(':id')

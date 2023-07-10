@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductsEntity } from './products.entity';
 import { Repository } from 'typeorm';
-import { ProductsDto, ProductsRo } from './products.dto';
+import { FilteredProductsDto, ProductsDto, ProductsRo } from './products.dto';
 import { CategoriesEntity } from '../categories/categories.entity';
 
 @Injectable()
@@ -17,7 +17,10 @@ export class ProductsService {
 
   private toResponseProduct(product: ProductsEntity): ProductsRo {
     const { created, updated, orderDetails, ...responseObject } = product;
-    return { ...responseObject, category: product.category.name };
+    if(product.category?.name){
+      return { ...responseObject, category: product.category.name };
+    }
+    return {...responseObject}
   }
 
   private toResponseProducts(products: ProductsEntity[]): ProductsRo[] {
@@ -27,8 +30,8 @@ export class ProductsService {
   async showAll(page: number = 1) {
     const products = await this.productsRepository.find({
       relations: ['category'],
-      take: 10,
-      skip: 10 * (page - 1)
+      take: 9,
+      skip: 9 * (page - 1),
     });
     return this.toResponseProducts(products);
   }
@@ -61,16 +64,65 @@ export class ProductsService {
     return this.toResponseProduct(product);
   }
 
-  async update(productId: string, data: Partial<ProductsDto>){
+  async getFilteredProducts(data: Partial<FilteredProductsDto>, page: number = 1): Promise<ProductsRo[]> {
+    const { minPrice, maxPrice, categoryId, ascending, descending } = data;
 
-    let product = await this.productsRepository.findOne({where: {id: productId}})
-    if (!product){
-      throw new HttpException('Product not found by id', HttpStatus.NOT_FOUND)
+    if(categoryId){
+      const category = await this.categoriesRepository.findOne({
+        where: { id: categoryId },
+      });
+
+      if (!category) {
+        throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
+      }
     }
-    await this.productsRepository.update({id: productId}, data)
-    product = await this.productsRepository.findOne({where: {id: productId}})
-    return this.toResponseProduct(product)
 
+    const query = this.productsRepository.createQueryBuilder('product');
+
+    if (categoryId) {
+      query.where('product.categoryId = :categoryId', { categoryId });
+    }
+
+    if (minPrice) {
+      query.andWhere('product.price >= :minPrice', { minPrice });
+    }
+
+    if (maxPrice) {
+      query.andWhere('product.price <= :maxPrice', { maxPrice });
+    }
+
+    if (ascending && !descending) {
+      query.orderBy('product.price', 'ASC');
+    } else if (descending && !ascending) {
+      query.orderBy('product.price', 'DESC');
+    }
+
+    const take = 9;
+    const skip = take * (page - 1);
+
+    query.take(take).skip(skip);
+
+    const products = await query.getMany();
+
+
+    if (!products) {
+      throw new HttpException('No products found', HttpStatus.NOT_FOUND);
+    }
+
+    return this.toResponseProducts(products);
   }
 
+  async update(productId: string, data: Partial<ProductsDto>) {
+    let product = await this.productsRepository.findOne({
+      where: { id: productId },
+    });
+    if (!product) {
+      throw new HttpException('Product not found by id', HttpStatus.NOT_FOUND);
+    }
+    await this.productsRepository.update({ id: productId }, data);
+    product = await this.productsRepository.findOne({
+      where: { id: productId },
+    });
+    return this.toResponseProduct(product);
+  }
 }

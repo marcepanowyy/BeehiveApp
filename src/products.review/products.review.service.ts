@@ -67,12 +67,12 @@ export class ProductsReviewService {
   async showReviewsByUser(
     userId: string,
     page: number = 1,
-  ): Promise<ReviewRO[]> {}
+  ) {}
 
   async showReviewsByProduct(
     productId: string,
     page: number = 1,
-  ): Promise<ReviewRO[]> {}
+  ){}
 
   async updateReview(reviewId: string){}
 

@@ -25,6 +25,23 @@ export class ProductsDto {
   categoryId: string;
 }
 
+export class FilteredProductsDto{
+
+  @Min(0.01)
+  minPrice: number
+
+  @Min(0.01)
+  maxPrice: number
+
+  @IsNotEmpty()
+  @IsString()
+  categoryId: string
+
+  ascending: boolean = false
+  descending: boolean = false
+}
+
+
 export class ProductsRo {
   id?: string;
   created?: Date;
