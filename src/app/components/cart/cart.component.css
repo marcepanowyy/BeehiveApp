@@ -16,8 +16,35 @@
   padding: 2rem;
 }
 
+.example-header-image {
+  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+  background-size: cover;
+  width: 4rem;
+  height: 4rem;
+  margin-top: 0.8rem;
+  margin-left: 0.8rem;
+}
+
+.title1{
+  margin-top: 1rem;
+}
+
+subtitle1{
+  margin-top: 0.2rem;
+}
+
+.title2{
+  margin-top: -1rem;
+  margin-bottom: 0.2rem;
+  margin-left: 1rem;
+}
+
+.subtitle2{
+  margin-left: 1rem;
+}
+
 mat-card{
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.8rem;
 }
 
 .summary-div{
