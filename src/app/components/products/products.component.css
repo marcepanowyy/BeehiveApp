@@ -1,3 +1,15 @@
+.products-container{
+  position: relative;
+}
+
+.filter-container{
+  position: absolute;
+  width: 20rem;
+  left: 1rem;
+  top: 1rem;
+  z-index: 1;
+}
+
 .card-container {
   display: flex;
   justify-content: space-evenly;
@@ -8,6 +20,7 @@
 .example-card {
   max-width: 20rem;
   margin: 1.5rem;
+  min-height: 32rem;
 }
 
 .example-header-image {
@@ -22,5 +35,4 @@
   padding: 1rem;
   margin-top: -3rem;
 }
-
 

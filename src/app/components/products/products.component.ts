@@ -1,6 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ApiService} from "../../services/api.service";
 import {FormControl} from "@angular/forms";
+import {ActivatedRoute} from "@angular/router";
+import {MatDialog} from "@angular/material/dialog";
+import {DialogComponent} from "./dialog/dialog.component";
 
 @Component({
   selector: 'app-products',
@@ -15,9 +18,7 @@ export class ProductsComponent implements OnInit{
   totalProducts = 0
   pageSize = 1
 
-
   categoryIdArr: string[] = []
-
 
   data: any = {} // data interface
 
@@ -30,10 +31,13 @@ export class ProductsComponent implements OnInit{
   chosenCategories = new FormControl('');
 
 
-  constructor(private api: ApiService) {
+  constructor(private api: ApiService,
+              private route: ActivatedRoute,
+              private matDialog: MatDialog) {
   }
 
   ngOnInit() {
+
     this.getFilteredProducts()
     this.getCategories();
   }
@@ -95,6 +99,17 @@ export class ProductsComponent implements OnInit{
     this.data.maxPrice = this.maxPrice
     this.data.minPrice = this.minPrice
     this.getFilteredProducts()
+  }
+
+
+  // dialog
+
+  openDialog(product: any){
+    const dialog = this.matDialog.open(DialogComponent, {
+      width: '30%',
+      height: '16rem',
+      data: {product: product}
+    })
   }
 
 }

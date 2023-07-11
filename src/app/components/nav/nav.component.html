@@ -8,17 +8,17 @@
   <a mat-raised-button class="btn" routerLinkActive= 'active' routerLink="Products">Products</a>
   <a mat-raised-button class="btn" routerLinkActive= 'active' routerLink="Categories">Categories</a>
 <!--  <a mat-raised-button class="btn" routerLinkActive= 'active' routerLink="Cart">Cart</a>-->
-  <a mat-raised-button class="btn" routerLinkActive= 'active' routerLink="Orders">My Orders</a>
 <!--  <a mat-raised-button class="btn" routerLinkActive= 'active' routerLink="Wishlist">Wishlist</a>-->
 
 
-  <ng-container *ngIf="!isLoggedIn">
+  <ng-container *ngIf="!isLoggedIn()">
     <a mat-raised-button class="btn" routerLinkActive= 'active' routerLink="Login">Login</a>
     <a mat-raised-button class="btn" routerLinkActive= 'active' routerLink="Register">Register</a>
   </ng-container>
 
-  <ng-container *ngIf="isLoggedIn">
-  <a mat-raised-button class="btn" (click)="logOut()">Log out</a>
+  <ng-container *ngIf="isLoggedIn()">
+    <a mat-raised-button class="btn" routerLinkActive= 'active' routerLink="Orders">My Orders</a>
+    <a mat-raised-button class="btn" (click)="logOut()">Log out</a>
   </ng-container>
 
 </mat-toolbar>

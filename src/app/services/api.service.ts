@@ -9,7 +9,6 @@ export class ApiService {
   constructor(private http: HttpClient) {
   }
 
-
   // add data interface
   getFilteredProducts(data: any, page: number = 1){
     return this.http.post<any>(`http://localhost:4000/products/filter?page=${page}`, data);
@@ -27,5 +26,16 @@ export class ApiService {
   loginUser(data: any){
     return this.http.post<any>("http://localhost:4000/users/login", data)
   }
+
+  // add order interface
+  getUserOrders(){
+    return this.http.get<any>("http://localhost:4000/orders/user")
+  }
+
+  getUserOrderDetails(orderId: string){
+    return this.http.get<any>(`http://localhost:4000/orders/${orderId}`)
+  }
+
+
 
 }

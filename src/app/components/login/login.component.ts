@@ -49,14 +49,12 @@ export class LoginComponent {
         localStorage.setItem('token', res.token)
         this.router.navigate(['Products'])
 
-
       },
       error: (err) => {
         alert(err.message)
       }
     })
   }
-
 
   // errors
 

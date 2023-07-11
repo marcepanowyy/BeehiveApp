@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from "../../services/api.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-categories',
@@ -11,13 +12,14 @@ export class CategoriesComponent implements OnInit {
   displayedColumns: string[] = ['name', 'description'];
   categories: any = [];
 
-  constructor(private api: ApiService) { }
+  constructor(private api: ApiService,
+              private router: Router) { }
 
   ngOnInit() {
     this.getCategories();
   }
 
-  private getCategories() {
+  getCategories() {
     this.api.getCategories().subscribe({
       next: (res) => {
         this.categories = res;

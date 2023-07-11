@@ -24,6 +24,11 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NgFor} from "@angular/common";
 import {MatSliderModule} from "@angular/material/slider";
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import { OrdersComponent } from './components/orders/orders.component';
+import {MatDialogModule} from "@angular/material/dialog";
+import { DialogComponent } from './components/products/dialog/dialog.component';
+import {MatExpansionModule} from "@angular/material/expansion";
+import {MatListModule} from "@angular/material/list";
 
 const appRoutes: Routes = [
   {path: "Home", component: HomeComponent},
@@ -31,6 +36,7 @@ const appRoutes: Routes = [
   {path: "Categories", component: CategoriesComponent},
   {path: "Login", component: LoginComponent},
   {path: "Register", component: RegisterComponent},
+  {path: "Orders", component: OrdersComponent},
   {path: '', redirectTo: "Home", pathMatch: "full"},
 ]
 
@@ -43,6 +49,8 @@ const appRoutes: Routes = [
     HomeComponent,
     ProductsComponent,
     CategoriesComponent,
+    OrdersComponent,
+    DialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -64,6 +72,9 @@ const appRoutes: Routes = [
     NgFor,
     MatSliderModule,
     MatCheckboxModule,
+    MatDialogModule,
+    MatExpansionModule,
+    MatListModule
   ],
   providers: [],
   bootstrap: [AppComponent]
