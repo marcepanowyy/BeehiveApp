@@ -9,12 +9,17 @@ import {FormControl} from "@angular/forms";
 })
 export class ProductsComponent implements OnInit{
 
-
-  // pagination
-
   categories: any = []; // create interface
   products: any = [] // create interface
+  totalPages = 1
+  totalProducts = 0
+  pageSize = 1
+
+
   categoryIdArr: string[] = []
+
+
+  data: any = {} // data interface
 
   minPrice = 0;
   maxPrice = 1000;
@@ -24,7 +29,6 @@ export class ProductsComponent implements OnInit{
 
   chosenCategories = new FormControl('');
 
-  data: any = {} // data interface
 
   constructor(private api: ApiService) {
   }
@@ -36,18 +40,7 @@ export class ProductsComponent implements OnInit{
 
   onPageChange(event: any) {
     this.currPage = event.pageIndex + 1
-    this.getProducts()
-  }
-
-  private getProducts(){
-    this.api.getProducts(this.currPage).subscribe({
-      next: (res) => {
-        this.products = res
-      },
-      error: (err) => {
-        alert(err.message)
-      }
-    })
+    this.getFilteredProducts()
   }
 
   private getCategories() {
@@ -64,7 +57,11 @@ export class ProductsComponent implements OnInit{
   private getFilteredProducts(){
     this.api.getFilteredProducts(this.data, this.currPage).subscribe({
       next: (res) => {
-        this.products = res
+        const { products, totalPages, pageSize, totalProducts } = res;
+        this.products = products;
+        this.totalPages = totalPages;
+        this.pageSize = pageSize;
+        this.totalProducts = totalProducts;
       },
       error: (err) => {
         alert(err.message)
@@ -78,7 +75,6 @@ export class ProductsComponent implements OnInit{
   }
 
   onOrderSelection(event: any){
-    console.log(this.order)
     if(this.order === 'ascending'){
       this.data.ascending = true
       this.data.descending = false

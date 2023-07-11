@@ -14,8 +14,11 @@
     <button mat-icon-button matSuffix (click)="hide1 = !hide1" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide1">
       <mat-icon>{{hide1 ? 'visibility_off' : 'visibility'}}</mat-icon>
     </button>
-    <mat-error *ngIf="pwd.invalid">{{getPasswordErrorMessage()}}</mat-error>
   </mat-form-field>
+
+  <ng-container >
+    <mat-error *ngIf="pwd.invalid" >{{getPasswordErrorMessage()}}</mat-error>
+  </ng-container>
 
   <mat-form-field>
     <mat-label>Confirm your password</mat-label>

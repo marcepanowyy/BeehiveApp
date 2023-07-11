@@ -14,7 +14,6 @@ export class ApiService {
   }
   // add data interface
   getFilteredProducts(data: any, page: number = 1){
-    console.log(data)
     return this.http.post<any>(`http://localhost:4000/products/filter?page=${page}`, data);
   }
 

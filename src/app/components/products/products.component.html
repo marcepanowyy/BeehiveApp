@@ -55,8 +55,8 @@
 </div>
 
 
-<mat-paginator class="paginator" [length]="250"
-                 [pageSize]="10"
+<mat-paginator class="paginator" [length]="totalProducts"
+                 [pageSize]="pageSize"
                  (page)="onPageChange($event)"
                  aria-label="Select page">
 </mat-paginator>

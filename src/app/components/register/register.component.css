@@ -8,14 +8,6 @@ mat-form-field{
   position: relative;
 }
 
-mat-error{
-  position: absolute;
-  width: 20rem;
-  margin-left: -2rem;
-  text-align: center;
-  margin-top: 0.2rem;
-}
-
 .register-container{
   display: flex;
   flex-direction: column;
