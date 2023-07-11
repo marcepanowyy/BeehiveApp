@@ -14,6 +14,10 @@ export class ApiService {
     return this.http.post<any>(`http://localhost:4000/products/filter?page=${page}`, data);
   }
 
+  getProductById(productId: string){
+    return this.http.get<any>(`http://localhost:4000/products/${productId}`);
+  }
+
   getCategories(){
     return this.http.get<any>("http://localhost:4000/categories");
   }

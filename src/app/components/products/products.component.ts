@@ -101,7 +101,6 @@ export class ProductsComponent implements OnInit{
     this.getFilteredProducts()
   }
 
-
   // dialog
 
   openDialog(product: any){

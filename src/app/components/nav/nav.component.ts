@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {Router} from "@angular/router";
 
 @Component({
@@ -15,8 +15,17 @@ export class NavComponent{
   }
 
   logOut(){
-    localStorage.removeItem('token')
+    localStorage.clear()
     this.router.navigate(['Login'])
+  }
+
+  getProductsSum() {
+    const productsArray = JSON.parse(localStorage.getItem('productsArray') || '[]');
+    // add interface
+    const sum = productsArray.reduce((accumulator: any, product: { quantity: any; }) => {
+      return accumulator + product.quantity;
+    }, 0);
+    return  sum ? `(${sum})` : ""
   }
 
 }

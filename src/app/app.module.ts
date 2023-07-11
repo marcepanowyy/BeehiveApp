@@ -29,6 +29,7 @@ import {MatDialogModule} from "@angular/material/dialog";
 import { DialogComponent } from './components/products/dialog/dialog.component';
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatListModule} from "@angular/material/list";
+import { CartComponent } from './components/cart/cart.component';
 
 const appRoutes: Routes = [
   {path: "Home", component: HomeComponent},
@@ -37,6 +38,7 @@ const appRoutes: Routes = [
   {path: "Login", component: LoginComponent},
   {path: "Register", component: RegisterComponent},
   {path: "Orders", component: OrdersComponent},
+  {path: "Cart", component: CartComponent},
   {path: '', redirectTo: "Home", pathMatch: "full"},
 ]
 
@@ -51,6 +53,7 @@ const appRoutes: Routes = [
     CategoriesComponent,
     OrdersComponent,
     DialogComponent,
+    CartComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,30 @@
+.cart-container{
+  width: 100%;
+  background-color: #5a5aee;
+  position: relative;
+  min-height: calc(100vh - 4rem);
+}
+
+.card-container{
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: red;
+  height: auto;
+  padding: 2rem;
+}
+
+mat-card{
+  margin-bottom: 1.5rem;
+}
+
+.summary-div{
+  position: absolute;
+  width: 30%;
+  aspect-ratio: 1/1;
+  top: 3rem;
+  right: 3rem;
+  background-color: #ffd500;
+}
