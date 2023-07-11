@@ -9,9 +9,7 @@ export class ApiService {
   constructor(private http: HttpClient) {
   }
 
-  getProducts(page: number = 1){
-    return this.http.get<any>(`http://localhost:4000/products?page=${page}`);
-  }
+
   // add data interface
   getFilteredProducts(data: any, page: number = 1){
     return this.http.post<any>(`http://localhost:4000/products/filter?page=${page}`, data);
@@ -19,6 +17,15 @@ export class ApiService {
 
   getCategories(){
     return this.http.get<any>("http://localhost:4000/categories");
+  }
+
+  // add data interface
+  registerUser(data: any){
+    return this.http.post<any>("http://localhost:4000/users/register", data)
+  }
+
+  loginUser(data: any){
+    return this.http.post<any>("http://localhost:4000/users/login", data)
   }
 
 }

@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import {FormControl, Validators} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {ApiService} from "../../services/api.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -9,14 +11,61 @@ import {FormControl, Validators} from "@angular/forms";
 })
 export class LoginComponent {
 
-  email = new FormControl('', [Validators.required, Validators.email]);
+  constructor(private api: ApiService,
+              private router: Router){}
 
-  getErrorMessage() {
+  // at least 6 chars, one special char, one uppercase letter, two digits, max 24 chars
+
+  loginForm = new FormGroup({
+    email: new FormControl("", [Validators.required, Validators.email, Validators.minLength(6), Validators.maxLength(18)]),
+    pwd: new FormControl("", [Validators.required, Validators.minLength(6), Validators.maxLength(24), Validators.pattern(/^(?=.*\d.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).*$/)]),
+  })
+
+  hide1 = true;
+
+  get email(): FormControl{
+    return this.loginForm.get("email") as FormControl
+  }
+
+  get pwd(): FormControl{
+    return this.loginForm.get("pwd") as FormControl
+  }
+
+
+  // register
+
+  onSubmitClick(){
+    this.loginUser()
+  }
+
+  loginUser(){
+    const data = {
+      username: this.email.value,
+      password: this.pwd.value
+    }
+    this.api.loginUser(data).subscribe({
+      next: (res) => {
+        alert("You are logged in.")
+        localStorage.setItem('token', res.token)
+        this.router.navigate(['Products'])
+
+
+      },
+      error: (err) => {
+        alert(err.message)
+      }
+    })
+  }
+
+
+  // errors
+
+  getEmailErrorMessage() {
     if (this.email.hasError('required')) {
       return 'You must enter a value';
     }
-
     return this.email.hasError('email') ? 'Not a valid email' : '';
   }
 
 }
+

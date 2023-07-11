@@ -11,7 +11,6 @@ export class RegisterComponent{
 
   constructor(private api: ApiService){}
 
-
   // at least 6 chars, one special char, one uppercase letter, two digits, max 24 chars
 
   registerForm = new FormGroup({
@@ -35,6 +34,34 @@ export class RegisterComponent{
     return this.registerForm.get("rpwd") as FormControl
   }
 
+  // register
+
+  onSubmitClick(){
+    if (this.validatePasswords()){
+      this.registerUser()
+    }
+    else{
+      alert("Cannot register user. Validation failed.")
+    }
+  }
+
+  registerUser(){
+    const data = {
+      username: this.email.value,
+      password: this.pwd.value
+    }
+    this.api.registerUser(data).subscribe({
+      next: (res) => {
+        alert("Registration completed.")
+        localStorage.setItem('token', res.token)
+      },
+      error: (err) => {
+        alert(err.message)
+      }
+    })
+  }
+
+
   // errors
 
   getEmailErrorMessage() {
@@ -44,15 +71,20 @@ export class RegisterComponent{
     return this.email.hasError('email') ? 'Not a valid email' : '';
   }
 
-  getPasswordErrorMessage(){
-    if (this.pwd.hasError('minLength')) return 'You must enter password with min 6 characters'
-    if (this.pwd.hasError('maxLength')) return 'You must enter password with max 24 characters'
-    if (this.pwd.hasError('pattern')) return "Password must contain at least one special char, one uppercase letter and two digits"
-    return 'not a valid password'
+  getPasswordErrorMessage() {
+    if (this.pwd.hasError('minlength')) {
+      return 'You must enter a password with a minimum of 6 characters.';
+    }
+
+    if (this.pwd.hasError('maxlength')) {
+      return 'You must enter a password with a maximum of 24 characters.';
+    }
+
+    return 'At least two digits, one uppercase & lowercase letter, one special character';
   }
 
   validatePasswords(){
-    return this.pwd === this.rpwd
+    return this.pwd.value === this.rpwd.value
   }
 
 

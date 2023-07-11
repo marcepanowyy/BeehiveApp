@@ -1,1 +1,26 @@
-<p>login works!</p>
+
+
+<div class="register-container">
+
+  <div class="form-container">
+
+    <mat-form-field>
+      <mat-label>Enter your email</mat-label>
+      <input matInput placeholder="pat@example.com" [formControl]="email" required>
+      <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Enter your password</mat-label>
+      <input matInput [type]="hide1 ? 'password' : 'text'" [formControl]="pwd">
+      <button mat-icon-button matSuffix (click)="hide1 = !hide1" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide1">
+        <mat-icon>{{hide1 ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <button mat-raised-button class="submit-btn" color="primary" (click) = onSubmitClick()>Submit</button>
+
+  </div>
+
+
+</div>

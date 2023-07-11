@@ -1,3 +1,50 @@
-.example-container mat-form-field + mat-form-field {
-  margin-left: 8px;
+
+.register-container{
+  height: calc(100vh - 4rem);
+  width: 100%;
+  position: relative;
+}
+
+.form-container{
+  width: 25rem;
+  height: 20rem;
+  background-color: rgb(232, 232, 232);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+}
+
+.example-right-align {
+  text-align: right;
+}
+
+mat-form-field{
+  width: 18rem;
+  position: relative;
+}
+
+input.example-right-align::-webkit-outer-spin-button,
+input.example-right-align::-webkit-inner-spin-button {
+  display: none;
+}
+
+input.example-right-align {
+  -moz-appearance: textfield;
+}
+
+.submit-btn{
+  width: 8rem;
+  height: 2.5rem;
+  font-size: 1rem;
+}
+
+mat-error{
+  font-size: 0.8rem;
 }
