@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import {FormControl, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 
@@ -7,14 +7,12 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
   templateUrl: './dialog.component.html',
   styleUrls: ['./dialog.component.css']
 })
-export class DialogComponent implements OnInit{
+export class Dialog2Component {
 
-  // add product interface
-
-  product: any
+  product:any
   selectedAmount = new FormControl(1, [Validators.max(10), Validators.min(0)]);
 
-  constructor(private ref: MatDialogRef<DialogComponent>,
+  constructor(private ref: MatDialogRef<Dialog2Component>,
               @Inject(MAT_DIALOG_DATA) public data: any) {
   }
 
@@ -22,7 +20,14 @@ export class DialogComponent implements OnInit{
     this.ref.close()
   }
 
+  removeProductFromLocalStorage(){
+    const productsArray = JSON.parse(localStorage.getItem('productsArray') || '[]');
+    const newProductsArray = productsArray.filter((product: any) => product.productId !== this.product.id);
+    localStorage.setItem('productsArray', JSON.stringify(newProductsArray));
+  }
+
   updateLocalStorage() {
+
     const productsArray = JSON.parse(localStorage.getItem('productsArray') || '[]');
 
     const myObject = { quantity: this.selectedAmount.value, productId: this.product.id };
@@ -37,7 +42,7 @@ export class DialogComponent implements OnInit{
     }
 
     localStorage.setItem('productsArray', JSON.stringify(productsArray));
-}
+  }
 
   closeAndSave() {
     if (this.selectedAmount.valid) {

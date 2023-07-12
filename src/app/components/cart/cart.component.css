@@ -58,10 +58,22 @@ mat-card{
 
 .icon-div{
   position: absolute;
-  top: 0.8rem;
-  right: 0.6rem;
+  top: 1rem;
+  right: 1.2rem;
   aspect-ratio: 1/1;
   display: flex;
+  width: 2rem;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-div:hover{
+  background-color: #e8e8e8;
+}
+
+.dot-div{
+  transform: scale(1.2);
 }
 
 .price{
@@ -71,5 +83,5 @@ mat-card{
 
 .number{
   padding: 0 0 1rem 1rem;
-  margin-top: 1rem;
+  margin-top: 0.2rem;
 }

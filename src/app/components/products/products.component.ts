@@ -3,7 +3,7 @@ import {ApiService} from "../../services/api.service";
 import {FormControl} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
-import {DialogComponent} from "./dialog/dialog.component";
+import {Dialog1Component} from "./dialog/dialog1.component";
 
 @Component({
   selector: 'app-products',
@@ -104,7 +104,7 @@ export class ProductsComponent implements OnInit{
   // dialog
 
   openDialog(product: any){
-    const dialog = this.matDialog.open(DialogComponent, {
+    const dialog = this.matDialog.open(Dialog1Component, {
       width: '30%',
       height: '16rem',
       data: {product: product}

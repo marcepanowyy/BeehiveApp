@@ -1,0 +1,40 @@
+
+<div class="accordion-div">
+
+  <mat-accordion>
+    <mat-expansion-panel hideToggle>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Remove item
+        </mat-panel-title>
+        <mat-panel-description>
+          Remove this item from your cart
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <button mat-raised-button color="warn" style="margin-top: 0.5rem" (click)="removeProductFromLocalStorage()">Remove</button>
+
+    </mat-expansion-panel>
+    <mat-expansion-panel hideToggle>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Change quantity
+        </mat-panel-title>
+        <mat-panel-description>
+          Change number of your article
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+
+      <mat-form-field floatLabel="always">
+        <mat-label>Quantity</mat-label>
+        <input matInput type="number" class="example-right-align" placeholder="{{this.product.quantity}}" min="1" max="10" [formControl]="selectedAmount">
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" (click)="closeAndSave()">Update quantity</button>
+
+    </mat-expansion-panel>
+  </mat-accordion>
+
+</div>
+

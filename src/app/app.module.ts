@@ -26,7 +26,8 @@ import {MatSliderModule} from "@angular/material/slider";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import { OrdersComponent } from './components/orders/orders.component';
 import {MatDialogModule} from "@angular/material/dialog";
-import { DialogComponent } from './components/products/dialog/dialog.component';
+import { Dialog1Component } from './components/products/dialog/dialog1.component';
+import { Dialog2Component } from './components/cart/dialog/dialog2.component';
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatListModule} from "@angular/material/list";
 import { CartComponent } from './components/cart/cart.component';
@@ -52,7 +53,8 @@ const appRoutes: Routes = [
     ProductsComponent,
     CategoriesComponent,
     OrdersComponent,
-    DialogComponent,
+    Dialog1Component,
+    Dialog2Component,
     CartComponent,
   ],
   imports: [

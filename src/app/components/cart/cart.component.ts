@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ApiService} from "../../services/api.service";
+import {MatDialog} from "@angular/material/dialog";
+import {Dialog2Component} from "./dialog/dialog2.component";
 
 @Component({
   selector: 'app-cart',
@@ -11,7 +13,8 @@ export class CartComponent implements OnInit{
   // interface
   products: any = []
 
-  constructor(private api: ApiService){
+  constructor(private api: ApiService,
+              private matDialog: MatDialog){
   }
 
   ngOnInit() {
@@ -32,6 +35,16 @@ export class CartComponent implements OnInit{
       })
     }
 
+  }
+
+  // dialog
+
+  openDialog(product: any){
+    const dialog = this.matDialog.open(Dialog2Component, {
+      width: '55%',
+      height: 'auto',
+      data: {product: product}
+    })
   }
 
 }

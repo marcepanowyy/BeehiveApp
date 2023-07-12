@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Dialog1Component } from './dialog1.component';
+import { Dialog2Component } from './dialog2.component';
 
 describe('DialogComponent', () => {
-  let component: Dialog1Component;
-  let fixture: ComponentFixture<Dialog1Component>;
+  let component: Dialog2Component;
+  let fixture: ComponentFixture<Dialog2Component>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ Dialog1Component ]
+      declarations: [ Dialog2Component ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Dialog1Component);
+    fixture = TestBed.createComponent(Dialog2Component);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
