@@ -13,8 +13,6 @@ export class CartComponent implements OnInit{
   // interface
   products: any = []
 
-  displayedColumns: string[] = ['name', 'price', 'quantity'];
-
   constructor(private api: ApiService,
               private matDialog: MatDialog){
   }
@@ -36,7 +34,6 @@ export class CartComponent implements OnInit{
         }
       })
     }
-
   }
 
   // dialog
@@ -47,9 +44,37 @@ export class CartComponent implements OnInit{
       height: 'auto',
       data: {product: product}
     })
-    // dialog.afterClosed().subscribe(() => {
-    //   window.location.reload()
-    // });
   }
 
+  calculateTotalPrice() {
+    const total = this.products.reduce((accumulator: number, product: { price: number; quantity: number; }) => {
+      const productTotal = product.price * product.quantity;
+      return accumulator + productTotal;
+    }, 0);
+    return total.toFixed(2)
+  }
+
+  buyItems(){
+
+    const productsArray = JSON.parse(localStorage.getItem('productsArray') || '[]');
+
+    this.api.createOrder({productsArray: [...productsArray]}).subscribe({
+      next: (res) => {
+        alert("Thank you for your purchase")
+        localStorage.removeItem('productsArray')
+        window.location.reload()
+      },
+      error: (err) => {
+        alert(err.message)
+      }
+    })
+
+  }
+
+
+
+
+
+
 }
+

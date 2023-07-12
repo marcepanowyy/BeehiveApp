@@ -40,6 +40,11 @@ export class ApiService {
     return this.http.get<any>(`http://localhost:4000/orders/${orderId}`)
   }
 
+  // add order interface
+  createOrder(order: any){
+    return this.http.post<any>("http://localhost:4000/orders", order)
+  }
+
 
 
 }

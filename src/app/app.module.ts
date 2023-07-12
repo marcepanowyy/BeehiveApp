@@ -13,7 +13,7 @@ import { HomeComponent } from './components/home/home.component';
 import { ProductsComponent } from './components/products/products.component';
 import { CategoriesComponent } from './components/categories/categories.component';
 import { MatCardModule } from '@angular/material/card';
-import { HttpClientModule } from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import {MatTableModule} from "@angular/material/table";
 import {MatRippleModule} from "@angular/material/core";
@@ -31,6 +31,8 @@ import { Dialog2Component } from './components/cart/dialog/dialog2.component';
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatListModule} from "@angular/material/list";
 import { CartComponent } from './components/cart/cart.component';
+import {MatBadgeModule} from "@angular/material/badge";
+import {TokenInterceptor} from "./services/token.interceptor";
 
 const appRoutes: Routes = [
   {path: "Home", component: HomeComponent},
@@ -79,9 +81,16 @@ const appRoutes: Routes = [
     MatCheckboxModule,
     MatDialogModule,
     MatExpansionModule,
-    MatListModule
+    MatListModule,
+    MatBadgeModule
   ],
-  providers: [],
+  providers: [
+    {
+    provide: HTTP_INTERCEPTORS,
+    useClass: TokenInterceptor,
+    multi: true
+  },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
