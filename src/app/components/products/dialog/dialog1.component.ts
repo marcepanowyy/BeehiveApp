@@ -43,7 +43,6 @@ export class Dialog1Component implements OnInit{
     if (this.selectedAmount.valid) {
       this.updateLocalStorage()
       this.ref.close();
-      alert(`Selected amount: ${this.selectedAmount.value}`);
     } else if (this.selectedAmount.errors) {
       if (this.selectedAmount.hasError('min')) {
         alert("Selected amount is below the minimum value.");

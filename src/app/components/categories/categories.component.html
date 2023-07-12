@@ -3,7 +3,7 @@
     <ng-container matColumnDef="name">
       <mat-header-cell mat-header-cell *matHeaderCellDef class="name-header"> Category Name </mat-header-cell>
       <mat-cell mat-cell *matCellDef="let category" class="name-cell">
-        <a>{{ category.name }}</a>
+        {{ category.name }}
       </mat-cell>
     </ng-container>
 

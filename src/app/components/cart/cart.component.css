@@ -1,6 +1,5 @@
 .cart-container{
   width: 100%;
-  background-color: #5a5aee;
   position: relative;
   min-height: calc(100vh - 4rem);
 }
@@ -11,7 +10,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: red;
   height: auto;
   padding: 2rem;
 }

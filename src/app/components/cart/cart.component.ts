@@ -13,6 +13,8 @@ export class CartComponent implements OnInit{
   // interface
   products: any = []
 
+  displayedColumns: string[] = ['name', 'price', 'quantity'];
+
   constructor(private api: ApiService,
               private matDialog: MatDialog){
   }
@@ -45,6 +47,9 @@ export class CartComponent implements OnInit{
       height: 'auto',
       data: {product: product}
     })
+    // dialog.afterClosed().subscribe(() => {
+    //   window.location.reload()
+    // });
   }
 
 }
