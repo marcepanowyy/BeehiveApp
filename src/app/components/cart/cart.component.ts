@@ -23,7 +23,7 @@ export class CartComponent implements OnInit{
       this.api.getProductById(product.productId).subscribe({
         next: (res) => {
           const {id, name, category, price, description} = res
-          const newProdObj = {id, name, category, price, description}
+          const newProdObj = {id, name, category, price, description, quantity: product.quantity}
           this.products.push({...newProdObj})
         },
         error: (err) => {

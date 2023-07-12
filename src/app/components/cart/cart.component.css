@@ -55,3 +55,21 @@ mat-card{
   right: 3rem;
   background-color: #ffd500;
 }
+
+.icon-div{
+  position: absolute;
+  top: 0.8rem;
+  right: 0.6rem;
+  aspect-ratio: 1/1;
+  display: flex;
+}
+
+.price{
+  padding: 1rem 0 0 1rem;
+  margin-top: 1rem;
+}
+
+.number{
+  padding: 0 0 1rem 1rem;
+  margin-top: 1rem;
+}
