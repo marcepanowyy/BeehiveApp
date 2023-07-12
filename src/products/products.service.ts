@@ -111,13 +111,23 @@ export class ProductsService {
 
     query.take(take).skip(skip);
 
-    const products = await query.getMany();
+    const [products, totalProducts] = await query.getManyAndCount();
 
     if (!products) {
       throw new HttpException('No products found', HttpStatus.NOT_FOUND);
     }
 
-    return this.toResponseProducts(products);
+    const totalPages = Math.ceil(totalProducts / take);
+
+    const responseObject: any = {
+      products: this.toResponseProducts(products),
+      totalPages,
+      totalProducts,
+      pageSize: take
+    }
+
+    return {...responseObject}
+
   }
 
   async update(productId: string, data: Partial<ProductsDto>) {
