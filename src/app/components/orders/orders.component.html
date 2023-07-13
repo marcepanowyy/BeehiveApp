@@ -1,1 +1,83 @@
-<p>orders works!</p>
+<div class="orders-container">
+
+  <div class="table-container">
+
+    <table mat-table
+           [dataSource]="orders" multiTemplateDataRows
+           class="mat-elevation-z8">
+
+      <ng-container matColumnDef="created">
+        <th mat-header-cell *matHeaderCellDef>Order Placement Date</th>
+        <td mat-cell *matCellDef="let order"> {{ order.created | date: 'mediumDate' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let order"> {{ order.status}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="expand">
+        <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+        <td mat-cell *matCellDef="let order">
+          <button mat-icon-button aria-label="expand row" (click)="(expandedElement = expandedElement === order ? null : order); $event.stopPropagation()">
+            <mat-icon *ngIf="expandedElement !== order">keyboard_arrow_down</mat-icon>
+            <mat-icon *ngIf="expandedElement === order">keyboard_arrow_up</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="expandedDetail" class="expanded-div">
+
+        <td mat-cell *matCellDef="let order" [attr.colspan]="columnsToDisplayWithExpand.length">
+
+          <div class="example-element-detail"
+               [@detailExpand]="order == expandedElement ? 'expanded' : 'collapsed'">
+
+            <mat-card class="card-detail" *ngFor="let product of order.products">
+
+              <mat-card-header>
+                <div mat-card-avatar class="example-header-image"></div>
+
+                <div class="desc-div">
+
+                <mat-card-title class="desc">{{product.name}}</mat-card-title>
+                <mat-card-subtitle class="desc">Price: ${{product.price}}</mat-card-subtitle>
+                <mat-card-title class="desc">Number of articles: {{product.quantity}}</mat-card-title>
+                <mat-card-subtitle class="desc">Total: ${{product.quantity * product.price}}</mat-card-subtitle>
+
+                </div>
+
+              </mat-card-header>
+
+            </mat-card>
+
+          </div>
+
+        </td>
+
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+      <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand;"
+          class="example-element-row"
+          [class.example-expanded-row]="expandedElement === element"
+          (click)="expandedElement = expandedElement === element ? null : element">
+      </tr>
+
+      <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+
+    </table>
+
+
+    <mat-paginator class="paginator" [length]="totalOrders"
+                   [pageSize]="pageSize"
+                   (page)="onPageChange($event)"
+                   aria-label="Select page">
+    </mat-paginator>
+
+  </div>
+
+
+
+
+</div>

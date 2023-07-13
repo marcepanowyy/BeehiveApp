@@ -14,9 +14,10 @@ export class ProductsComponent implements OnInit{
 
   categories: any = []; // create interface
   products: any = [] // create interface
-  totalPages = 1
-  totalProducts = 0
-  pageSize = 1
+  totalPages: number = 1
+  totalProducts: number = 0
+  pageSize: number = 1
+  currPage: number = 1
 
   categoryIdArr: string[] = []
 
@@ -26,10 +27,7 @@ export class ProductsComponent implements OnInit{
   maxPrice = 1000;
   order = 'none';
 
-  currPage: number = 1
-
   chosenCategories = new FormControl('');
-
 
   constructor(private api: ApiService,
               private route: ActivatedRoute,

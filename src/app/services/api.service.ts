@@ -32,8 +32,8 @@ export class ApiService {
   }
 
   // add order interface
-  getUserOrders(){
-    return this.http.get<any>("http://localhost:4000/orders/user")
+  getUserOrders(page: number = 1){
+    return this.http.get<any>(`http://localhost:4000/orders/user/?page=${page}`)
   }
 
   getUserOrderDetails(orderId: string){
