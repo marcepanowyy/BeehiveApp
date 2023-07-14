@@ -5,21 +5,39 @@
 }
 
 
-.home-container{
-  background-color: #ffd500;
+.home-container {
   height: calc(100vh - 4rem);
   width: 100%;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #fdfdfd;
 }
 
-
-.photo{
-  width: 100%;
-  height: auto;
-  max-height: 100%;
-  object-fit: cover;
-
+.home-card {
+  width: 80%;
+  padding: 0 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
+.home-card mat-card-content {
+  margin-top: 1rem;
+}
+
+p{
+  margin: 1rem
+}
+
+h3{
+  margin-left: 1rem;
+}
+
+ul, ol{
+  margin: 1rem 0 1rem 1.5rem;
+}
+
+.home-card li {
+  margin-bottom: 0.5rem;
+}
+

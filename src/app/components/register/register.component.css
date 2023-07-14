@@ -3,12 +3,12 @@
   height: calc(100vh - 4rem);
   width: 100%;
   position: relative;
+  background-color: #fdfdfd;
 }
 
 .form-container{
   width: 25rem;
   height: 25rem;
-  background-color: rgb(232, 232, 232);
   display: flex;
   flex-direction: column;
   align-items: center;

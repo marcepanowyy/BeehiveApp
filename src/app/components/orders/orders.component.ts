@@ -24,7 +24,7 @@ export class OrdersComponent implements OnInit{
   currPage: number = 1
 
 
-  columnsToDisplay = ['created', 'status'];
+  columnsToDisplay = ['created', 'status', 'total'];
   columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
 
   // add expandedElement interface (just product interface)
@@ -57,6 +57,15 @@ export class OrdersComponent implements OnInit{
   onPageChange(event: any) {
     this.currPage = event.pageIndex + 1
     this.getOrders()
+  }
+
+  // add order interface
+  countOrderSum(products: any){
+    const total = products.reduce((accumulator: number, product: { price: number; quantity: number; }) => {
+      const productTotal = product.price * product.quantity;
+      return accumulator + productTotal;
+    }, 0);
+    return total.toFixed(2)
   }
 
 }

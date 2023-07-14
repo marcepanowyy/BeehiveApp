@@ -88,11 +88,16 @@
     </mat-card>
   </div>
 
-  <mat-paginator class="paginator" [length]="totalProducts"
-                 [pageSize]="pageSize"
-                 (page)="onPageChange($event)"
-                 aria-label="Select page">
-  </mat-paginator>
+  <div class="paginator-div">
+
+    <mat-paginator class="paginator" [length]="totalProducts"
+                   [pageSize]="pageSize"
+                   (page)="onPageChange($event)"
+                   aria-label="Select page">
+    </mat-paginator>
+
+  </div>
+
 
 </div>
 

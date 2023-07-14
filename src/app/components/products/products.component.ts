@@ -27,6 +27,8 @@ export class ProductsComponent implements OnInit{
   maxPrice = 1000;
   order = 'none';
 
+  showFiller = false;
+
   chosenCategories = new FormControl('');
 
   constructor(private api: ApiService,
@@ -102,11 +104,26 @@ export class ProductsComponent implements OnInit{
   // dialog
 
   openDialog(product: any){
-    const dialog = this.matDialog.open(Dialog1Component, {
-      width: '30%',
-      height: '16rem',
-      data: {product: product}
-    })
+    if(this.isLoggedIn()) {
+      const dialog = this.matDialog.open(Dialog1Component, {
+        width: '30%',
+        height: '16rem',
+        data: {product: product}
+      })
+    }
+    else {
+      alert("To add a product to the shopping cart, you need to be logged in.")
+    }
+  }
+
+  isLoggedIn(){
+    return localStorage.getItem('token') !== null
+  }
+
+  filterPanelExpanded: boolean = false;
+
+  toggleFilterPanel() {
+    this.filterPanelExpanded = !this.filterPanelExpanded;
   }
 
 }
