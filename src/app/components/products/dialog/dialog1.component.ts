@@ -1,6 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormControl, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {Product} from "../../../interfaces/product/Product";
 
 @Component({
   selector: 'app-dialog',
@@ -9,14 +10,11 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 })
 export class Dialog1Component implements OnInit{
 
-  // add product interface
-
   product: any
   selectedAmount = new FormControl(1, [Validators.max(10), Validators.min(0)]);
 
   constructor(private ref: MatDialogRef<Dialog1Component>,
-              @Inject(MAT_DIALOG_DATA) public data: any) {
-  }
+              @Inject(MAT_DIALOG_DATA) public data: Product){}
 
   closeDialog(){
     this.ref.close()
@@ -40,12 +38,16 @@ export class Dialog1Component implements OnInit{
 }
 
   closeAndSave() {
+
     if (this.selectedAmount.valid) {
       this.updateLocalStorage()
       this.ref.close();
+
     } else if (this.selectedAmount.errors) {
+
       if (this.selectedAmount.hasError('min')) {
         alert("Selected amount is below the minimum value.");
+
       } else if (this.selectedAmount.hasError('max')) {
         alert("Selected amount exceeds the maximum value.");
       }
@@ -53,8 +55,7 @@ export class Dialog1Component implements OnInit{
   }
 
   ngOnInit() {
-    this.product = this.data.product
+    this.product = this.data
   }
-
 
 }

@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
+import {Filter} from "../interfaces/filter/Filter";
+import {User} from "../interfaces/user/User";
+import {Order} from "../interfaces/order/Order";
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +12,7 @@ export class ApiService {
   constructor(private http: HttpClient) {
   }
 
-  // add data interface
-  getFilteredProducts(data: any, page: number = 1){
+  getFilteredProducts(data: Filter, page: number = 1){
     return this.http.post<any>(`http://localhost:4000/products/filter?page=${page}`, data);
   }
 
@@ -27,11 +29,11 @@ export class ApiService {
   }
 
   // add data interface
-  registerUser(data: any){
+  registerUser(data: User){
     return this.http.post<any>("http://localhost:4000/users/register", data)
   }
 
-  loginUser(data: any){
+  loginUser(data: User){
     return this.http.post<any>("http://localhost:4000/users/login", data)
   }
 
@@ -46,7 +48,6 @@ export class ApiService {
 
   // add order interface
   createOrder(order: any){
-    console.log(order)
     return this.http.post<any>("http://localhost:4000/orders", order)
   }
 

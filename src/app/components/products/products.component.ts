@@ -4,7 +4,9 @@ import {FormControl} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
 import {Dialog1Component} from "./dialog/dialog1.component";
-import {Product} from "../../interfaces/Product";
+import {Product} from "../../interfaces/product/Product";
+import {Category} from "../../interfaces/category/Category";
+import {Filter} from "../../interfaces/filter/Filter";
 
 @Component({
   selector: 'app-products',
@@ -13,22 +15,23 @@ import {Product} from "../../interfaces/Product";
 })
 export class ProductsComponent implements OnInit{
 
-  categories: any = []; // create interface
-  products: Product[] = [] // create interface
+  categories: Category[] = [];
+  products: Product[] = []
+
   totalPages: number = 1
   totalProducts: number = 0
   pageSize: number = 1
   currPage: number = 1
 
+
+  data: Filter = {}
+
+  minPrice: number = 0;
+  maxPrice: number = 1000;
+  order: string = 'none'; // ascending or descending
   categoryIdArr: string[] = []
 
-  data: any = {} // data interface
-
-  minPrice = 0;
-  maxPrice = 1000;
-  order = 'none';
-
-  showFiller = false;
+  showFiller: boolean = false;
 
   chosenCategories = new FormControl('');
 
@@ -104,12 +107,12 @@ export class ProductsComponent implements OnInit{
 
   // dialog
 
-  openDialog(product: any){
+  openDialog(product: Product){
     if(this.isLoggedIn()) {
       const dialog = this.matDialog.open(Dialog1Component, {
         width: '30%',
         height: '16rem',
-        data: {product: product}
+        data: {...product}
       })
     }
     else {

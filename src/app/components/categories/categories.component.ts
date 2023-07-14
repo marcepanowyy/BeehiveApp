@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from "../../services/api.service";
-import {Router} from "@angular/router";
+import {Category} from "../../interfaces/category/Category";
 
 @Component({
   selector: 'app-categories',
@@ -11,20 +11,14 @@ export class CategoriesComponent implements OnInit {
 
   displayedColumns: string[] = ['name', 'description'];
 
-  // create interface
-  categories: any = [];
+  categories: Category[] = [];
 
   totalPages: number = 1
   totalCategories: number = 0
   pageSize: number = 1
   currPage: number = 1
 
-  constructor(private api: ApiService,
-              private router: Router) { }
-
-  ngOnInit() {
-    this.getCategories();
-  }
+  constructor(private api: ApiService){}
 
   getCategories() {
     this.api.getCategories(this.currPage).subscribe({
@@ -43,6 +37,10 @@ export class CategoriesComponent implements OnInit {
 
   onPageChange(event: any) {
     this.currPage = event.pageIndex + 1;
+    this.getCategories();
+  }
+
+  ngOnInit() {
     this.getCategories();
   }
 

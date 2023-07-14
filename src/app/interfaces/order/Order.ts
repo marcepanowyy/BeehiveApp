@@ -1,4 +1,4 @@
-import {Product} from "./Product";
+import {CartProduct} from "../product/CartProduct";
 
 export interface Order{
 
@@ -6,7 +6,7 @@ export interface Order{
   name: string;
   description: string;
   status: string;
-  products: Product[]
-  created: Date
+  products: CartProduct[];
+  created: Date;
 
 }

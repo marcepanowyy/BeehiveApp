@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ApiService} from "../../services/api.service";
 import {MatDialog} from "@angular/material/dialog";
 import {Dialog2Component} from "./dialog/dialog2.component";
+import {CartProduct} from "../../interfaces/product/CartProduct";
 
 @Component({
   selector: 'app-cart',
@@ -10,15 +11,19 @@ import {Dialog2Component} from "./dialog/dialog2.component";
 })
 export class CartComponent implements OnInit{
 
-  // interface
-
-  products: any = []
+  cartProducts: CartProduct[] = []
 
   constructor(private api: ApiService,
               private matDialog: MatDialog){
   }
 
   ngOnInit() {
+
+    this.getProductsById()
+
+  }
+
+  getProductsById(){
 
     const productsArray = JSON.parse(localStorage.getItem('productsArray') || '[]');
 
@@ -27,8 +32,8 @@ export class CartComponent implements OnInit{
       this.api.getProductById(product.productId).subscribe({
         next: (res) => {
           const {id, name, category, price, description} = res
-          const newProdObj = {id, name, category, price, description, quantity: product.quantity}
-          this.products.push({...newProdObj})
+          const newProdObj: CartProduct = {id, name, category, price, description, quantity: product.quantity}
+          this.cartProducts.push({...newProdObj})
         },
         error: (err) => {
           alert(err.message)
@@ -39,27 +44,31 @@ export class CartComponent implements OnInit{
 
   // dialog
 
-  openDialog(product: any){
+  openDialog(cartProduct: CartProduct){
     const dialog = this.matDialog.open(Dialog2Component, {
       width: '55%',
       height: 'auto',
-      data: {product: product}
+      data: {...cartProduct}
     })
   }
 
   // end dialog
 
   calculateTotalPrice() {
-    const total = this.products.reduce((accumulator: number, product: { price: number; quantity: number; }) => {
-      const productTotal = product.price * product.quantity;
-      return accumulator + productTotal;
+    const total = this.cartProducts.reduce((accumulator, cartProduct) => {
+      const cartProductTotal = cartProduct.price * cartProduct.quantity;
+      return accumulator + cartProductTotal;
     }, 0);
     return total.toFixed(2)
   }
 
+  getArrFromLocalStorage(){
+    return JSON.parse(localStorage.getItem('productsArray') || '[]');
+  }
+
   buyItems(){
 
-    const productsArray = JSON.parse(localStorage.getItem('productsArray') || '[]');
+    const productsArray = this.getArrFromLocalStorage()
 
     this.api.createOrder({productsArray: [...productsArray]}).subscribe({
       next: (res) => {

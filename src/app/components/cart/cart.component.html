@@ -1,26 +1,26 @@
-<div class="cart-container" *ngIf="products.length > 0">
+<div class="cart-container" *ngIf="cartProducts.length > 0">
 
   <div class="card-container">
 
-    <mat-card *ngFor="let product of products">
+    <mat-card *ngFor="let cartProduct of cartProducts">
 
       <mat-card-header>
         <div mat-card-avatar class="example-header-image"></div>
-        <mat-card-title class="title1">{{product.name}}</mat-card-title>
-        <mat-card-subtitle class="subtitle1">{{product.category}}</mat-card-subtitle>
+        <mat-card-title class="title1">{{cartProduct.name}}</mat-card-title>
+        <mat-card-subtitle class="subtitle1">{{cartProduct.category}}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-header>
         <mat-card-title class="title2">Description:</mat-card-title>
-        <mat-card-subtitle class="subtitle2">{{product.description}}</mat-card-subtitle>
+        <mat-card-subtitle class="subtitle2">{{cartProduct.description}}</mat-card-subtitle>
 
-        <mat-card-title class="price">Price: ${{product.price}}</mat-card-title>
-        <mat-card-subtitle class="number">Number of articles: {{product.quantity}}</mat-card-subtitle>
-        <mat-card-subtitle class="number2">Total: ${{(product.quantity * product.price).toFixed(2)}}</mat-card-subtitle>
+        <mat-card-title class="price">Price: ${{cartProduct.price}}</mat-card-title>
+        <mat-card-subtitle class="number">Number of articles: {{cartProduct.quantity}}</mat-card-subtitle>
+        <mat-card-subtitle class="number2">Total: ${{(cartProduct.quantity * cartProduct.price).toFixed(2)}}</mat-card-subtitle>
 
       </mat-card-header>
 
         <div class="icon-div">
-         <mat-icon (click)="openDialog(product)" class="dot-div">more_horiz</mat-icon>
+         <mat-icon (click)="openDialog(cartProduct)" class="dot-div">more_horiz</mat-icon>
         </div>
     </mat-card>
 
@@ -43,7 +43,7 @@
 </div>
 
 
-<div class="no-products-container" *ngIf="products.length === 0|| !products">
+<div class="no-products-container" *ngIf="cartProducts.length === 0|| !cartProducts">
 
 
   <mat-card class="no-products-card">

@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ApiService} from "../../services/api.service";
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import {Order} from "../../interfaces/order/Order";
+import {CartProduct} from "../../interfaces/product/CartProduct";
 
 @Component({
   selector: 'app-orders',
@@ -16,23 +18,19 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 })
 export class OrdersComponent implements OnInit{
 
-  // add order interface
-  orders: any = []
+  orders: Order[] = []
   totalPages: number = 1
   totalOrders: number = 0
   pageSize: number = 1
   currPage: number = 1
 
-
   columnsToDisplay = ['created', 'status', 'total'];
   columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
 
-  // add expandedElement interface (just product interface)
   expandedElement: any
 
   constructor(
     private api: ApiService){}
-
 
   ngOnInit() {
     this.getOrders()
@@ -58,9 +56,8 @@ export class OrdersComponent implements OnInit{
     this.getOrders()
   }
 
-  // add order interface
-  countOrderSum(products: any){
-    const total = products.reduce((accumulator: number, product: { price: number; quantity: number; }) => {
+  countOrderSum(products: CartProduct[]){
+    const total = products.reduce((accumulator, product) => {
       const productTotal = product.price * product.quantity;
       return accumulator + productTotal;
     }, 0);
