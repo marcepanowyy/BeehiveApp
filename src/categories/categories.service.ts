@@ -32,14 +32,24 @@ export class CategoriesService {
     return responseObject;
   }
 
-  // async showAll(page: number = 1): Promise<CategoriesRo[]> {
-  async showAll(): Promise<CategoriesRo[]> {
-    const categories = await this.categoriesRepository.find({
-      // relations: ['products'],
-      // take: 10,
-      // skip: 10 * (page - 1),
-    });
-    return this.toResponseCategories(categories);
+  async showAll(page: number = 1): Promise<CategoriesRo[]> {
+    const take = 10;
+    const [categories, totalCategories] =
+      await this.categoriesRepository.findAndCount({
+        take,
+        skip: take * (page - 1),
+      });
+
+    const totalPages = Math.ceil(totalCategories / take);
+
+    const responseObject: any = {
+      categories: this.toResponseCategories(categories),
+      totalPages,
+      totalCategories,
+      pageSize: take,
+    };
+
+    return {...responseObject};
   }
 
   async read(categoryId: string): Promise<CategoriesRo> {

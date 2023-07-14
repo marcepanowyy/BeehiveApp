@@ -53,6 +53,7 @@ export class OrdersController {
   @UseGuards(new AuthGuard())
   @UsePipes(new ValidationPipe())
   showOrdersByUser(@User('id') userId: string, @Query('page') page: number) {
+    this.logData({userId})
     return this.ordersService.getOrdersByUser(userId, page);
   }
 

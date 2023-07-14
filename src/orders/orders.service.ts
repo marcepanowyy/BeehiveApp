@@ -104,7 +104,7 @@ export class OrdersService {
 
   async create(data: OrdersDto, userId: string): Promise<OrdersRo> {
     const { productsArray } = data;
-    this.checkForDuplicates(productsArray);
+    // this.checkForDuplicates(productsArray);
     for (const productItem of productsArray) {
       const product = await this.productsRepository.findOne({
         where: { id: productItem.productId },
@@ -162,13 +162,25 @@ export class OrdersService {
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-    const orders = await this.ordersRepository.find({
+
+    const take = 5;
+
+    const [orders, totalOrders] = await this.ordersRepository.findAndCount({
       where: { customer: { id: userId } },
       relations: ['customer'],
-      take: 10,
-      skip: 10 * (page - 1),
+      take,
+      skip: take * (page - 1),
     });
-    return this.toResponseOrders(orders, false);
+
+    const totalPages = Math.ceil(totalOrders / take);
+
+    const responseObject: any = {
+      orders: await this.toResponseOrders(orders),
+      totalPages,
+      totalOrders,
+      pageSize: take,
+    };
+    return { ...responseObject };
   }
 
   async getOrdersByUserAndStatus(
