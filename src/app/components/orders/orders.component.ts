@@ -46,10 +46,9 @@ export class OrdersComponent implements OnInit{
         this.totalPages = totalPages;
         this.pageSize = pageSize;
         this.totalOrders = totalOrders;
-        console.log(res)
       },
       error: (err) => {
-        alert(err)
+        alert(err.error.message)
       }
     })
   }

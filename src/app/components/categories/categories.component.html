@@ -1,18 +1,24 @@
 <div class="table-container">
+
   <mat-table [dataSource]="categories" class="mat-elevation-z8">
     <ng-container matColumnDef="name">
-      <mat-header-cell mat-header-cell *matHeaderCellDef class="name-header"> Category Name </mat-header-cell>
-      <mat-cell mat-cell *matCellDef="let category" class="name-cell">
-        {{ category.name }}
-      </mat-cell>
+      <mat-header-cell mat-header-cell *matHeaderCellDef class="name-header">Category Name</mat-header-cell>
+      <mat-cell mat-cell *matCellDef="let category" class="name-cell">{{category.name}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="description">
-      <mat-header-cell mat-header-cell *matHeaderCellDef class="description-header"> Description </mat-header-cell>
-      <mat-cell mat-cell *matCellDef="let category" class="description-cell"> {{ category.description }} </mat-cell>
+      <mat-header-cell mat-header-cell *matHeaderCellDef class="description-header">Description</mat-header-cell>
+      <mat-cell mat-cell *matCellDef="let category" class="description-cell">{{ category.description }}</mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row matRipple *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
+
+  <mat-paginator class="paginator" [length]="totalCategories"
+                 [pageSize]="pageSize"
+                 (page)="onPageChange($event)"
+                 aria-label="Select page">
+  </mat-paginator>
+
 </div>

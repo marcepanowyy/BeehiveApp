@@ -1,19 +1,23 @@
+*{
+  box-sizing: border-box;
+}
+
 .orders-container{
   display: flex;
   align-items: center;
-  justify-content: center;
   min-height: calc(100vh - 4rem);
   background-color: #f6f6f6;
+  position: relative;
+  flex-direction: column;
+  padding: 2.5rem;
 }
 
 .table-container{
   width: 60%;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 1.8rem;
-  padding: 2rem;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 table {
@@ -73,10 +77,4 @@ tr.example-element-row:not(.example-expanded-row):active {
   margin: 0.5rem 0 0 1.2rem;
 }
 
-.paginator {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 80%;
-}
 

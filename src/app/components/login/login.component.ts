@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ApiService} from "../../services/api.service";
 import {Router} from "@angular/router";
@@ -14,7 +13,7 @@ export class LoginComponent {
   constructor(private api: ApiService,
               private router: Router){}
 
-  // at least 6 chars, one special char, one uppercase letter, two digits, max 24 chars
+  // form control
 
   loginForm = new FormGroup({
     email: new FormControl("", [Validators.required, Validators.email, Validators.minLength(6), Validators.maxLength(18)]),
@@ -31,18 +30,19 @@ export class LoginComponent {
     return this.loginForm.get("pwd") as FormControl
   }
 
-
-  // register
+  // login
 
   onSubmitClick(){
     this.loginUser()
   }
 
   loginUser(){
+
     const data = {
       username: this.email.value,
       password: this.pwd.value
     }
+
     this.api.loginUser(data).subscribe({
       next: (res) => {
         alert("You are logged in.")
@@ -51,7 +51,7 @@ export class LoginComponent {
 
       },
       error: (err) => {
-        alert(err.message)
+        alert(err.error.message)
       }
     })
   }

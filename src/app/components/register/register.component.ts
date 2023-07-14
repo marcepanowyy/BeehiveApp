@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ApiService} from "../../services/api.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-register',
@@ -9,9 +10,12 @@ import {ApiService} from "../../services/api.service";
 })
 export class RegisterComponent{
 
-  constructor(private api: ApiService){}
+  constructor(private api: ApiService,
+              private router: Router){}
 
   // at least 6 chars, one special char, one uppercase letter, two digits, max 24 chars
+
+  // form control
 
   registerForm = new FormGroup({
     email: new FormControl("", [Validators.required, Validators.email, Validators.minLength(6), Validators.maxLength(18)]),
@@ -19,8 +23,8 @@ export class RegisterComponent{
     rpwd: new FormControl("", [Validators.required, Validators.minLength(6), Validators.maxLength(24), Validators.pattern(/^(?=.*\d.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).*$/)])
   })
 
-  hide1 = true;
-  hide2 = true;
+  hide1: boolean = true;
+  hide2: boolean = true;
 
   get email(): FormControl{
     return this.registerForm.get("email") as FormControl
@@ -46,21 +50,24 @@ export class RegisterComponent{
   }
 
   registerUser(){
+
     const data = {
       username: this.email.value,
       password: this.pwd.value
     }
+
     this.api.registerUser(data).subscribe({
       next: (res) => {
         alert("Registration completed.")
         localStorage.setItem('token', res.token)
+        this.router.navigate(['Products'])
       },
       error: (err) => {
-        alert(err.message)
+        alert(err.error.message)
       }
     })
-  }
 
+  }
 
   // errors
 
@@ -86,7 +93,6 @@ export class RegisterComponent{
   validatePasswords(){
     return this.pwd.value === this.rpwd.value
   }
-
 
 }
 

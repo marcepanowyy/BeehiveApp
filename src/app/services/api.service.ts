@@ -18,8 +18,12 @@ export class ApiService {
     return this.http.get<any>(`http://localhost:4000/products/${productId}`);
   }
 
-  getCategories(){
-    return this.http.get<any>("http://localhost:4000/categories");
+  getCategories(page: number = 1){
+    return this.http.get<any>(`http://localhost:4000/categories?page=${page}`);
+  }
+
+  getAllCategories(){
+    return this.http.get<any>("http://localhost:4000/categories/all")
   }
 
   // add data interface
@@ -42,6 +46,7 @@ export class ApiService {
 
   // add order interface
   createOrder(order: any){
+    console.log(order)
     return this.http.post<any>("http://localhost:4000/orders", order)
   }
 

@@ -4,6 +4,7 @@ import {FormControl} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
 import {Dialog1Component} from "./dialog/dialog1.component";
+import {Product} from "../../interfaces/Product";
 
 @Component({
   selector: 'app-products',
@@ -13,7 +14,7 @@ import {Dialog1Component} from "./dialog/dialog1.component";
 export class ProductsComponent implements OnInit{
 
   categories: any = []; // create interface
-  products: any = [] // create interface
+  products: Product[] = [] // create interface
   totalPages: number = 1
   totalProducts: number = 0
   pageSize: number = 1
@@ -39,23 +40,12 @@ export class ProductsComponent implements OnInit{
   ngOnInit() {
 
     this.getFilteredProducts()
-    this.getCategories();
+    this.getAllCategories();
   }
 
   onPageChange(event: any) {
     this.currPage = event.pageIndex + 1
     this.getFilteredProducts()
-  }
-
-  private getCategories() {
-    this.api.getCategories().subscribe({
-      next: (res) => {
-        this.categories = res;
-      },
-      error: (err) => {
-        alert(err.message);
-      }
-    });
   }
 
   private getFilteredProducts(){
@@ -69,6 +59,17 @@ export class ProductsComponent implements OnInit{
       },
       error: (err) => {
         alert(err.message)
+      }
+    })
+  }
+
+  private getAllCategories(){
+    this.api.getAllCategories().subscribe({
+      next: (res) => {
+        this.categories = res
+      },
+      error: (err) => {
+        alert(err)
       }
     })
   }
@@ -120,10 +121,5 @@ export class ProductsComponent implements OnInit{
     return localStorage.getItem('token') !== null
   }
 
-  filterPanelExpanded: boolean = false;
-
-  toggleFilterPanel() {
-    this.filterPanelExpanded = !this.filterPanelExpanded;
-  }
 
 }

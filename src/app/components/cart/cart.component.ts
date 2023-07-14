@@ -11,6 +11,7 @@ import {Dialog2Component} from "./dialog/dialog2.component";
 export class CartComponent implements OnInit{
 
   // interface
+
   products: any = []
 
   constructor(private api: ApiService,
@@ -46,6 +47,8 @@ export class CartComponent implements OnInit{
     })
   }
 
+  // end dialog
+
   calculateTotalPrice() {
     const total = this.products.reduce((accumulator: number, product: { price: number; quantity: number; }) => {
       const productTotal = product.price * product.quantity;
@@ -65,15 +68,11 @@ export class CartComponent implements OnInit{
         window.location.reload()
       },
       error: (err) => {
-        alert(err.message)
+        alert(err.error.message)
       }
     })
 
   }
-
-
-
-
 
 
 }

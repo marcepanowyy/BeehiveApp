@@ -10,11 +10,12 @@ import {Router} from "@angular/router";
 })
 export class Dialog2Component {
 
-  product:any
+  product: any
   selectedAmount = new FormControl(1, [Validators.max(10), Validators.min(0)]);
 
   constructor(private ref: MatDialogRef<Dialog2Component>,
               @Inject(MAT_DIALOG_DATA) public data: any) {
+
   }
 
   closeDialog(){
@@ -61,8 +62,11 @@ export class Dialog2Component {
     }
   }
 
+
   ngOnInit() {
     this.product = this.data.product
+    this.selectedAmount = new FormControl(this.product.quantity);
+
   }
 
 

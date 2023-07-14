@@ -10,7 +10,14 @@ import {Router} from "@angular/router";
 export class CategoriesComponent implements OnInit {
 
   displayedColumns: string[] = ['name', 'description'];
+
+  // create interface
   categories: any = [];
+
+  totalPages: number = 1
+  totalCategories: number = 0
+  pageSize: number = 1
+  currPage: number = 1
 
   constructor(private api: ApiService,
               private router: Router) { }
@@ -20,14 +27,23 @@ export class CategoriesComponent implements OnInit {
   }
 
   getCategories() {
-    this.api.getCategories().subscribe({
+    this.api.getCategories(this.currPage).subscribe({
       next: (res) => {
-        this.categories = res;
+        const { categories, totalPages, pageSize, totalCategories } = res;
+        this.categories = categories;
+        this.totalPages = totalPages;
+        this.pageSize = pageSize;
+        this.totalCategories = totalCategories;
       },
       error: (err) => {
         alert(err.message);
       }
     });
+  }
+
+  onPageChange(event: any) {
+    this.currPage = event.pageIndex + 1;
+    this.getCategories();
   }
 
 }
