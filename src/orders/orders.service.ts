@@ -163,22 +163,24 @@ export class OrdersService {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
-    const take = 5;
+    const take = 6;
 
-    const [orders, totalOrders] = await this.ordersRepository.findAndCount({
+    const [orders, totalItems] = await this.ordersRepository.findAndCount({
       where: { customer: { id: userId } },
       relations: ['customer'],
       take,
       skip: take * (page - 1),
     });
 
-    const totalPages = Math.ceil(totalOrders / take);
+    const totalPages = Math.ceil(totalItems / take);
 
     const responseObject: any = {
       orders: await this.toResponseOrders(orders),
-      totalPages,
-      totalOrders,
-      pageSize: take,
+      info: {
+        totalPages,
+        totalItems,
+        pageSize: take,
+      },
     };
     return { ...responseObject };
   }

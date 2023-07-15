@@ -19,9 +19,15 @@ import { ApiTags } from '@nestjs/swagger';
 export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
 
+
+  @Get('all')
+  getAllCategories(){
+    return this.categoriesService.getAllCategories();
+  }
+
   @Get()
-  showAllCategories(@Query('page') page: number) {
-    return this.categoriesService.showAll(page);
+  getCategories(@Query('page') page: number) {
+    return this.categoriesService.getCategories(page);
   }
 
   @Get(':id')
