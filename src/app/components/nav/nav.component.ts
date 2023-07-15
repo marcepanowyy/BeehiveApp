@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {Router} from "@angular/router";
+import {ProductRequest} from "../../interfaces/product/ProductRequest";
 
 @Component({
   selector: 'app-nav',
@@ -21,8 +22,7 @@ export class NavComponent{
 
   getProductsSum() {
     const productsArray = JSON.parse(localStorage.getItem('productsArray') || '[]');
-    // add interface
-    const sum = productsArray.reduce((accumulator: any, product: { quantity: any; }) => {
+    const sum = productsArray.reduce((accumulator: number, product: ProductRequest) => {
       return accumulator + product.quantity;
     }, 0);
     return  sum ? `(${sum})` : ""

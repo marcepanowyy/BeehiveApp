@@ -20,6 +20,10 @@ export class CategoriesComponent implements OnInit {
 
   constructor(private api: ApiService){}
 
+  ngOnInit() {
+    this.getCategories();
+  }
+
   getCategories() {
     this.api.getCategories(this.currPage).subscribe({
       next: (res) => {
@@ -40,8 +44,5 @@ export class CategoriesComponent implements OnInit {
     this.getCategories();
   }
 
-  ngOnInit() {
-    this.getCategories();
-  }
 
 }

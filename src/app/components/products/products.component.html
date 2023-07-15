@@ -54,7 +54,7 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
 
-          <mat-slider min="0" max="1000" style="width: 200px" discrete="discrete" step="10" (input)="onPriceInput($event)">
+          <mat-slider min="0" max="1000" style="width: 200px" discrete="discrete" step="1" (input)="onPriceInput($event)">
             <input matSliderStartThumb [(ngModel)]="minPrice">
             <input matSliderEndThumb [(ngModel)]="maxPrice">
           </mat-slider>

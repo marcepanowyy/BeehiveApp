@@ -74,7 +74,7 @@ export class CartComponent implements OnInit{
       next: (res) => {
         alert("Thank you for your purchase")
         localStorage.removeItem('productsArray')
-        // window.location.reload()
+        window.location.reload()
         console.log(res)
       },
       error: (err) => {

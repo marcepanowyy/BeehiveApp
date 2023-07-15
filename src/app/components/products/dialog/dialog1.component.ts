@@ -16,6 +16,10 @@ export class Dialog1Component implements OnInit{
   constructor(private ref: MatDialogRef<Dialog1Component>,
               @Inject(MAT_DIALOG_DATA) public data: Product){}
 
+  ngOnInit() {
+    this.product = this.data
+  }
+
   closeDialog(){
     this.ref.close()
   }
@@ -54,8 +58,6 @@ export class Dialog1Component implements OnInit{
     }
   }
 
-  ngOnInit() {
-    this.product = this.data
-  }
+
 
 }
