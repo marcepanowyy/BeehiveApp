@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ApiService} from "../../services/api.service";
 import {Router} from "@angular/router";
-import {User} from "../../interfaces/user/User";
+import {UserRequest} from "../../interfaces/user/UserRequest";
 
 @Component({
   selector: 'app-register',
@@ -52,7 +52,7 @@ export class RegisterComponent{
 
   registerUser(){
 
-    const data: User = {
+    const data: UserRequest = {
       username: this.email.value,
       password: this.pwd.value
     }

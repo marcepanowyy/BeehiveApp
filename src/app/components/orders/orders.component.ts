@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ApiService} from "../../services/api.service";
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import {Order} from "../../interfaces/order/Order";
 import {CartProduct} from "../../interfaces/product/CartProduct";
+import {Order} from "../../interfaces/order/Order";
 
 @Component({
   selector: 'app-orders',
@@ -20,7 +20,7 @@ export class OrdersComponent implements OnInit{
 
   orders: Order[] = []
   totalPages: number = 1
-  totalOrders: number = 0
+  totalItems: number = 0
   pageSize: number = 1
   currPage: number = 1
 
@@ -29,8 +29,7 @@ export class OrdersComponent implements OnInit{
 
   expandedElement: any
 
-  constructor(
-    private api: ApiService){}
+  constructor(private api: ApiService){}
 
   ngOnInit() {
     this.getOrders()
@@ -39,11 +38,11 @@ export class OrdersComponent implements OnInit{
   getOrders(){
     this.api.getUserOrders(this.currPage).subscribe({
       next: (res) => {
-        const { orders, totalPages, pageSize, totalOrders } = res;
+        const { orders, info } = res;
         this.orders = orders
-        this.totalPages = totalPages;
-        this.pageSize = pageSize;
-        this.totalOrders = totalOrders;
+        this.totalPages = info.totalPages;
+        this.pageSize = info.pageSize;
+        this.totalItems = info.totalItems;
       },
       error: (err) => {
         alert(err.error.message)

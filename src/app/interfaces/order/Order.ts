@@ -1,13 +1,9 @@
 import {CartProduct} from "../product/CartProduct";
-import {UserRO} from "../user/UserRO";
+import {UserResponse} from "../user/UserResponse";
 
 export interface Order{
-
   orderId: string;
-  description?: string;
-  customer?: UserRO
+  customer: Partial<UserResponse>;
+  products: Partial<CartProduct>[];
   status: string;
-  products: CartProduct[];
-  created: Date;
-
 }

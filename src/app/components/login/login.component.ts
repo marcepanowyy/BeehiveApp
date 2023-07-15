@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ApiService} from "../../services/api.service";
 import {Router} from "@angular/router";
+import {UserRequest} from "../../interfaces/user/UserRequest";
 
 @Component({
   selector: 'app-login',
@@ -38,7 +39,7 @@ export class LoginComponent {
 
   loginUser(){
 
-    const data = {
+    const data: UserRequest = {
       username: this.email.value,
       password: this.pwd.value
     }

@@ -4,9 +4,8 @@ import {FormControl} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
 import {Dialog1Component} from "./dialog/dialog1.component";
-import {Product} from "../../interfaces/product/Product";
-import {Category} from "../../interfaces/category/Category";
 import {Filter} from "../../interfaces/filter/Filter";
+import {Category} from "../../interfaces/category/Category";
 
 @Component({
   selector: 'app-products',
@@ -16,13 +15,12 @@ import {Filter} from "../../interfaces/filter/Filter";
 export class ProductsComponent implements OnInit{
 
   categories: Category[] = [];
-  products: Product[] = []
+  products: any = []
 
   totalPages: number = 1
-  totalProducts: number = 0
+  totalItems: number = 0
   pageSize: number = 1
   currPage: number = 1
-
 
   data: Filter = {}
 
@@ -37,8 +35,7 @@ export class ProductsComponent implements OnInit{
 
   constructor(private api: ApiService,
               private route: ActivatedRoute,
-              private matDialog: MatDialog) {
-  }
+              private matDialog: MatDialog){}
 
   ngOnInit() {
 
@@ -54,14 +51,14 @@ export class ProductsComponent implements OnInit{
   private getFilteredProducts(){
     this.api.getFilteredProducts(this.data, this.currPage).subscribe({
       next: (res) => {
-        const { products, totalPages, pageSize, totalProducts } = res;
+        const { products, info } = res;
         this.products = products;
-        this.totalPages = totalPages;
-        this.pageSize = pageSize;
-        this.totalProducts = totalProducts;
+        this.totalPages = info.totalPages;
+        this.pageSize = info.pageSize;
+        this.totalItems = info.totalItems;
       },
       error: (err) => {
-        alert(err.message)
+        alert(err.error.message)
       }
     })
   }
@@ -72,7 +69,7 @@ export class ProductsComponent implements OnInit{
         this.categories = res
       },
       error: (err) => {
-        alert(err)
+        alert(err.error.message)
       }
     })
   }
@@ -107,7 +104,7 @@ export class ProductsComponent implements OnInit{
 
   // dialog
 
-  openDialog(product: Product){
+  openDialog(product: any){
     if(this.isLoggedIn()) {
       const dialog = this.matDialog.open(Dialog1Component, {
         width: '30%',

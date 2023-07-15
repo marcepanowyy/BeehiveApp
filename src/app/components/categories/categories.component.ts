@@ -14,7 +14,7 @@ export class CategoriesComponent implements OnInit {
   categories: Category[] = [];
 
   totalPages: number = 1
-  totalCategories: number = 0
+  totalItems: number = 0
   pageSize: number = 1
   currPage: number = 1
 
@@ -23,11 +23,11 @@ export class CategoriesComponent implements OnInit {
   getCategories() {
     this.api.getCategories(this.currPage).subscribe({
       next: (res) => {
-        const { categories, totalPages, pageSize, totalCategories } = res;
+        const { categories, info } = res;
         this.categories = categories;
-        this.totalPages = totalPages;
-        this.pageSize = pageSize;
-        this.totalCategories = totalCategories;
+        this.totalPages = info.totalPages;
+        this.pageSize = info.pageSize;
+        this.totalItems = info.totalItems;
       },
       error: (err) => {
         alert(err.message);

@@ -11,7 +11,7 @@ import {CartProduct} from "../../../interfaces/product/CartProduct";
 })
 export class Dialog2Component {
 
-  product: CartProduct | any
+  product: any
   selectedAmount = new FormControl(1, [Validators.max(10), Validators.min(0)]);
 
   constructor(private ref: MatDialogRef<Dialog2Component>,
