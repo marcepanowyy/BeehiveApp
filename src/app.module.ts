@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { databaseModule } from '../orm.config';
 import { OrdersModule } from './orders/orders.module';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
@@ -23,9 +21,8 @@ import { RoleGuard } from './auth/guards/role.guard';
     OrderDetailsModule,
     ProductsReviewModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
-    AppService,
     {
       provide: APP_FILTER,
       useClass: HttpErrorFilter,
