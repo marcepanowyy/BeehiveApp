@@ -18,10 +18,9 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { AuthGuard } from '../../shared/guards/auth.guard';
-import { User } from '../../shared/decorators/users.decorator';
-import { Role } from '../../shared/decorators/roles.decorator';
-import { ValidationPipe } from '../../shared/validation.pipe';
+import { AuthGuard } from '../guards/auth.guard';
+import { Role } from '../../../shared/decorators/roles.decorator';
+import { ValidationPipe } from '../../../shared/validation.pipe';
 
 @ApiTags('users')
 @Controller('users')

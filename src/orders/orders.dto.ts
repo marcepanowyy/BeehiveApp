@@ -1,8 +1,8 @@
 import { ArrayNotEmpty, IsNotEmpty } from 'class-validator';
 import { ProductItem, ProductsRo } from '../products/products.dto';
 import { OrderDetailsEntity } from '../order.details/order.details.entity';
-import { UsersEntity } from '../users/users.entity';
-import { UsersRO } from '../users/users.dto';
+import { UsersEntity } from '../auth/users/users.entity';
+import { UsersRO } from '../auth/users/users.dto';
 import { StatusEnum } from '../../shared/enums/status.enum';
 
 export class OrdersDto {

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ProductsReviewEntity } from './products.review.entity';
 import { Repository } from 'typeorm';
 import { ProductsEntity } from '../products/products.entity';
-import { UsersEntity } from '../users/users.entity';
+import { UsersEntity } from '../auth/users/users.entity';
 import { ProductsReviewDto, ReviewRO } from './products.review.dto';
 import { OrdersEntity } from '../orders/orders.entity';
 import { ProductsRo } from '../products/products.dto';

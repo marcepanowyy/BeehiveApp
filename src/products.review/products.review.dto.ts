@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsNumber, IsString, Length, Max, Min } from 'class-validator';
-import { UsersRO } from '../users/users.dto';
+import { UsersRO } from '../auth/users/users.dto';
 import { ProductsRo } from '../products/products.dto';
 
 export class ProductsReviewDto{

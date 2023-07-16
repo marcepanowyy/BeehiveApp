@@ -6,12 +6,12 @@ import { OrdersModule } from './orders/orders.module';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { HttpErrorFilter } from '../shared/http-error.filter';
 import { LoggingInterceptor } from '../shared/logging.interceptor';
-import { UsersModule } from './users/users.module';
+import { UsersModule } from './auth/users/users.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
 import { OrderDetailsModule } from './order.details/order.details.module';
-import { RoleGuard } from '../shared/guards/role.guard';
 import { ProductsReviewModule } from './products.review/products.review.module';
+import { RoleGuard } from './auth/guards/role.guard';
 
 @Module({
   imports: [

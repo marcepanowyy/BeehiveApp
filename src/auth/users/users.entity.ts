@@ -2,7 +2,7 @@ import {
   BeforeInsert,
   Column,
   CreateDateColumn,
-  Entity, JoinTable, ManyToMany,
+  Entity,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -10,9 +10,9 @@ import {
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { UsersRO } from './users.dto';
-import { OrdersEntity } from '../orders/orders.entity';
-import { OrdersRo } from '../orders/orders.dto';
-import { ProductsReviewEntity } from '../products.review/products.review.entity';
+import { OrdersEntity } from '../../orders/orders.entity';
+import { OrdersRo } from '../../orders/orders.dto';
+import { ProductsReviewEntity } from '../../products.review/products.review.entity';
 
 @Entity('users')
 export class UsersEntity {

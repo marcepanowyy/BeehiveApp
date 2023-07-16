@@ -1,9 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductsEntity } from './products.entity';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { FilteredProductsDto, ProductsDto, ProductsRo } from './products.dto';
 import { CategoriesEntity } from '../categories/categories.entity';
+import { ProductsFilterBuilder } from './builder/products.filter.builder';
 
 @Injectable()
 export class ProductsService {
@@ -68,48 +69,18 @@ export class ProductsService {
     data: Partial<FilteredProductsDto>,
     page: number = 1,
   ): Promise<ProductsRo[]> {
+
     const { minPrice, maxPrice, categoryIdArr, ascending, descending } = data;
-
-    if (categoryIdArr) {
-      for (const categoryId of categoryIdArr) {
-        let category = await this.categoriesRepository.findOne({
-          where: { id: categoryId },
-        });
-
-        if (!category) {
-          throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
-        }
-      }
-    }
-
-    const query = this.productsRepository.createQueryBuilder('product');
-
-    if (categoryIdArr && categoryIdArr.length > 0) {
-      query.where('product.categoryId IN (:...categoryIds)', {
-        categoryIds: categoryIdArr,
-      });
-    }
-
-    if (minPrice) {
-      query.andWhere('product.price >= :minPrice', { minPrice });
-    }
-
-    if (maxPrice) {
-      query.andWhere('product.price <= :maxPrice', { maxPrice });
-    }
-
-    if (ascending && !descending) {
-      query.orderBy('product.price', 'ASC');
-    } else if (descending && !ascending) {
-      query.orderBy('product.price', 'DESC');
-    }
-
-    query.leftJoinAndSelect('product.category', 'category');
-
     const take = 9;
-    const skip = take * (page - 1);
 
-    query.take(take).skip(skip);
+    const queryBuilder = ProductsFilterBuilder.createProductsQueryBuilder(this.productsRepository, this.categoriesRepository);
+
+    const query = (await queryBuilder.addCategory(categoryIdArr))
+      .addMinPrice(minPrice)
+      .addMaxPrice(maxPrice)
+      .addOrder(ascending, descending)
+      .addPagination(page, take)
+      .query
 
     const [products, totalItems] = await query.getManyAndCount();
 

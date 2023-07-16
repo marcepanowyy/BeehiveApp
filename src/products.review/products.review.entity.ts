@@ -7,7 +7,7 @@ import {
   Unique,
   UpdateDateColumn,
 } from 'typeorm';
-import { UsersEntity } from '../users/users.entity';
+import { UsersEntity } from '../auth/users/users.entity';
 import { ProductsEntity } from '../products/products.entity';
 
 

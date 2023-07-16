@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { OrderDetailsEntity } from '../order.details/order.details.entity';
 import { StatusEnum } from '../../shared/enums/status.enum';
-import { UsersEntity } from '../users/users.entity';
+import { UsersEntity } from '../auth/users/users.entity';
 
 @Entity('orders')
 export class OrdersEntity {

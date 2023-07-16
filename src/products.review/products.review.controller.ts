@@ -8,12 +8,14 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { AuthGuard } from '../../shared/guards/auth.guard';
 import { User } from '../../shared/decorators/users.decorator';
 import { ProductsReviewDto } from './products.review.dto';
 import { ProductsReviewService } from './products.review.service';
 import { ValidationPipe } from '../../shared/validation.pipe';
+import { AuthGuard } from '../auth/guards/auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('reviews')
 @Controller('reviews')
 export class ProductsReviewController {
   constructor(private productsReviewService: ProductsReviewService) {}

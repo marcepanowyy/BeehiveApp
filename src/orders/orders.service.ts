@@ -6,8 +6,8 @@ import { OrdersDto, OrdersRo, OrderStatusDto } from './orders.dto';
 import { ProductsEntity } from '../products/products.entity';
 import { OrderDetailsEntity } from '../order.details/order.details.entity';
 import { ProductItem } from '../products/products.dto';
-import { UsersRO } from '../users/users.dto';
-import { UsersEntity } from '../users/users.entity';
+import { UsersRO } from '../auth/users/users.dto';
+import { UsersEntity } from '../auth/users/users.entity';
 import { StatusEnum } from '../../shared/enums/status.enum';
 
 // TODO - redis lock on order creating
