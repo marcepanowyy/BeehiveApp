@@ -92,7 +92,6 @@ export class CategoriesService {
     return this.toResponseCategory(category);
   }
 
-  // TODO: fix - cascade deleting
   async delete(categoryId: string): Promise<CategoriesRo> {
     const category = await this.categoriesRepository.findOne({
       where: { id: categoryId },

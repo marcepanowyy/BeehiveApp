@@ -77,8 +77,9 @@ export async function clearDataBaseData(testingModule: ITestingContainer) {
 
   await Promise.all(
     repositoriesToClear.map(async (repository) => {
-      // await repository.clear(); truncate table
-      await repository.delete({});
+      const queryBuilder = repository.createQueryBuilder().delete();
+      await queryBuilder.execute();
     })
   );
 }
+
