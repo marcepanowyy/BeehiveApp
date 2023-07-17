@@ -71,4 +71,14 @@ export async function createTestingContainer(): Promise<ITestingContainer> {
   });
 }
 
-export async function clearDataBaseData(testingModule: TestingModule) {}
+export async function clearDataBaseData(testingModule: ITestingContainer) {
+  const { repositories } = testingModule;
+  const repositoriesToClear = Object.values(repositories);
+
+  await Promise.all(
+    repositoriesToClear.map(async (repository) => {
+      // await repository.clear(); truncate table
+      await repository.delete({});
+    })
+  );
+}

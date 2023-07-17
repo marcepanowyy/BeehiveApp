@@ -65,13 +65,4 @@ export class UsersService {
     return user.toResponseUser();
   }
 
-  async clearAll() {
-    await this.usersRepository.delete({});
-  }
-
-  // async clearAll() {
-  //   await this.usersRepository.query('TRUNCATE TABLE users CASCADE;');
-  // }
-
-
 }
