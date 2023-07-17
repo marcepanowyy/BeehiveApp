@@ -81,7 +81,7 @@ export class UsersEntity {
       {
         id,
         username,
-        // TODO - dont save role to jwt payload, instead, use id to get
+        // TODO - don't save role to jwt payload, instead, use id to get
         //  user from db and check for role in decorator
         role
       },

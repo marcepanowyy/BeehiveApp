@@ -23,7 +23,9 @@ export class OrdersEntity {
 
   // relationships
 
-  @ManyToOne(type => UsersEntity, customer => customer.orders)
+  @ManyToOne(type => UsersEntity, customer => customer.orders, {
+    onDelete: 'CASCADE',
+  })
   customer: UsersEntity;
 
   @OneToMany(() => OrderDetailsEntity, orderDetail => orderDetail.order)

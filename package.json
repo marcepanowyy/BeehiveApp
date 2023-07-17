@@ -11,12 +11,14 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main"
+    "start:prod": "node dist/main",
+    "test": "node --test"
   },
   "engines": {
     "node": ">=20",
     "npm": ">=9"
   },
+
   "dependencies": {
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^3.0.0",

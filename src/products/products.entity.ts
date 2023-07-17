@@ -29,8 +29,6 @@ export class ProductsEntity {
 
   // relationships
 
-  // TODO - cascade deleting
-
   @ManyToOne(type => CategoriesEntity, category => category.products, {
     onDelete: 'CASCADE',
   })

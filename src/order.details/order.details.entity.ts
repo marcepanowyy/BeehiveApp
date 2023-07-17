@@ -8,15 +8,14 @@ export class OrderDetailsEntity {
 
   // relationships
 
-  @ManyToOne(
-    type => OrdersEntity,
-    order => order.orderDetails,
-
-    { onDelete: 'CASCADE' },
-  )
+  @ManyToOne(type => OrdersEntity, order => order.orderDetails, {
+    onDelete: 'CASCADE',
+  })
   order: OrdersEntity;
 
-  @ManyToOne(type => ProductsEntity, product => product.orderDetails)
+  @ManyToOne(type => ProductsEntity, product => product.orderDetails, {
+    onDelete: 'CASCADE',
+  })
   product: ProductsEntity;
 
   // end of relationships
