@@ -13,7 +13,7 @@ describe("UsersDTO (Users' Data Transfer Object)", () => {
 
   before(async () => {
     testingContainer = await createTestingContainer();
-    testCredentials = require('../../../shared/test/samples/usersValidation');
+    testCredentials = require('../../../shared/test/samples/usersSample');
   });
 
   it('should validate valid credentials', async () => {
