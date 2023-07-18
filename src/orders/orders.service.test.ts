@@ -282,9 +282,6 @@ describe('OrdersService', () => {
     );
   });
 
-  // it('should get order by its id, if invalid id - throw an error'); //???
-  // it('should get order by the user id, if invalid id - throw an error');
-
   it('should update an order with valid data', async () => {
 
     const orderStatusData = {
@@ -305,10 +302,6 @@ describe('OrdersService', () => {
     assert.strictEqual(updatedOrder.status, 'shipped');
 
   });
-
-  // it(
-  //   'should throw en error when updating order with invalid order status data', order id / userid ??
-  // );
 
   it('should delete an order by valid order id', async () => {
 

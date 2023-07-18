@@ -10,21 +10,32 @@ import {
 import { HttpException, HttpStatus } from '@nestjs/common';
 
 describe('UsersService', () => {
+
   let testingContainer: ITestingContainer;
+
+  let userData, invalidUserData
 
   before(async () => {
     testingContainer = await createTestingContainer();
   });
 
   beforeEach(async () => {
-    await clearDataBaseData(testingContainer);
-  });
 
-  it('should register in with valid credentials', async () => {
-    const userData = {
+    await clearDataBaseData(testingContainer);
+
+    userData = {
       username: 'test@user.com',
       password: 'tE$Tp4sSw0rd123',
     };
+
+    invalidUserData = {
+      username: 'test@user.com',
+      password: 'tttE$Tp4sSw0rd123',
+    };
+
+  });
+
+  it('should register in with valid credentials', async () => {
 
     const result = await testingContainer.services.usersService.register({
       ...userData,
@@ -39,12 +50,8 @@ describe('UsersService', () => {
   });
 
   it('should throw an error when registering when the username is already taken', async () => {
-    const userData = {
-      username: 'test@user.com',
-      password: 'tE$Tp4sSw0rd123',
-    };
 
-    const user = await testingContainer.repositories.usersRepository.create({
+    const user = testingContainer.repositories.usersRepository.create({
       ...userData,
     });
     await testingContainer.repositories.usersRepository.save(user);
@@ -63,40 +70,28 @@ describe('UsersService', () => {
   });
 
   it('should log in user with valid credentials', async () => {
-    const userData = {
-      username: 'test@user.com',
-      password: 'tE$Tp4sSw0rd123',
-    };
 
-    const user = await testingContainer.repositories.usersRepository.create({
+    const user = testingContainer.repositories.usersRepository.create({
       ...userData,
     });
+
     await testingContainer.repositories.usersRepository.save(user);
 
-    const result = await testingContainer.services.usersService.login(userData);
+    const result = await testingContainer.services.usersService.login({ ...userData });
 
     assert.strictEqual(result.username, userData.username);
   });
 
   it('should throw an error when logging in with invalid credentials', async () => {
-    const userData = {
-      username: 'test@user.com',
-      password: 'tE$Tp4sSw0rd123',
-    };
 
-    const user = await testingContainer.repositories.usersRepository.create({
+    const user = testingContainer.repositories.usersRepository.create({
       ...userData,
     });
     await testingContainer.repositories.usersRepository.save(user);
 
-    const invalidUserData = {
-      username: 'test@user.com',
-      password: 'tttE$Tp4sSw0rd123',
-    };
-
     await assert.rejects(
       async () => {
-        await testingContainer.services.usersService.login(invalidUserData);
+        await testingContainer.services.usersService.login({ ...invalidUserData });
       },
       (err: any) => {
         assert.strictEqual(err instanceof HttpException, true);

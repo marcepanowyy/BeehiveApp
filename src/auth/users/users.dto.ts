@@ -28,14 +28,6 @@ export class UsersDto {
   })
   password!: string;
 
-  // @IsNotEmpty()
-  // @IsIn([1, 10, 100, 1000], { message: 'Invalid role value' })
-  // @ApiProperty({
-  //   description:
-  //     'The role of the user must be one of the following values: 1, 10, 100, 1000.',
-  //   example: 1,
-  // })
-  // role: number;
 }
 
 export class UsersRO {

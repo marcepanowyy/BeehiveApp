@@ -5,6 +5,8 @@ import { strict as assert } from 'node:assert';
 describe('ProductsService', () => {
   let testingContainer: ITestingContainer;
 
+  let categoryData;
+
   before(async () => {
     testingContainer = await createTestingContainer();
   });

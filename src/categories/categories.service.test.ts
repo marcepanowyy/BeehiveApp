@@ -7,7 +7,10 @@ import {
 import { strict as assert } from 'node:assert';
 
 describe('CategoriesService', () => {
+
   let testingContainer: ITestingContainer;
+
+  let categoryData
 
   before(async () => {
     testingContainer = await createTestingContainer();
@@ -15,13 +18,15 @@ describe('CategoriesService', () => {
 
   beforeEach(async () => {
     await clearDataBaseData(testingContainer);
-  });
 
-  it('should create category with valid data', async () => {
-    const categoryData = {
+    categoryData = {
       name: 'testCategory',
       description: 'testDescription',
     };
+
+  });
+
+  it('should create category with valid data', async () => {
 
     const result = await testingContainer.services.categoriesService.create(
       categoryData,
@@ -37,14 +42,15 @@ describe('CategoriesService', () => {
   });
 
   it('should update category with valid data', async () => {
+
     const categoryData = {
       name: 'testCategory',
       description: 'testDescription',
     };
 
     const category =
-      await testingContainer.repositories.categoriesRepository.create(
-        categoryData,
+      testingContainer.repositories.categoriesRepository.create(
+        { ...categoryData },
       );
     await testingContainer.repositories.categoriesRepository.save(category);
 
@@ -68,6 +74,7 @@ describe('CategoriesService', () => {
   });
 
   it('should delete category with valid data and cascade deleting created products', async () => {
+
     const categoryData = {
       name: 'testCategory',
       description: 'testDescription',
