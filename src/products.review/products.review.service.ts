@@ -29,7 +29,7 @@ export class ProductsReviewService {
   private toResponseReview(review: ProductsReviewEntity): ReviewRO {
     const { id, content, rating, created } = review;
     const responseObject: any = {
-      reviewId: id,
+      id,
       content,
       rating,
       created,
@@ -67,14 +67,34 @@ export class ProductsReviewService {
   async showReviewsByUser(
     userId: string,
     page: number = 1,
-  ) {}
+  ) {
+
+    const reviews = await this.productsReviewRepository.find({
+      where: {customer: {id: userId}},
+      relations: ['customer', 'product'],
+      take: 5,
+      skip: 5 * (page - 1)
+    })
+
+    return this.toResponseReviews(reviews)
+
+  }
 
   async showReviewsByProduct(
     productId: string,
     page: number = 1,
-  ){}
+  ){
 
-  async updateReview(reviewId: string){}
+    const reviews = await this.productsReviewRepository.find({
+      where: {product: {id: productId}},
+      relations: ['customer', 'product'],
+      take: 5,
+      skip: 5 * (page - 1)
+    })
+
+    return this.toResponseReviews(reviews)
+
+  }
 
   async create(userId: string, data: ProductsReviewDto, productId: string) {
     const { content, rating } = data;
@@ -108,9 +128,6 @@ export class ProductsReviewService {
       );
     }
 
-    // TODO - catch error (if user posted earlier review of
-    //  certain product - throw an error)
-
     const review = await this.productsReviewRepository.create({
       content,
       rating,
@@ -119,10 +136,24 @@ export class ProductsReviewService {
     });
 
     await this.productsReviewRepository.save(review);
-    return review;
+    return this.toResponseReview(review);
   }
 
-  async update(userId: string, data: ProductsReviewDto, productId: string) {
-    const { content, rating } = data;
+  async updateReview(userId: string, reviewId: string, data: Partial<ProductsReviewDto>){
+
+    const review = await this.productsReviewRepository.findOne({where: {id: reviewId}})
+
+    if (!review) {
+      throw new HttpException('Review not found by id', HttpStatus.NOT_FOUND);
+    }
+
+    await this.productsReviewRepository.update({ id: reviewId }, { ...data })
+
+    const updatedReview = await this.productsReviewRepository.findOne({where: {id: reviewId}})
+
+    return this.toResponseReview(updatedReview)
+
   }
+
+
 }
