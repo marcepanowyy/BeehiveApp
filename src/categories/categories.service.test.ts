@@ -99,12 +99,12 @@ describe('CategoriesService', () => {
       await testingContainer.repositories.productsRepository.create({
         ...productData1,
       });
+    await testingContainer.repositories.productsRepository.save(product1);
+
     const product2 =
       await testingContainer.repositories.productsRepository.create({
         ...productData2,
       });
-
-    await testingContainer.repositories.productsRepository.save(product1);
     await testingContainer.repositories.productsRepository.save(product2);
 
     await testingContainer.services.categoriesService.delete(category.id);
@@ -115,10 +115,11 @@ describe('CategoriesService', () => {
       });
     const foundProducts =
       await testingContainer.repositories.productsRepository.find({
-        where: { category: { id: category.id } },
+        where: { category: { id: category.id } }
       });
 
     assert.strictEqual(foundCategory, null);
     assert.deepEqual(foundProducts, []);
+
   });
 });

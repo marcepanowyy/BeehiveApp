@@ -5,6 +5,7 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { FilteredProductsDto, ProductsDto, ProductsRo } from './products.dto';
 import { CategoriesEntity } from '../categories/categories.entity';
 import { ProductsFilterBuilder } from './builder/products.filter.builder';
+import { CategoriesRo } from '../categories/categories.dto';
 
 @Injectable()
 export class ProductsService {
@@ -115,4 +116,20 @@ export class ProductsService {
     });
     return this.toResponseProduct(product);
   }
+
+  async delete(productId: string): Promise<ProductsRo>{
+    const product = await this.productsRepository.findOne({
+      where: {id: productId},
+      relations: ['category']
+    })
+
+    if(!product){
+      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+    }
+
+    await this.productsRepository.delete({id: productId})
+    return this.toResponseProduct(product)
+
+  }
+
 }
