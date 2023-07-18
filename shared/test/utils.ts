@@ -75,11 +75,13 @@ export async function clearDataBaseData(testingModule: ITestingContainer) {
   const { repositories } = testingModule;
   const repositoriesToClear = Object.values(repositories);
 
-  await Promise.all(
-    repositoriesToClear.map(async (repository) => {
-      const queryBuilder = repository.createQueryBuilder().delete();
-      await queryBuilder.execute();
-    })
-  );
+  // perform clearing of data from individual tables sequentially instead of
+  // in parallel, thus for ... of instead of map
+
+  for (const repository of repositoriesToClear) {
+    const tableName = repository.metadata.tableName;
+    const query = `TRUNCATE TABLE ${tableName} CASCADE;`;
+    await repository.query(query);
+  }
 }
 

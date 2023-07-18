@@ -2,7 +2,7 @@ import { before, beforeEach, describe, it } from 'node:test';
 import { clearDataBaseData, createTestingContainer, ITestingContainer } from '../../shared/test/utils';
 import { strict as assert } from 'node:assert';
 
-describe('UsersService', () => {
+describe('ProductsService', () => {
   let testingContainer: ITestingContainer;
 
   before(async () => {

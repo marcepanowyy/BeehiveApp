@@ -10,7 +10,6 @@ import {
 import { UsersEntity } from '../auth/users/users.entity';
 import { ProductsEntity } from '../products/products.entity';
 
-
 // unique field: (customerId, productId)
 // (customer cant post more than 1 review of certain product)
 
@@ -29,10 +28,14 @@ export class ProductsReviewEntity {
 
   // relationships
 
-  @ManyToOne(type => UsersEntity, customer => customer.reviews)
+  @ManyToOne(type => UsersEntity, customer => customer.reviews, {
+    onDelete: 'CASCADE',
+  })
   customer: UsersEntity;
 
-  @ManyToOne(type => ProductsEntity, product => product.reviews)
+  @ManyToOne(type => ProductsEntity, product => product.reviews, {
+    onDelete: 'CASCADE',
+  })
   product: ProductsEntity;
 
   // end of relationships

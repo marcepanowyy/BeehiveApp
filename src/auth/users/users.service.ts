@@ -39,7 +39,6 @@ export class UsersService {
       ...user.toResponseUser(false),
       orders: paginatedOrders,
     };
-
   }
 
   async login(data: UsersDto): Promise<UsersRO> {
@@ -64,5 +63,4 @@ export class UsersService {
     await this.usersRepository.save(user);
     return user.toResponseUser();
   }
-
 }
