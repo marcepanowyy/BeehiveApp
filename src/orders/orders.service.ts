@@ -60,7 +60,7 @@ export class OrdersService {
     }));
 
     const responseObject: any = {
-      orderId: id,
+      id,
       created,
       status,
       products,
@@ -89,22 +89,15 @@ export class OrdersService {
     return this.toResponseOrders(orders);
   }
 
-  private validateStatus(status: string): void {
+  validateStatus(status: string): boolean {
     if (!Object.values(StatusEnum).includes(status as StatusEnum)) {
       throw new HttpException('Invalid status', HttpStatus.BAD_REQUEST);
     }
-  }
-
-  private checkForDuplicates(array: ProductItem[]) {
-    const ids = array.map(obj => obj.productId);
-    if (new Set(ids).size !== array.length) {
-      throw new HttpException('Products id duplicated', HttpStatus.BAD_REQUEST);
-    }
+    return true;
   }
 
   async create(data: OrdersDto, userId: string): Promise<OrdersRo> {
     const { productsArray } = data;
-    // this.checkForDuplicates(productsArray);
     for (const productItem of productsArray) {
       const product = await this.productsRepository.findOne({
         where: { id: productItem.productId },
