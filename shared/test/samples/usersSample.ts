@@ -1,4 +1,4 @@
-module.exports = {
+export = {
     valid: [
       {
         username: 'test@user.com',
@@ -54,7 +54,7 @@ module.exports = {
         },
         {
           username: 'thisIsNoEmailThisIsNoEmail',
-          password: 'no.uppercase.letter123',
+          password: 'no.uppercase.letter!111',
         },
         {
           username: 'this',

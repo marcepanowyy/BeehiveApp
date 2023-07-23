@@ -1,4 +1,3 @@
-import { before, beforeEach, describe, it } from 'node:test';
 import { strict as assert } from 'node:assert';
 
 import {
@@ -139,8 +138,8 @@ describe('ProductsReviewService', () => {
 
   // TODO - finish tests:
 
-  it('should update a review by the user it was created with valid data')
+  // it('should update a review by the user it was created with valid data')
 
-  it('should throw an error when updating review which was created by other user')
+  // it('should throw an error when updating review which was created by other user')
 
 });

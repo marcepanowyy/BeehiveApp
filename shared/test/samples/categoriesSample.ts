@@ -3,11 +3,11 @@ const validDescription = 'This is a valid description of the category. It has mi
 module.exports = {
   valid: [
     {
-      name: 'Test Category1',
+      name: 'Valid Category Name',
       description: validDescription
     },
     {
-      name: 'Test Category2',
+      name: 'VCN',
       description: validDescription
     },
   ],
