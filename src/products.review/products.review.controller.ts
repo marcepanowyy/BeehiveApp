@@ -3,7 +3,7 @@ import {
   Controller,
   Get,
   Param,
-  Post,
+  Post, Put,
   Query,
   UseGuards,
   UsePipes,
@@ -34,10 +34,23 @@ export class ProductsReviewController {
   @UsePipes(new ValidationPipe())
   @UseGuards(new AuthGuard())
   createReview(
-    @User('id') userId,
+    @User('id') userId: string,
     @Body() data: ProductsReviewDto,
     @Param('id') productId: string,
   ) {
     return this.productsReviewService.create(userId, data, productId);
   }
+
+  @Put(':id')
+  @UsePipes(new ValidationPipe())
+  @UseGuards(new AuthGuard())
+  updateReview(
+    @User('id') userId: string,
+    @Param('id') reviewId: string,
+    @Body() data: Partial<ProductsReviewDto>,
+  ){
+    return this.productsReviewService.updateReview(userId, reviewId, data)
+  }
+
+
 }

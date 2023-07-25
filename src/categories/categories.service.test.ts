@@ -4,12 +4,13 @@ import {
   ITestingContainer,
 } from '../../shared/test/utils';
 import { strict as assert } from 'node:assert';
+import { sampleCategoryData, sampleProductData } from '../../shared/test/samples';
+import { createCategory, createProduct } from '../../shared/test/helpers';
 
 describe('CategoriesService', () => {
 
   let testingContainer: ITestingContainer;
-
-  let categoryData
+  const categoryData = sampleCategoryData.categoryData1
 
   before(async () => {
     testingContainer = await createTestingContainer();
@@ -17,12 +18,6 @@ describe('CategoriesService', () => {
 
   beforeEach(async () => {
     await clearDataBaseData(testingContainer);
-
-    categoryData = {
-      name: 'testCategory',
-      description: 'testDescription',
-    };
-
   });
 
   it('should create category with valid data', async () => {
@@ -42,25 +37,16 @@ describe('CategoriesService', () => {
 
   it('should update category with valid data', async () => {
 
-    const categoryData = {
-      name: 'testCategory',
-      description: 'testDescription',
-    };
+    const category = await createCategory(testingContainer, categoryData)
 
-    const category =
-      testingContainer.repositories.categoriesRepository.create(
-        { ...categoryData },
-      );
-    await testingContainer.repositories.categoriesRepository.save(category);
-
-    const partialCategoryData = {
+    const updatedCategoryData = {
       name: 'testUpdatedCategoryName',
       description: 'testUpdatedCategoryDescription',
     };
 
     const result = await testingContainer.services.categoriesService.update(
       category.id,
-      partialCategoryData,
+      updatedCategoryData,
     );
     const updatedCategory =
       await testingContainer.repositories.categoriesRepository.findOne({
@@ -74,44 +60,10 @@ describe('CategoriesService', () => {
 
   it('should delete category with valid data and cascade deleting created products', async () => {
 
-    const categoryData = {
-      name: 'testCategory',
-      description: 'testDescription',
-    };
+    const category = await createCategory(testingContainer, categoryData)
 
-    const category =
-      await testingContainer.repositories.categoriesRepository.create({
-        ...categoryData,
-      });
-    await testingContainer.repositories.categoriesRepository.save(category);
-
-    const productData1 = {
-      name: 'testProductName1',
-      description: 'testProductDescription1',
-      unitsOnStock: 2,
-      price: 21.37,
-      category,
-    };
-
-    const productData2 = {
-      name: 'testProductName2',
-      description: 'testProductDescription2',
-      unitsOnStock: 999,
-      price: 21.37,
-      category,
-    };
-
-    const product1 =
-      await testingContainer.repositories.productsRepository.create({
-        ...productData1,
-      });
-    await testingContainer.repositories.productsRepository.save(product1);
-
-    const product2 =
-      await testingContainer.repositories.productsRepository.create({
-        ...productData2,
-      });
-    await testingContainer.repositories.productsRepository.save(product2);
+    await createProduct(testingContainer, sampleProductData.productData1, category)
+    await createProduct(testingContainer, sampleProductData.productData2, category)
 
     await testingContainer.services.categoriesService.delete(category.id);
 

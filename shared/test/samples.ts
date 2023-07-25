@@ -1,6 +1,29 @@
-import { createCategory, createProduct, createUser } from './helpers';
+// import { createCategory, createProduct, createUser } from './helpers';
 
-export const categoryData = {
+// export const category1: any = createCategory(categoryData.categoryData1);
+// export const category2: any = createCategory(categoryData.categoryData2);
+
+
+// const product1: any = createProduct(productData.productData1, category1);
+// const product2: any = createProduct(productData.productData2, category1);
+// const product3: any = createProduct(productData.productData3, category2);
+// const product4: any = createProduct(productData.productData4, category2);
+
+export const sampleUserData = {
+
+  userData1: {
+    username: 'test1@user.com',
+    password: 'tE$Tp4sSw0rd123',
+  },
+
+  userData2: {
+    username: 'test2@user.com',
+    password: 'tE$Tp4sSw0rd123',
+  },
+
+};
+
+export const sampleCategoryData = {
   categoryData1: {
     name: 'testCategoryName1',
     description: 'testCategoryDescription1',
@@ -12,10 +35,7 @@ export const categoryData = {
   },
 };
 
-// export const category1: any = createCategory(categoryData.categoryData1);
-// export const category2: any = createCategory(categoryData.categoryData2);
-
-export const productData = {
+export const sampleProductData = {
   productData1: {
     name: 'testProductName1',
     description: 'testProductDescription1',
@@ -45,25 +65,10 @@ export const productData = {
   },
 };
 
-// const product1: any = createProduct(productData.productData1, category1);
-// const product2: any = createProduct(productData.productData2, category1);
-// const product3: any = createProduct(productData.productData3, category2);
-// const product4: any = createProduct(productData.productData4, category2);
 
-export const userData = {
-  userData1: {
-    username: 'test1@user.com',
-    password: 'tE$Tp4sSw0rd123',
-  },
 
-  userData2: {
-    username: 'test2@user.com',
-    password: 'tE$Tp4sSw0rd123',
-  },
-};
-
-const user1 = createUser(userData.userData1)
-const user2 = createUser(userData.userData2)
+// const user1 = createUser(userData.userData1)
+// const user2 = createUser(userData.userData2)
 
 // const orderData = {
 //   orderData1: {
