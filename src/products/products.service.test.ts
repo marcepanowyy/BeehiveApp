@@ -1,10 +1,16 @@
 import { clearDataBaseData, createTestingContainer, ITestingContainer } from '../../shared/test/utils';
 import { strict as assert } from 'node:assert';
+import { sampleCategoryData, sampleProductData } from '../../shared/test/samples';
+import { createCategory, createProduct } from '../../shared/test/helpers';
 
 describe('ProductsService', () => {
-  let testingContainer: ITestingContainer;
 
-  let categoryData;
+  let testingContainer: ITestingContainer;
+  const categoryData1 = sampleCategoryData.categoryData1;
+  const categoryData2 = sampleCategoryData.categoryData2;
+  const productData1 = sampleProductData.productData1;
+  const productData2 = sampleProductData.productData2;
+  const productData3 = sampleProductData.productData3;
 
   before(async () => {
     testingContainer = await createTestingContainer();
@@ -16,21 +22,9 @@ describe('ProductsService', () => {
 
   it('should create a product with valid data', async () => {
 
-    const categoryData = {
-      name: "testCategoryName",
-      description: "testCategoryDescription"
-    }
+    const category = await createCategory(testingContainer, categoryData1)
 
-    const category = await testingContainer.repositories.categoriesRepository.create(categoryData)
-    await testingContainer.repositories.categoriesRepository.save(category)
-
-    const productData = {
-      name: 'testProductName',
-      description: 'testProductDescription',
-      unitsOnStock: 2,
-      price: 21.37,
-      categoryId: category.id,
-    };
+    const productData = { ...productData1, categoryId: category.id }
 
     const result = await testingContainer.services.productsService.create(productData)
 
@@ -38,30 +32,15 @@ describe('ProductsService', () => {
     assert.strictEqual(result.description, productData.description);
     assert.strictEqual(result.unitsOnStock, productData.unitsOnStock);
     assert.strictEqual(result.price, productData.price);
-    assert.strictEqual(result.category, categoryData.name);
+    assert.strictEqual(result.category, categoryData1.name);
 
   })
 
   it('should update a product with valid data', async () => {
 
-    const categoryData = {
-      name: "testCategoryName",
-      description: "testCategoryDescription"
-    }
+    const category = await createCategory(testingContainer, categoryData1)
 
-    const category = await testingContainer.repositories.categoriesRepository.create(categoryData)
-    await testingContainer.repositories.categoriesRepository.save(category)
-
-    const productData = {
-      name: 'testProductName',
-      description: 'testProductDescription',
-      unitsOnStock: 2,
-      price: 21.37,
-      category
-    };
-
-    const product = await testingContainer.repositories.productsRepository.create(productData)
-    await testingContainer.repositories.productsRepository.save(product)
+    const product = await createProduct(testingContainer, productData1, category)
 
     const ProductPartialData = {
       name: 'testUpdatedProductName',
@@ -86,24 +65,8 @@ describe('ProductsService', () => {
 
   it('should delete a product with valid data', async () => {
 
-    const categoryData = {
-      name: "testCategoryName",
-      description: "testCategoryDescription"
-    }
-
-    const category = await testingContainer.repositories.categoriesRepository.create(categoryData)
-    await testingContainer.repositories.categoriesRepository.save(category)
-
-    const productData = {
-      name: 'testProductName',
-      description: 'testProductDescription',
-      unitsOnStock: 2,
-      price: 21.37,
-      category
-    };
-
-    const product = await testingContainer.repositories.productsRepository.create(productData)
-    await testingContainer.repositories.productsRepository.save(product)
+    const category = await createCategory(testingContainer, categoryData1)
+    const product = await createProduct(testingContainer, productData1, category)
 
     await testingContainer.services.productsService.delete(product.id)
 
@@ -117,54 +80,12 @@ describe('ProductsService', () => {
 
   it('should filter products with valid partial filter data', async () => {
 
-    const categoryData1 = {
-      name: "testCategoryName1",
-      description: "testCategoryDescription1"
-    }
+    const category1 = await createCategory(testingContainer, categoryData1)
+    const category2 = await createCategory(testingContainer, categoryData2)
 
-    const categoryData2 = {
-      name: "testCategoryName2",
-      description: "testCategoryDescription2"
-    }
-
-    const category1 = await testingContainer.repositories.categoriesRepository.create(categoryData1)
-    await testingContainer.repositories.categoriesRepository.save(category1)
-
-    const category2 = await testingContainer.repositories.categoriesRepository.create(categoryData2)
-    await testingContainer.repositories.categoriesRepository.save(category2)
-
-    const productData1 = {
-      name: 'testProductName1',
-      description: 'testProductDescription1',
-      unitsOnStock: 2,
-      price: 21.37,
-      category: category1
-    };
-
-    const productData2 = {
-      name: 'testProductName2',
-      description: 'testProductDescription2',
-      unitsOnStock: 23,
-      price: 1,
-      category: category1
-    };
-
-    const productData3 = {
-      name: 'testProductName3',
-      description: 'testProductDescription3',
-      unitsOnStock: 0,
-      price: 999,
-      category: category2
-    };
-
-    const product1 = await testingContainer.repositories.productsRepository.create(productData1)
-    await testingContainer.repositories.productsRepository.save(product1)
-
-    const product2 = await testingContainer.repositories.productsRepository.create(productData2)
-    await testingContainer.repositories.productsRepository.save(product2)
-
-    const product3 = await testingContainer.repositories.productsRepository.create(productData3)
-    await testingContainer.repositories.productsRepository.save(product3)
+    const product1 = await createProduct(testingContainer, productData1, category1)
+    const product2 = await createProduct(testingContainer, productData2, category1)
+    const product3 = await createProduct(testingContainer, productData3, category2)
 
     const partialFilterData1 = {
       descending: true,
@@ -195,11 +116,11 @@ describe('ProductsService', () => {
       categoryIdArr: [category2.id]
     }
 
-    const res1: any = await testingContainer.services.productsService.getFilteredProducts(partialFilterData1)
-    const res2: any = await testingContainer.services.productsService.getFilteredProducts(partialFilterData2)
-    const res3: any = await testingContainer.services.productsService.getFilteredProducts(partialFilterData3)
-    const res4: any = await testingContainer.services.productsService.getFilteredProducts(partialFilterData4)
-    const res5: any = await testingContainer.services.productsService.getFilteredProducts(partialFilterData5)
+    const res1 = await testingContainer.services.productsService.getFilteredProducts(partialFilterData1)
+    const res2 = await testingContainer.services.productsService.getFilteredProducts(partialFilterData2)
+    const res3 = await testingContainer.services.productsService.getFilteredProducts(partialFilterData3)
+    const res4 = await testingContainer.services.productsService.getFilteredProducts(partialFilterData4)
+    const res5 = await testingContainer.services.productsService.getFilteredProducts(partialFilterData5)
 
     const final1 = res1.products.map(product => product.id)
     const final2 = res2.products.map(product => product.id)
@@ -214,7 +135,5 @@ describe('ProductsService', () => {
     assert.deepStrictEqual(final5, [])
 
   })
-
-
 
 });

@@ -1,13 +1,3 @@
-// import { createCategory, createProduct, createUser } from './helpers';
-
-// export const category1: any = createCategory(categoryData.categoryData1);
-// export const category2: any = createCategory(categoryData.categoryData2);
-
-
-// const product1: any = createProduct(productData.productData1, category1);
-// const product2: any = createProduct(productData.productData2, category1);
-// const product3: any = createProduct(productData.productData3, category2);
-// const product4: any = createProduct(productData.productData4, category2);
 
 export const sampleUserData = {
 
@@ -66,11 +56,6 @@ export const sampleProductData = {
 };
 
 
-
-// const user1 = createUser(userData.userData1)
-// const user2 = createUser(userData.userData2)
-
-// const orderData = {
 //   orderData1: {
 //     productsArray: [
 //       {
@@ -120,36 +105,6 @@ export const sampleProductData = {
 //   }
 // }
 
-// const PartialFilterData = {
-//
-//   partialFilterData1: {
-//     descending: true,
-//     maxPrice: 40,
-//   },
-//
-//   partialFilterData2: {
-//     maxPrice: 800,
-//     minPrice: 500,
-//     categoryIdArr: [category1.id, category2.id]
-//   },
-//
-//   partialFilterData3: {
-//     descending: true,
-//     minPrice: 950,
-//     categoryIdArr: []
-//   },
-//
-//   partialFilterData4: {
-//     ascending: true,
-//     minPrice: 1,
-//     maxPrice: 999,
-//     categoryIdArr: [category1.id, category2.id]
-//   },
-//
-//   partialFilterData5: {
-//     maxPrice: 20,
-//     categoryIdArr: [category2.id]
-//   }
-//
+
 // }
 

@@ -1,11 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductsEntity } from './products.entity';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 import { FilteredProductsDto, ProductsDto, ProductsRo } from './products.dto';
 import { CategoriesEntity } from '../categories/categories.entity';
 import { ProductsFilterBuilder } from './builder/products.filter.builder';
-import { CategoriesRo } from '../categories/categories.dto';
 
 @Injectable()
 export class ProductsService {
@@ -69,7 +68,7 @@ export class ProductsService {
   async getFilteredProducts(
     data: Partial<FilteredProductsDto>,
     page: number = 1,
-  ): Promise<ProductsRo[]> {
+  ) {
 
     const { minPrice, maxPrice, categoryIdArr, ascending, descending } = data;
     const take = 9;
@@ -91,7 +90,7 @@ export class ProductsService {
 
     const totalPages = Math.ceil(totalItems / take);
 
-    const responseObject: any = {
+    return {
       products: this.toResponseProducts(products),
       info: {
         totalPages,
@@ -99,8 +98,6 @@ export class ProductsService {
         pageSize: take,
       },
     };
-
-    return { ...responseObject };
   }
 
   async update(productId: string, data: Partial<ProductsDto>) {
