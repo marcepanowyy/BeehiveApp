@@ -8,99 +8,54 @@ import {
 import { In } from 'typeorm';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { StatusEnum } from '../../shared/enums/status.enum';
+import {
+  sampleCategoryData,
+  sampleProductData,
+  sampleUserData,
+} from '../../shared/test/samples';
+import {
+  createCategory, createOrder,
+  createProduct,
+  createUser,
+} from '../../shared/test/helpers';
 
 describe('OrdersService', () => {
   let testingContainer: ITestingContainer;
 
-  let categoryData1, categoryData2;
+  const categoryData1 = sampleCategoryData.categoryData1;
+  const categoryData2 = sampleCategoryData.categoryData2;
+
+  const productData1 = sampleProductData.productData1;
+  const productData2 = sampleProductData.productData2;
+  const productData3 = sampleProductData.productData3;
+  const productData4 = sampleProductData.productData4;
+
+  const userData1 = sampleUserData.userData1;
+
   let category1, category2;
-  let productData1, productData2, productData3, productData4;
   let product1, product2, product3, product4;
-  let userData1, user1;
-  let orderData1, orderData2, orderData3, orderData4;
-  let order1;
-  let orderDetails1
+  let user1;
+  let orderData1, orderData2, orderData3, orderData4
+
 
   before(async () => {
     testingContainer = await createTestingContainer();
   });
 
   beforeEach(async () => {
+
     await clearDataBaseData(testingContainer);
 
-    categoryData1 = {
-      name: 'testCategoryName1',
-      description: 'testCategoryDescription1',
-    };
+    category1 = await createCategory(testingContainer, categoryData1);
+    category2 = await createCategory(testingContainer, categoryData2);
 
-    categoryData2 = {
-      name: 'testCategoryName2',
-      description: 'testCategoryDescription2',
-    };
+    user1 = await createUser(testingContainer, userData1);
 
-    category1 =
-      testingContainer.repositories.categoriesRepository.create(categoryData1);
-    await testingContainer.repositories.categoriesRepository.save(category1);
-
-    category2 =
-      testingContainer.repositories.categoriesRepository.create(categoryData2);
-    await testingContainer.repositories.categoriesRepository.save(category2);
-
-    productData1 = {
-      name: 'testProductName1',
-      description: 'testProductDescription1',
-      unitsOnStock: 2,
-      price: 21.37,
-      category: category1,
-    };
-
-    productData2 = {
-      name: 'testProductName2',
-      description: 'testProductDescription2',
-      unitsOnStock: 23,
-      price: 1,
-      category: category1,
-    };
-
-    productData3 = {
-      name: 'testProductName3',
-      description: 'testProductDescription3',
-      unitsOnStock: 0,
-      price: 999,
-      category: category2,
-    };
-
-    productData4 = {
-      name: 'testProductName4',
-      description: 'testProductDescription4',
-      unitsOnStock: 999,
-      price: 999,
-      category: category2,
-    };
-
-    product1 =
-      testingContainer.repositories.productsRepository.create(productData1);
-    await testingContainer.repositories.productsRepository.save(product1);
-
-    product2 =
-      testingContainer.repositories.productsRepository.create(productData2);
-    await testingContainer.repositories.productsRepository.save(product2);
-
-    product3 =
-      testingContainer.repositories.productsRepository.create(productData3);
-    await testingContainer.repositories.productsRepository.save(product3);
-
-    product4 =
-      testingContainer.repositories.productsRepository.create(productData4);
-    await testingContainer.repositories.productsRepository.save(product4);
-
-    userData1 = {
-      username: 'test@user.com',
-      password: 'tE$Tp4sSw0rd123',
-    };
-
-    user1 = testingContainer.repositories.usersRepository.create(userData1);
-    await testingContainer.repositories.usersRepository.save(user1);
+    // to control quantity of products
+    product1 = await createProduct(testingContainer, productData1, category1);
+    product2 = await createProduct(testingContainer, productData2, category1);
+    product3 = await createProduct(testingContainer, productData3, category2);
+    product4 = await createProduct(testingContainer, productData4, category2);
 
     orderData1 = {
       productsArray: [
@@ -114,7 +69,6 @@ describe('OrdersService', () => {
         },
       ],
     };
-
     orderData2 = {
       productsArray: [
         {
@@ -131,7 +85,6 @@ describe('OrdersService', () => {
         },
       ],
     };
-
     orderData3 = {
       productsArray: [
         {
@@ -140,7 +93,6 @@ describe('OrdersService', () => {
         },
       ],
     };
-
     orderData4 = {
       productsArray: [
         {
@@ -150,31 +102,16 @@ describe('OrdersService', () => {
       ],
     };
 
-    order1 = await testingContainer.repositories.ordersRepository.create({
-      customer: user1,
-    });
-
-    await testingContainer.repositories.ordersRepository.save(order1);
-
-    await testingContainer.repositories.productsRepository.update(product4.id, {
-      unitsOnStock: product4.unitsOnStock - 1,
-    });
-
-    orderDetails1 = await testingContainer.repositories.orderDetailsRepository.create({
-      product: product4,
-      order: order1,
-      quantity: 1,
-    });
-
-    await testingContainer.repositories.orderDetailsRepository.save(orderDetails1)
-
   });
 
   it('should create an order with valid data', async () => {
+
     const result = await testingContainer.services.ordersService.create(
       orderData1,
       user1.id,
     );
+
+    // when we order, product's quantity decrease
 
     const updatedProduct1 =
       await testingContainer.repositories.productsRepository.findOne({
@@ -186,17 +123,16 @@ describe('OrdersService', () => {
       });
 
     assert.strictEqual(result.status, 'processing');
-
     assert.strictEqual(result.customer.id, user1.id);
 
-    const products1 = result.products;
+    const products = result.products;
 
-    assert.strictEqual(products1[0].productId, product1.id);
-    assert.strictEqual(products1[0].quantity, 1);
+    assert.strictEqual(products[0].productId, product1.id);
+    assert.strictEqual(products[0].quantity, 1);
     assert.strictEqual(updatedProduct1.unitsOnStock, 1); // 2 - 1 = 1
 
-    assert.strictEqual(products1[1].productId, product2.id);
-    assert.strictEqual(products1[1].quantity, 3);
+    assert.strictEqual(products[1].productId, product2.id);
+    assert.strictEqual(products[1].quantity, 3);
     assert.strictEqual(updatedProduct2.unitsOnStock, 20); // 23 - 3 = 20
 
     // check whether rows added in Order Details table
@@ -204,7 +140,7 @@ describe('OrdersService', () => {
       await testingContainer.repositories.orderDetailsRepository.findAndCount({
         where: {
           order: { id: result.id },
-          product: { id: In([products1[0].productId, products1[1].productId]) },
+          product: { id: In([products[0].productId, products[1].productId]) },
         },
       });
 
@@ -283,34 +219,45 @@ describe('OrdersService', () => {
 
   it('should update an order with valid data', async () => {
 
+    const order = await createOrder(testingContainer, orderData1, user1)
+
     const orderStatusData = {
       customerId: user1.id,
       status: StatusEnum.SHIPPED,
     };
 
     await testingContainer.services.ordersService.updateStatusById(
-      order1.id,
+      order.id,
       orderStatusData,
     );
 
-    const updatedOrder = await testingContainer.repositories.ordersRepository.findOne(
-      { where: { id: order1.id } },
-    );
+    const updatedOrder =
+      await testingContainer.repositories.ordersRepository.findOne({
+        where: { id: order.id },
+      });
 
-    assert.strictEqual(updatedOrder.id, order1.id);
+    assert.strictEqual(updatedOrder.id, order.id);
     assert.strictEqual(updatedOrder.status, 'shipped');
-
   });
 
   it('should delete an order by valid order id', async () => {
 
-    await testingContainer.services.ordersService.destroy(order1.id, user1.id)
 
-    const orderDetails = await testingContainer.repositories.orderDetailsRepository.findOne({where: {order: {id: order1.id}}})
-    const order = await testingContainer.repositories.ordersRepository.findOne({where: {id: order1.id}})
+    const order = await createOrder(testingContainer, orderData1, user1)
 
-    assert.strictEqual(orderDetails, null)
-    assert.strictEqual(order, null)
+    await testingContainer.services.ordersService.destroy(order.id, user1.id);
+
+    const orderDetails =
+      await testingContainer.repositories.orderDetailsRepository.findOne({
+        where: { order: { id: order.id } },
+      });
+
+    const deletedOrder = await testingContainer.repositories.ordersRepository.findOne({
+      where: { id: order.id },
+    });
+
+    assert.strictEqual(orderDetails, null);
+    assert.strictEqual(deletedOrder, null);
 
   });
 });

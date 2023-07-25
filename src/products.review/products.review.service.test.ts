@@ -7,15 +7,22 @@ import {
 } from '../../shared/test/utils';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { StatusEnum } from '../../shared/enums/status.enum';
+import { sampleCategoryData, sampleProductData, sampleUserData } from '../../shared/test/samples';
+import { createCategory, createOrder, createProduct, createUser } from '../../shared/test/helpers';
 
 describe('ProductsReviewService', () => {
   let testingContainer: ITestingContainer;
 
-  let categoryData, category;
-  let productData, product;
-  let userData, user;
-  let orderData, order;
-  let orderDetails;
+  const categoryData1 = sampleCategoryData.categoryData1;
+  const productData1 = sampleProductData.productData1;
+  const userData1 = sampleUserData.userData1;
+  const userData2 = sampleUserData.userData2;
+
+
+  let category;
+  let product;
+  let user1, user2;
+  let order;
   let productReviewData;
 
   before(async () => {
@@ -23,36 +30,12 @@ describe('ProductsReviewService', () => {
     testingContainer = await createTestingContainer();
     await clearDataBaseData(testingContainer);
 
-    categoryData = {
-      name: 'testCategoryName1',
-      description: 'testCategoryDescription1',
-    };
+    category = await createCategory(testingContainer, categoryData1)
+    product = await createProduct(testingContainer, productData1, category)
+    user1 = await createUser(testingContainer, userData1)
+    user2 = await createUser(testingContainer, userData2)
 
-    category =
-      testingContainer.repositories.categoriesRepository.create(categoryData);
-    await testingContainer.repositories.categoriesRepository.save(category);
-
-    productData = {
-      name: 'testProductName1',
-      description: 'testProductDescription1',
-      unitsOnStock: 2,
-      price: 21.37,
-      category: category,
-    };
-
-    product =
-      testingContainer.repositories.productsRepository.create(productData);
-    await testingContainer.repositories.productsRepository.save(product);
-
-    userData = {
-      username: 'test@user.com',
-      password: 'tE$Tp4sSw0rd123',
-    };
-
-    user = testingContainer.repositories.usersRepository.create(userData);
-    await testingContainer.repositories.usersRepository.save(user);
-
-    orderData = {
+    const orderData = {
       productsArray: [
         {
           productId: product.id,
@@ -61,25 +44,7 @@ describe('ProductsReviewService', () => {
       ],
     };
 
-    await testingContainer.repositories.productsRepository.update(product.id, {
-      unitsOnStock: product.unitsOnStock - 1,
-    });
-
-    order = await testingContainer.repositories.ordersRepository.create({
-      customer: user,
-    });
-    await testingContainer.repositories.ordersRepository.save(order);
-
-    orderDetails =
-      await testingContainer.repositories.orderDetailsRepository.create({
-        product: product,
-        order: order,
-        quantity: 1,
-      });
-
-    await testingContainer.repositories.orderDetailsRepository.save(
-      orderDetails,
-    );
+    order = await createOrder(testingContainer, orderData, user1)
 
     productReviewData = {
       content: 'This is valid content because it has between 10 and 100 chars',
@@ -91,30 +56,21 @@ describe('ProductsReviewService', () => {
   it('should create a review with valid data', async () => {
 
     const review = await testingContainer.services.productsReviewService.create(
-      user.id,
+      user1.id,
       productReviewData,
       product.id,
     );
 
     const addedReview = await testingContainer.repositories.productsReviewRepository.findOne({where: {id: review.id}})
 
-
     assert.notStrictEqual(addedReview, null)
     assert.strictEqual(review.id, addedReview.id)
-    assert.strictEqual(review.customer.id, user.id)
+    assert.strictEqual(review.customer.id, user1.id)
     assert.strictEqual(review.product.id, product.id)
 
   });
 
   it('should throw an error when creating review when user did not buy the product', async () => {
-
-    const userData2 = {
-      username: 'test2@user.com',
-      password: 'tE$Tp4sSw0rd123',
-    };
-
-    const user2 = testingContainer.repositories.usersRepository.create(userData2);
-    await testingContainer.repositories.usersRepository.save(user2);
 
     await assert.rejects(
       async () => {

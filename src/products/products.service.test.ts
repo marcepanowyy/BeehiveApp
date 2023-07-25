@@ -116,24 +116,20 @@ describe('ProductsService', () => {
       categoryIdArr: [category2.id]
     }
 
-    const res1 = await testingContainer.services.productsService.getFilteredProducts(partialFilterData1)
-    const res2 = await testingContainer.services.productsService.getFilteredProducts(partialFilterData2)
-    const res3 = await testingContainer.services.productsService.getFilteredProducts(partialFilterData3)
-    const res4 = await testingContainer.services.productsService.getFilteredProducts(partialFilterData4)
-    const res5 = await testingContainer.services.productsService.getFilteredProducts(partialFilterData5)
+    const res1 = (await testingContainer.services.productsService.getFilteredProducts(partialFilterData1)).products.map(product => product.id)
+    const res2 = (await testingContainer.services.productsService.getFilteredProducts(partialFilterData2)).products.map(product => product.id)
+    const res3 = (await testingContainer.services.productsService.getFilteredProducts(partialFilterData3)).products.map(product => product.id)
+    const res4 = (await testingContainer.services.productsService.getFilteredProducts(partialFilterData4)).products.map(product => product.id)
+    const res5 = (await testingContainer.services.productsService.getFilteredProducts(partialFilterData5)).products.map(product => product.id)
 
-    const final1 = res1.products.map(product => product.id)
-    const final2 = res2.products.map(product => product.id)
-    const final3 = res3.products.map(product => product.id)
-    const final4 = res4.products.map(product => product.id)
-    const final5 = res5.products.map(product => product.id)
-
-    assert.deepStrictEqual(final1, [product1.id, product2.id])
-    assert.deepStrictEqual(final2, [])
-    assert.deepStrictEqual(final3, [product3.id])
-    assert.deepStrictEqual(final4, [product2.id, product1.id, product3.id])
-    assert.deepStrictEqual(final5, [])
+    assert.deepStrictEqual(res1, [product1.id, product2.id])
+    assert.deepStrictEqual(res2, [])
+    assert.deepStrictEqual(res3, [product3.id])
+    assert.deepStrictEqual(res4, [product2.id, product1.id, product3.id])
+    assert.deepStrictEqual(res5, [])
 
   })
+
+
 
 });
