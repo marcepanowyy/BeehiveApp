@@ -6,7 +6,6 @@ import {
   ITestingContainer,
 } from '../../shared/test/utils';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { StatusEnum } from '../../shared/enums/status.enum';
 import { sampleCategoryData, sampleProductData, sampleUserData } from '../../shared/test/samples';
 import { createCategory, createOrder, createProduct, createUser } from '../../shared/test/helpers';
 

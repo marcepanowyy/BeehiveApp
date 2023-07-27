@@ -3,7 +3,7 @@ import {
   Controller,
   Get,
   Param,
-  Post, Query,
+  Post, Query, Req,
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
@@ -22,8 +22,9 @@ import { AuthGuard } from '../guards/auth.guard';
 import { Role } from '../../../shared/decorators/roles.decorator';
 import { ValidationPipe } from '../../../shared/validation.pipe';
 
-@ApiTags('users')
-@Controller('users')
+
+@ApiTags('auth')
+@Controller('auth')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
@@ -41,7 +42,7 @@ export class UsersController {
   }
 
   // TODO - admin only
-  @Get(':id')
+  @Get('users/:id')
 
   @ApiParam({
     name: 'id',
@@ -80,4 +81,17 @@ export class UsersController {
   register(@Body() data: UsersDto) {
     return this.usersService.register(data);
   }
+
+
+  @Get('google/login')
+  handleLogin(){
+    return {msg: 'Google Authentication'}
+  }
+
+  @Get('google/redirect')
+  handleRedirect(){
+    return {msg: 'OK'}
+  }
+
+
 }
