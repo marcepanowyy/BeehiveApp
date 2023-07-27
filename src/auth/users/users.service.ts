@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersEntity } from './users.entity';
 import { Repository } from 'typeorm';
-import { UsersDto, UsersRO } from './users.dto';
+import { GoogleUserDetails, UsersDto, UsersRO } from './users.dto';
 
 @Injectable()
 export class UsersService {
@@ -63,4 +63,19 @@ export class UsersService {
     await this.usersRepository.save(user);
     return user.toResponseUser();
   }
+
+
+  async validateGoogleUser(details: GoogleUserDetails){
+    const {email, displayName} = details
+    let user = await this.usersRepository.findOne({where: {username: email}})
+    if(!user){
+      // todo - password can be nullable
+      // user = this.usersRepository.create(email)
+      console.log("user not found...")
+      console.log("i should create here a user")
+    }
+    console.log(details)
+  }
+
+
 }

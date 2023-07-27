@@ -21,6 +21,8 @@ import {
 import { AuthGuard } from '../guards/auth.guard';
 import { Role } from '../../../shared/decorators/roles.decorator';
 import { ValidationPipe } from '../../../shared/validation.pipe';
+import { GoogleAuthGuard } from '../guards/google.auth.guard';
+
 
 
 @ApiTags('auth')
@@ -84,13 +86,18 @@ export class UsersController {
 
 
   @Get('google/login')
+  @UseGuards(GoogleAuthGuard)
   handleLogin(){
-    return {msg: 'Google Authentication'}
+    console.log('handle login')
+    // return {msg: 'Google Authentication'}
+    // findOrCreateGoogleUser()
   }
 
   @Get('google/redirect')
+  @UseGuards(GoogleAuthGuard)
   handleRedirect(){
-    return {msg: 'OK'}
+    // return {msg: 'OK'}
+    console.log('handle redirect')
   }
 
 

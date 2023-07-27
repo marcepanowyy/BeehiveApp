@@ -39,3 +39,10 @@ export class UsersRO {
   role?: number;
   reviews?: ProductsReviewEntity[]
 }
+
+export class GoogleUserDetails{
+
+  email: string;
+  displayName: string
+
+}
