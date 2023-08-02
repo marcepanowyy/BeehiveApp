@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UsersEntity } from './users.entity';
 import { Repository } from 'typeorm';
 import { GoogleUserDetails, UsersDto, UsersRO } from './users.dto';
+import { UserTypeEnum } from '../../../shared/enums/user.type.enum';
+import { buildSwaggerInitJS } from '@nestjs/swagger/dist/swagger-ui';
 
 @Injectable()
 export class UsersService {
@@ -64,18 +66,33 @@ export class UsersService {
     return user.toResponseUser();
   }
 
+  // todo - when registering normal user - check for google user
+  // todo - if google user's email exists - change password from
+  // todo - null to value
 
-  async validateGoogleUser(details: GoogleUserDetails){
-    const {email, displayName} = details
-    let user = await this.usersRepository.findOne({where: {username: email}})
-    if(!user){
-      // todo - password can be nullable
-      // user = this.usersRepository.create(email)
-      console.log("user not found...")
-      console.log("i should create here a user")
+  // todo - add tests
+
+  async validateGoogleUser(details: GoogleUserDetails) {
+    const { email, displayName } = details;
+    let user = await this.usersRepository.findOne({
+      where: { username: email },
+    });
+    if (!user) {
+      user = this.usersRepository.create({
+        type: UserTypeEnum.GOOGLE,
+        username: email,
+      });
+      await this.usersRepository.save(user);
+      return user.toResponseUser();
+    } else if (user.type === UserTypeEnum.STANDARD) {
+      await this.usersRepository.update(user.id, { type: UserTypeEnum.BOTH });
+      const updatedUser = await this.usersRepository.findOne({
+        where: { id: user.id },
+      });
+      return updatedUser.toResponseUser();
     }
-    console.log(details)
+
+    // throw new HttpException("Google authentication failed", HttpStatus.UNAUTHORIZED)
+
   }
-
-
 }

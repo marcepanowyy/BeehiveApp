@@ -88,16 +88,14 @@ export class UsersController {
   @Get('google/login')
   @UseGuards(GoogleAuthGuard)
   handleLogin(){
-    console.log('handle login')
-    // return {msg: 'Google Authentication'}
-    // findOrCreateGoogleUser()
+    return {msg: 'Google Authentication'}
   }
 
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
   handleRedirect(){
-    // return {msg: 'OK'}
-    console.log('handle redirect')
+    console.log("inside google redirect")
+    return {msg: 'OK'}
   }
 
 
