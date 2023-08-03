@@ -10,6 +10,7 @@ import { ProductsModule } from './products/products.module';
 import { OrderDetailsModule } from './order.details/order.details.module';
 import { ProductsReviewModule } from './products.review/products.review.module';
 import { RoleGuard } from './auth/guards/role.guard';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { RoleGuard } from './auth/guards/role.guard';
     ProductsModule,
     OrderDetailsModule,
     ProductsReviewModule,
+    PassportModule.register({ session: true }),
   ],
   controllers: [],
   providers: [
@@ -31,7 +33,8 @@ import { RoleGuard } from './auth/guards/role.guard';
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
     },
-    { provide: APP_GUARD,
+    {
+      provide: APP_GUARD,
       useClass: RoleGuard
     },
   ],

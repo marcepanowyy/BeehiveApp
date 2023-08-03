@@ -19,13 +19,12 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
   }
 
   // evoked when users successfully authenticated themselves
+
   async validate(accessToken: string, refreshToken: string, profile: Profile) {
-    // console.log(accessToken);
-    // console.log(refreshToken);
-    // console.log(profile);
-    return this.usersService.validateGoogleUser({
+    const user = await this.usersService.validateGoogleUser({
       email: profile.emails[0].value,
       displayName: profile.displayName,
     });
+    return user || null
   }
 }

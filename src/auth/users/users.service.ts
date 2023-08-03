@@ -4,7 +4,6 @@ import { UsersEntity } from './users.entity';
 import { Repository } from 'typeorm';
 import { GoogleUserDetails, UsersDto, UsersRO } from './users.dto';
 import { UserTypeEnum } from '../../../shared/enums/user.type.enum';
-import { buildSwaggerInitJS } from '@nestjs/swagger/dist/swagger-ui';
 
 @Injectable()
 export class UsersService {
@@ -46,7 +45,11 @@ export class UsersService {
   async login(data: UsersDto): Promise<UsersRO> {
     const { username, password } = data;
     const user = await this.usersRepository.findOne({ where: { username } });
-    if (!user || !(await user.comparePassword(password))) {
+    if (
+      !user ||
+      user.type === UserTypeEnum.GOOGLE ||
+      !(await user.comparePassword(password))
+    ) {
       throw new HttpException(
         'Invalid username or password',
         HttpStatus.UNAUTHORIZED,
@@ -56,31 +59,29 @@ export class UsersService {
   }
 
   async register(data: UsersDto): Promise<UsersRO> {
-    const { username } = data;
+    const { username, password } = data;
     let user = await this.usersRepository.findOne({ where: { username } });
-    if (user) {
+    if (user && user.type === UserTypeEnum.GOOGLE) {
+      user.type = UserTypeEnum.BOTH;
+      user.password = password;
+    } else if (user) {
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+    } else {
+      user = await this.usersRepository.create(data);
     }
-    user = await this.usersRepository.create(data);
     await this.usersRepository.save(user);
     return user.toResponseUser();
   }
 
-  // todo - when registering normal user - check for google user
-  // todo - if google user's email exists - change password from
-  // todo - null to value
-
-  // todo - add tests
-
   async validateGoogleUser(details: GoogleUserDetails) {
-    const { email, displayName } = details;
+    const { email } = details;
     let user = await this.usersRepository.findOne({
       where: { username: email },
     });
     if (!user) {
       user = this.usersRepository.create({
-        type: UserTypeEnum.GOOGLE,
         username: email,
+        type: UserTypeEnum.GOOGLE,
       });
       await this.usersRepository.save(user);
       return user.toResponseUser();
@@ -90,9 +91,17 @@ export class UsersService {
         where: { id: user.id },
       });
       return updatedUser.toResponseUser();
+    } else if (user.type === UserTypeEnum.BOTH) {
+      return user.toResponseUser();
     }
 
-    // throw new HttpException("Google authentication failed", HttpStatus.UNAUTHORIZED)
+    throw new HttpException(
+      'Google authentication failed',
+      HttpStatus.UNAUTHORIZED,
+    );
+  }
 
+  async findUserById(id: string) {
+    return this.usersRepository.findOneBy({ id });
   }
 }

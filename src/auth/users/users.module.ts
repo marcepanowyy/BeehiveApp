@@ -5,10 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersEntity } from './users.entity';
 import { ProductsReviewEntity } from '../../products.review/products.review.entity';
 import { GoogleStrategy } from '../strategy/google.strategy';
+import { SessionSerializer } from '../serializer/session.serializer';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UsersEntity, ProductsReviewEntity])],
   controllers: [UsersController],
-  providers: [UsersService, GoogleStrategy],
+  providers: [UsersService, GoogleStrategy, SessionSerializer],
 })
 export class UsersModule {}

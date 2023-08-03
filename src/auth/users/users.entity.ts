@@ -1,5 +1,5 @@
 import {
-  BeforeInsert,
+  BeforeInsert, BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -49,8 +49,12 @@ export class UsersEntity {
   // end of relationships
 
   @BeforeInsert()
+  @BeforeUpdate()
   async hashPassword() {
-    this.password = await bcrypt.hash(this.password, 10);
+    // oauth users have no password unless they register by page
+    if (this.password) {
+      this.password = await bcrypt.hash(this.password, 10);
+    }
   }
 
   // private methods here, not in service because of token:

@@ -24,7 +24,6 @@ import { ValidationPipe } from '../../../shared/validation.pipe';
 import { GoogleAuthGuard } from '../guards/google.auth.guard';
 
 
-
 @ApiTags('auth')
 @Controller('auth')
 export class UsersController {
@@ -84,18 +83,27 @@ export class UsersController {
     return this.usersService.register(data);
   }
 
-
   @Get('google/login')
   @UseGuards(GoogleAuthGuard)
   handleLogin(){
-    return {msg: 'Google Authentication'}
   }
 
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
   handleRedirect(){
-    console.log("inside google redirect")
     return {msg: 'OK'}
+  }
+
+
+  @Get('status')
+  user(@Req() request: any){
+    if(request.user){
+      return {msg: "authenticated",
+      user: request.user
+      }
+
+    }
+    return {msg: 'Not authenticated'}
   }
 
 

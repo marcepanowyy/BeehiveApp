@@ -5,7 +5,7 @@ import { OrdersRo } from '../../orders/orders.dto';
 
 export class UsersDto {
   @IsEmail()
-  @Length(6, 18)
+  @Length(6, 24)
 
   @ApiProperty({
     description: 'The name of the user',
