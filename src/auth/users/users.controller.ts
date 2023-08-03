@@ -94,7 +94,6 @@ export class UsersController {
     return {msg: 'OK'}
   }
 
-
   @Get('status')
   user(@Req() request: any){
     if(request.user){

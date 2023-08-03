@@ -91,7 +91,7 @@ export class UsersService {
         where: { id: user.id },
       });
       return updatedUser.toResponseUser();
-    } else if (user.type === UserTypeEnum.BOTH) {
+    } else if (user.type === UserTypeEnum.BOTH || user.type === UserTypeEnum.GOOGLE) {
       return user.toResponseUser();
     }
 
@@ -101,7 +101,8 @@ export class UsersService {
     );
   }
 
+  // to deserialize user
   async findUserById(id: string) {
-    return this.usersRepository.findOneBy({ id });
+    return  await this.usersRepository.findOneBy({ id });
   }
 }
