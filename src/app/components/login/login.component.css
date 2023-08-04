@@ -1,4 +1,3 @@
-
 .login-container{
   height: calc(100vh - 4rem);
   width: 100%;
@@ -8,7 +7,7 @@
 
 .form-container{
   width: 25rem;
-  height: 20rem;
+  height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -18,7 +17,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-
+  padding: 2rem;
 }
 
 .example-right-align {
@@ -48,3 +47,4 @@ input.example-right-align {
 mat-error{
   font-size: 0.8rem;
 }
+

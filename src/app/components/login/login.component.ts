@@ -3,6 +3,11 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ApiService} from "../../services/api.service";
 import {Router} from "@angular/router";
 import {UserRequest} from "../../interfaces/user/UserRequest";
+import {MatIconRegistry} from "@angular/material/icon";
+import {DomSanitizer} from "@angular/platform-browser";
+
+const googleLogoURL =
+  "https://raw.githubusercontent.com/fireflysemantics/logo/master/Google.svg";
 
 @Component({
   selector: 'app-login',
@@ -12,7 +17,12 @@ import {UserRequest} from "../../interfaces/user/UserRequest";
 export class LoginComponent {
 
   constructor(private api: ApiService,
-              private router: Router){}
+              private router: Router,
+              private matIconRegistry: MatIconRegistry,
+              private domSanitizer: DomSanitizer){
+    this.matIconRegistry.addSvgIcon("logo",
+      this.domSanitizer.bypassSecurityTrustResourceUrl(googleLogoURL))
+  }
 
   // form control
 
@@ -55,6 +65,19 @@ export class LoginComponent {
         alert(err.error.message)
       }
     })
+  }
+
+  loginUserByGoogle(){
+
+    this.api.loginUserByGoogle().subscribe({
+      next: (res) => {
+        console.log(res)
+      },
+      error: (err) => {
+        console.log(err)
+      }
+    })
+
   }
 
   // errors

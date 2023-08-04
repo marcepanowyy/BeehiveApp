@@ -43,7 +43,7 @@ export class ProductsComponent implements OnInit {
               private matDialog: MatDialog) {}
 
   ngOnInit() {
-    this.filterSubject.pipe(debounceTime(500)).subscribe((filter) => {
+    this.filterSubject.pipe(debounceTime(300)).subscribe((filter) => {
       this.getFilteredProducts(filter);
     });
     this.getFilteredProducts(this.data);
@@ -62,7 +62,6 @@ export class ProductsComponent implements OnInit {
         this.totalPages = info.totalPages;
         this.pageSize = info.pageSize;
         this.totalItems = info.totalItems;
-        console.log(res);
       },
       error: (err) => {
         alert(err.error.message);

@@ -34,6 +34,7 @@ import { CartComponent } from './components/cart/cart.component';
 import {MatBadgeModule} from "@angular/material/badge";
 import {TokenInterceptor} from "./services/token.interceptor";
 import {MatSidenavModule} from "@angular/material/sidenav";
+import {CoolSocialLoginButtonsModule} from "@angular-cool/social-login-buttons";
 
 const appRoutes: Routes = [
   {path: "Home", component: HomeComponent},
@@ -84,7 +85,8 @@ const appRoutes: Routes = [
     MatExpansionModule,
     MatListModule,
     MatBadgeModule,
-    MatSidenavModule
+    MatSidenavModule,
+    CoolSocialLoginButtonsModule
   ],
   providers: [
     {

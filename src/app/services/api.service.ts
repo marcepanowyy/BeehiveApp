@@ -10,6 +10,7 @@ import {UserResponse} from "../interfaces/user/UserResponse";
 import {OrdersResponse} from "../interfaces/order/OrdersResponse";
 import {OrderRequest} from "../interfaces/order/OrderRequest";
 import {OrderResponse} from "../interfaces/order/OrderResponse";
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -32,11 +33,15 @@ export class ApiService {
   // users
 
   registerUser(data: UserRequest){
-    return this.http.post<UserResponse>("http://localhost:4000/users/register", data)
+    return this.http.post<UserResponse>("http://localhost:4000/auth/register", data)
   }
 
   loginUser(data: UserRequest){
-    return this.http.post<UserResponse>("http://localhost:4000/users/login", data)
+    return this.http.post<UserResponse>("http://localhost:4000/auth/login", data)
+  }
+
+  loginUserByGoogle(): Observable<any>{
+    return this.http.get<any>("http://localhost:4000/auth/google/login")
   }
 
   // products
