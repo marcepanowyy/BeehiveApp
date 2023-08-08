@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Filter} from "../interfaces/filter/Filter";
 import {UserRequest} from "../interfaces/user/UserRequest";
 import {CategoriesResponse} from "../interfaces/category/CategoriesResponse";
@@ -40,8 +40,18 @@ export class ApiService {
     return this.http.post<UserResponse>("http://localhost:4000/auth/login", data)
   }
 
-  loginUserByGoogle(): Observable<any>{
-    return this.http.get<any>("http://localhost:4000/auth/google/login")
+  loginGoogleUser(userTempId: string, tokenIgnore: boolean = false) {
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${userTempId}`
+    });
+
+    const options = {
+      headers: headers,
+      params: { tokenIgnore: tokenIgnore.toString() }
+    };
+
+    return this.http.post<any>("http://localhost:4000/auth/google/login", {}, options);
   }
 
   // products

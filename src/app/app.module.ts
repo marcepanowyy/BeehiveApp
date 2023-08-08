@@ -35,6 +35,7 @@ import {MatBadgeModule} from "@angular/material/badge";
 import {TokenInterceptor} from "./services/token.interceptor";
 import {MatSidenavModule} from "@angular/material/sidenav";
 import {CoolSocialLoginButtonsModule} from "@angular-cool/social-login-buttons";
+import { GoogleComponent } from './components/login/google/google.component';
 
 const appRoutes: Routes = [
   {path: "Home", component: HomeComponent},
@@ -44,6 +45,7 @@ const appRoutes: Routes = [
   {path: "Register", component: RegisterComponent},
   {path: "Orders", component: OrdersComponent},
   {path: "Cart", component: CartComponent},
+  {path: "Google", component: GoogleComponent},
   {path: '', redirectTo: "Home", pathMatch: "full"},
 ]
 
@@ -60,6 +62,7 @@ const appRoutes: Routes = [
     Dialog1Component,
     Dialog2Component,
     CartComponent,
+    GoogleComponent,
   ],
   imports: [
     BrowserModule,
@@ -86,7 +89,7 @@ const appRoutes: Routes = [
     MatListModule,
     MatBadgeModule,
     MatSidenavModule,
-    CoolSocialLoginButtonsModule
+    CoolSocialLoginButtonsModule,
   ],
   providers: [
     {
@@ -94,6 +97,7 @@ const appRoutes: Routes = [
     useClass: TokenInterceptor,
     multi: true
   },
+
   ],
   bootstrap: [AppComponent]
 })

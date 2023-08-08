@@ -19,9 +19,15 @@
 
     <button mat-raised-button class="submit-btn" color="primary" (click) = onSubmitClick()>Submit</button>
 
-    <cool-google-button color="light" class="google-login-btn" (click)="loginUserByGoogle()">
-      Login with Google
-    </cool-google-button>
+    <a href="http://localhost:4000/auth/google/login">
+      <cool-google-button color="light" class="google-login-btn">
+        Login with Google
+      </cool-google-button>
+    </a>
+
+    <a href="http://localhost:4000/auth/google">
+        Login with Google
+    </a>
 
   </mat-card>
 
