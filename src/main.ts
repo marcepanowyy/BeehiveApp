@@ -11,7 +11,18 @@ const port = process.env.PORT || 8080;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors();
+
+  app.enableCors({
+    origin: 'http://localhost:4200',
+    methods: 'GET, POST, PUT, DELETE',
+    allowedHeaders: 'Content-Type, Authorization',
+
+  });
+
+  app.use((req, res, next) => {
+    next();
+  });
+
 
   const config = new DocumentBuilder()
     .setTitle('Swagger for Beehive App')

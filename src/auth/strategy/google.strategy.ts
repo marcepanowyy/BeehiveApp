@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Profile, Strategy } from 'passport-google-oauth20';
+import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20';
 
 import 'dotenv/config';
 import { UsersService } from '../users/users.service';
@@ -20,11 +20,26 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
 
   // evoked when users successfully authenticated themselves
 
-  async validate(accessToken: string, refreshToken: string, profile: Profile) {
-    const user = await this.usersService.validateGoogleUser({
-      email: profile.emails[0].value,
-      displayName: profile.displayName,
-    });
-    return user || null
+  async validate(accessToken: string, refreshToken: string, profile: Profile, done: VerifyCallback) {
+
+    const {name, emails, photos} = profile
+
+    const user = {
+      email: emails[0].value,
+      lastName: name.familyName,
+      firstName: name.givenName,
+      picture: photos[0].value,
+      accessToken
+    };
+
+    done(null, user)
+
+    // console.log(profile)
+    // const user = await this.usersService.validateGoogleUser({
+    //   email: profile.emails[0].value,
+    //   displayName: profile.displayName,
+    // });
+    // return user || null
+
   }
 }

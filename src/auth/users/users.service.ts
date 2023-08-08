@@ -1,15 +1,20 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersEntity } from './users.entity';
 import { Repository } from 'typeorm';
-import { GoogleUserDetails, UsersDto, UsersRO } from './users.dto';
+import { GoogleUser, UsersDto, UsersRO } from './users.dto';
 import { UserTypeEnum } from '../../../shared/enums/user.type.enum';
+
+import { Request, Response } from 'express';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UsersEntity)
     private usersRepository: Repository<UsersEntity>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   // 5 customers, show for each up to 5 orders -> just to check who ordered sth ...
@@ -73,8 +78,35 @@ export class UsersService {
     return user.toResponseUser();
   }
 
-  async validateGoogleUser(details: GoogleUserDetails) {
-    const { email } = details;
+
+  // google
+
+  async googleRedirect(req: Request, res: Response) {
+    const userTempId = crypto.randomUUID();
+    await this.cacheManager.set(
+      `temp-google-user__${userTempId}`,
+      req.user,
+      10000,
+    );
+    res.redirect(`http://localhost:4200/Google?id=${userTempId}`)
+  }
+
+  async googleLoginHandler(req: Request) {
+
+    const authorization = req.get('Authorization')
+    if (!authorization) throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED)
+
+    const userTempId = authorization.replace('Bearer ', '')
+
+    if(!userTempId) throw new HttpException('No user temporary Id found', HttpStatus.UNAUTHORIZED)
+
+    const googleUser: GoogleUser = await this.cacheManager.get(`temp-google-user__${userTempId}`)
+
+    return this.googleLogin(googleUser)
+  }
+
+  async googleLogin(googleUser: GoogleUser){
+    const { email } = googleUser;
     let user = await this.usersRepository.findOne({
       where: { username: email },
     });
@@ -91,7 +123,10 @@ export class UsersService {
         where: { id: user.id },
       });
       return updatedUser.toResponseUser();
-    } else if (user.type === UserTypeEnum.BOTH || user.type === UserTypeEnum.GOOGLE) {
+    } else if (
+      user.type === UserTypeEnum.BOTH ||
+      user.type === UserTypeEnum.GOOGLE
+    ) {
       return user.toResponseUser();
     }
 
@@ -103,6 +138,6 @@ export class UsersService {
 
   // to deserialize user
   async findUserById(id: string) {
-    return  await this.usersRepository.findOneBy({ id });
+    return await this.usersRepository.findOneBy({ id });
   }
 }
