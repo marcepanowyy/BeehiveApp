@@ -77,9 +77,7 @@ export class UsersController {
     return this.usersService.register(data);
   }
 
-  @Get('google')
-  @UseGuards(GoogleAuthGuard)
-  handleGoogleLogin() {}
+  // google
 
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)

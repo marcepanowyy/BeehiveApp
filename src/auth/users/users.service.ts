@@ -78,17 +78,25 @@ export class UsersService {
     return user.toResponseUser();
   }
 
+  async getRoleByUserId(userId: string): Promise<number>{
+    const user = await this.usersRepository.findOne({where: {id: userId}})
+    if(!user){
+      throw new HttpException("User not found by ID", HttpStatus.NOT_FOUND)
+    }
+    return user.role
+  }
+
 
   // google
 
   async googleRedirect(req: Request, res: Response) {
-    const userTempId = crypto.randomUUID();
+    const userTempId = req.query['state']
     await this.cacheManager.set(
       `temp-google-user__${userTempId}`,
       req.user,
       10000,
     );
-    res.redirect(`http://localhost:4200/Google?id=${userTempId}`)
+    res.send('<script>window.close()</script>')
   }
 
   async googleLoginHandler(req: Request) {
