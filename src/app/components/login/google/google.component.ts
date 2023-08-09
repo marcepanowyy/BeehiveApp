@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
+import {Router} from "@angular/router";
 import {ApiService} from "../../../services/api.service";
 import {environment} from "../../../../../environment";
 

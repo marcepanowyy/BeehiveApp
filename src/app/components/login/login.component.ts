@@ -1,9 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ApiService} from "../../services/api.service";
-import {ActivatedRoute, ParamMap, Router} from "@angular/router";
+import {Router} from "@angular/router";
 import {UserRequest} from "../../interfaces/user/UserRequest";
-import {environment} from "../../../../environment";
 
 
 @Component({
@@ -12,8 +11,6 @@ import {environment} from "../../../../environment";
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent{
-
-  private tempGoogleUserId: string = ''
 
   constructor(private api: ApiService,
               private router: Router
