@@ -3,6 +3,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ApiService} from "../../services/api.service";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {UserRequest} from "../../interfaces/user/UserRequest";
+import {environment} from "../../../../environment";
 
 
 @Component({
@@ -11,6 +12,8 @@ import {UserRequest} from "../../interfaces/user/UserRequest";
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent{
+
+  private tempGoogleUserId: string = ''
 
   constructor(private api: ApiService,
               private router: Router
@@ -69,7 +72,6 @@ export class LoginComponent{
     }
     return this.email.hasError('email') ? 'Not a valid email' : '';
   }
-
 
 }
 
