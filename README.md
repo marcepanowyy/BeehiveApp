@@ -30,5 +30,6 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
+![OAUTH_LOGIC](https://github.com/marcepanowyy/BeehiveApp/assets/101901301/769a135b-0747-451d-baeb-35ef516acf56)
 
 
