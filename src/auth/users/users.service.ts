@@ -14,6 +14,7 @@ import { UserTypeEnum } from '../../../shared/enums/user.type.enum';
 import { Request, Response } from 'express';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { MailService } from '../../mail/mail.service';
 
 @Injectable()
 export class UsersService {
@@ -21,6 +22,7 @@ export class UsersService {
     @InjectRepository(UsersEntity)
     private usersRepository: Repository<UsersEntity>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private mailService: MailService,
   ) {}
 
   // 5 customers, show for each up to 5 orders -> just to check who ordered sth ...
@@ -81,6 +83,10 @@ export class UsersService {
       user = await this.usersRepository.create(data);
     }
     await this.usersRepository.save(user);
+
+    // send welcoming mail
+    this.mailService.sendWelcomingMail(username)
+
     return user.toResponseUser();
   }
 
@@ -136,6 +142,10 @@ export class UsersService {
         activatedAccount: true, // when creating google users, automatically activate their accounts
       });
       await this.usersRepository.save(user);
+
+      // send welcoming email
+      this.mailService.sendWelcomingMail(email)
+
       return user.toResponseUser();
     } else if (user.type === UserTypeEnum.STANDARD) {
       await this.usersRepository.update(user.id, {
@@ -160,6 +170,7 @@ export class UsersService {
   }
 
   // to deserialize user
+
   async findUserById(id: string) {
     return await this.usersRepository.findOneBy({ id });
   }
