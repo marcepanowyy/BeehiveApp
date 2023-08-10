@@ -15,6 +15,7 @@ import { Request, Response } from 'express';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { MailService } from '../../mail/mail.service';
+import html = Mocha.reporters.html;
 
 @Injectable()
 export class UsersService {
@@ -86,6 +87,8 @@ export class UsersService {
 
     // send welcoming mail
     this.mailService.sendWelcomingMail(username)
+    //send activating mail
+    this.mailService.sendActivatingMail(username)
 
     return user.toResponseUser();
   }
@@ -177,7 +180,7 @@ export class UsersService {
 
   // mails (verification etc.)
 
-  async verifyEmail(verificationKey: string) {
+  async verifyEmail(verificationKey: string): Promise<string> {
 
     const userEmail: string = await this.cacheManager.get(
       `temp-user-email-verification-key__${verificationKey}`,
@@ -195,6 +198,8 @@ export class UsersService {
       throw new HttpException('No user found', HttpStatus.UNAUTHORIZED);
 
     await this.usersRepository.update(user.id, {activatedAccount: true})
+
+    return "You have activated your account."
 
   }
 

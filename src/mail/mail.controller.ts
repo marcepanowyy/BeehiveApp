@@ -7,14 +7,14 @@ export class MailController {
   constructor(private mailService: MailService) {
   }
 
-  @Get('welcoming')
-  sendWelcomingMail(): void{
-    return this.mailService.sendWelcomingMail('psyduck281@gmail.com')
-  }
-
-  @Get('activating')
-  sendActivatingMail(): void{
-    return this.mailService.sendWelcomingMail('psyduck281@gmail.com')
-  }
+  // @Get('welcoming')
+  // sendWelcomingMail(){
+  //   return this.mailService.sendWelcomingMail('psyduck281@gmail.com')
+  // }
+  //
+  // @Get('activating')
+  // sendActivatingMail(){
+  //   return this.mailService.sendActivatingMail('psyduck281@gmail.com')
+  // }
 
 }

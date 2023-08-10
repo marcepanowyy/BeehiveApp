@@ -9,6 +9,7 @@ import { SessionSerializer } from '../serializer/session.serializer';
 import { CacheModule } from '@nestjs/cache-manager'
 import { MailModule } from '../../mail/mail.module';
 
+
 @Module({
   imports: [TypeOrmModule.forFeature([UsersEntity, ProductsReviewEntity]), CacheModule.register(), MailModule],
   controllers: [UsersController],

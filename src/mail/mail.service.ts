@@ -5,17 +5,18 @@ import { Cache } from 'cache-manager';
 
 @Injectable()
 export class MailService {
-
-  constructor(private mailerService: MailerService,
-  @Inject(CACHE_MANAGER) private cacheManager: Cache) {
-  }
+  constructor(
+    private mailerService: MailerService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   sendWelcomingMail(recipient: string): void {
-    this.mailerService.sendMail({
-      to: recipient,
-      subject: 'Welcome to Our Community!',
-      text: 'Welcome to our amazing community!',
-      html: `
+    setTimeout(async () => {
+      await this.mailerService.sendMail({
+        to: recipient,
+        subject: 'Welcome to Our Community!',
+        text: 'Welcome to our amazing community!',
+        html: `
       <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
         <h2 style="color: #333;">Welcome to Our Community!</h2>
         <p style="color: #555;">Dear ${recipient},</p>
@@ -26,19 +27,20 @@ export class MailService {
         <p style="color: #555;">Best regards,</p>
         <p style="color: #555;">The Beehive Team</p>
       </div>
-    `
+    `,
+      });
     });
   }
 
-  async sendActivationMail(recipient: string): Promise<void> {
+  sendActivatingMail(recipient: string): void {
+    setTimeout(async () => {
+      const activationCode = await this.generateActivationCode(recipient);
 
-    const activationCode = await this.generateActivationCode(recipient);
-
-    this.mailerService.sendMail({
-      to: recipient,
-      subject: 'Activate Your Account',
-      text: `Hello, ${recipient}!\n\nPlease use the following activation code to activate your account: ${activationCode}\n\nThank you!\n\nThe Beehive Team`,
-      html: `
+      await this.mailerService.sendMail({
+        to: recipient,
+        subject: 'Activate Your Account',
+        text: `Hello, ${recipient}!\n\nPlease use the following activation code to activate your account: ${activationCode}\n\nThank you!\n\nThe Beehive Team`,
+        html: `
       <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
         <h2 style="color: #333;">Activate Your Account</h2>
         <p style="color: #555;">Hello, ${recipient}!</p>
@@ -48,15 +50,12 @@ export class MailService {
         <p style="color: #555;">Best regards,</p>
         <p style="color: #555;">The Beehive Team</p>
       </div>
-    `
+    `,
+      });
     });
   }
 
-
-  // helpers
-
   private async generateActivationCode(recipient: string): Promise<string> {
-
     const verificationKey = crypto.randomUUID();
 
     const expirationTime = 24 * 60 * 60 * 1000; // 1 day
@@ -69,5 +68,4 @@ export class MailService {
 
     return `http://localhost:4000/auth/activate/${verificationKey}`;
   }
-
 }
