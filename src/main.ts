@@ -19,11 +19,6 @@ async function bootstrap() {
 
   });
 
-  app.use((req, res, next) => {
-    next();
-  });
-
-
   const config = new DocumentBuilder()
     .setTitle('Swagger for Beehive App')
     .setDescription('The Beehive App API')

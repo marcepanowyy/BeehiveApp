@@ -90,5 +90,12 @@ export class UsersController {
     return this.usersService.googleLoginHandler(req)
   }
 
+  // mail
+
+  @Get('activate/:verificationKey')
+  verifyEmail(@Param('verificationKey') verificationKey: string){
+
+  }
+
 
 }
