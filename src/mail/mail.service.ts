@@ -1,10 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class MailService {
 
-  constructor(private mailerService: MailerService) {
+  constructor(private mailerService: MailerService,
+  @Inject(CACHE_MANAGER) private cacheManager: Cache) {
   }
 
   sendWelcomingMail(recipient: string): void {
@@ -27,9 +30,9 @@ export class MailService {
     });
   }
 
-  sendActivationMail(recipient: string): void {
+  async sendActivationMail(recipient: string): Promise<void> {
 
-    const activationCode = this.generateActivationCode(); // Assuming you have a function to generate the activation code
+    const activationCode = await this.generateActivationCode(recipient);
 
     this.mailerService.sendMail({
       to: recipient,
@@ -49,14 +52,22 @@ export class MailService {
     });
   }
 
-  private generateActivationCode(): string{
 
-    const verificationKey = crypto.randomUUID()
-    return `http://localhost:4000/auth/activate/${verificationKey}`
+  // helpers
 
+  private async generateActivationCode(recipient: string): Promise<string> {
+
+    const verificationKey = crypto.randomUUID();
+
+    const expirationTime = 24 * 60 * 60 * 1000; // 1 day
+
+    await this.cacheManager.set(
+      `temp-user-email-verification-key__${verificationKey}`,
+      recipient,
+      expirationTime,
+    );
+
+    return `http://localhost:4000/auth/activate/${verificationKey}`;
   }
-
-
-
 
 }

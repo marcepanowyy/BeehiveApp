@@ -77,7 +77,7 @@ export class UsersController {
     return this.usersService.register(data);
   }
 
-  // google
+  // google oauth 2.0
 
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
@@ -90,11 +90,11 @@ export class UsersController {
     return this.usersService.googleLoginHandler(req)
   }
 
-  // mail
+  // sending mails
 
   @Get('activate/:verificationKey')
   verifyEmail(@Param('verificationKey') verificationKey: string){
-
+    this.usersService.verifyEmail(verificationKey)
   }
 
 

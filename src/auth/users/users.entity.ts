@@ -38,6 +38,9 @@ export class UsersEntity {
   @Column({ type: 'integer', default: 1 })
   type: number;
 
+  @Column({ type: 'boolean', default: false })
+  activatedAccount: boolean;
+
   // relationships
 
   @OneToMany(type => OrdersEntity, order => order.customer)

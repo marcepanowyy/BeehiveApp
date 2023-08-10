@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersEntity } from './users.entity';
 import { Repository } from 'typeorm';
@@ -78,42 +84,47 @@ export class UsersService {
     return user.toResponseUser();
   }
 
-  async getRoleByUserId(userId: string): Promise<number>{
-    const user = await this.usersRepository.findOne({where: {id: userId}})
-    if(!user){
-      throw new HttpException("User not found by ID", HttpStatus.NOT_FOUND)
+  async getRoleByUserId(userId: string): Promise<number> {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new HttpException('User not found by ID', HttpStatus.NOT_FOUND);
     }
-    return user.role
+    return user.role;
   }
-
 
   // google
 
   async googleRedirect(req: Request, res: Response) {
-    const userTempId = req.query['state']
+    const userTempId = req.query['state'];
     await this.cacheManager.set(
       `temp-google-user__${userTempId}`,
       req.user,
       10000,
     );
-    res.send('<script>window.close()</script>')
+    res.send('<script>window.close()</script>');
   }
 
   async googleLoginHandler(req: Request) {
+    const authorization = req.get('Authorization');
+    if (!authorization)
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
 
-    const authorization = req.get('Authorization')
-    if (!authorization) throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED)
+    const userTempId = authorization.replace('Bearer ', '');
 
-    const userTempId = authorization.replace('Bearer ', '')
+    if (!userTempId)
+      throw new HttpException(
+        'No user temporary Id found',
+        HttpStatus.UNAUTHORIZED,
+      );
 
-    if(!userTempId) throw new HttpException('No user temporary Id found', HttpStatus.UNAUTHORIZED)
+    const googleUser: GoogleUser = await this.cacheManager.get(
+      `temp-google-user__${userTempId}`,
+    );
 
-    const googleUser: GoogleUser = await this.cacheManager.get(`temp-google-user__${userTempId}`)
-
-    return this.googleLogin(googleUser)
+    return this.googleLogin(googleUser);
   }
 
-  async googleLogin(googleUser: GoogleUser){
+  async googleLogin(googleUser: GoogleUser) {
     const { email } = googleUser;
     let user = await this.usersRepository.findOne({
       where: { username: email },
@@ -122,11 +133,15 @@ export class UsersService {
       user = this.usersRepository.create({
         username: email,
         type: UserTypeEnum.GOOGLE,
+        activatedAccount: true, // when creating google users, automatically activate their accounts
       });
       await this.usersRepository.save(user);
       return user.toResponseUser();
     } else if (user.type === UserTypeEnum.STANDARD) {
-      await this.usersRepository.update(user.id, { type: UserTypeEnum.BOTH });
+      await this.usersRepository.update(user.id, {
+        type: UserTypeEnum.BOTH,
+        activatedAccount: true, // activate also their account
+      });
       const updatedUser = await this.usersRepository.findOne({
         where: { id: user.id },
       });
@@ -148,4 +163,29 @@ export class UsersService {
   async findUserById(id: string) {
     return await this.usersRepository.findOneBy({ id });
   }
+
+  // mails (verification etc.)
+
+  async verifyEmail(verificationKey: string) {
+
+    const userEmail: string = await this.cacheManager.get(
+      `temp-user-email-verification-key__${verificationKey}`,
+    );
+
+    if (!userEmail)
+      throw new HttpException(
+        'No temporary user email verification key found',
+        HttpStatus.UNAUTHORIZED,
+      );
+
+    const user = await this.usersRepository.findOne({ where: { username: userEmail } });
+
+    if (!user)
+      throw new HttpException('No user found', HttpStatus.UNAUTHORIZED);
+
+    await this.usersRepository.update(user.id, {activatedAccount: true})
+
+  }
+
+
 }
