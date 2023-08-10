@@ -52,7 +52,7 @@ export class MailService {
       </div>
     `,
       });
-    });
+    }, 1000);
   }
 
   private async generateActivationCode(recipient: string): Promise<string> {
