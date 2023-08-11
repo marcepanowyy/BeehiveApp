@@ -1,14 +1,13 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class MailService {
-  constructor(
-    private mailerService: MailerService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
-  ) {}
+  private passwordCodeLength = 6;
+  private chars = '0123456789';
+
+  constructor(private mailerService: MailerService) {}
 
   sendWelcomingMail(recipient: string): void {
     setTimeout(async () => {
@@ -34,7 +33,7 @@ export class MailService {
 
   sendActivatingMail(recipient: string): void {
     setTimeout(async () => {
-      const activationCode = await this.generateActivationCode(recipient);
+      const activationCode = this.generateVerificationKey(recipient);
 
       await this.mailerService.sendMail({
         to: recipient,
@@ -55,17 +54,33 @@ export class MailService {
     }, 1000);
   }
 
-  private async generateActivationCode(recipient: string): Promise<string> {
-    const verificationKey = crypto.randomUUID();
+  generateVerificationKey(recipient: string): string {
+    const token = jwt.sign({ recipient }, process.env.EMAIL_ACTIVATION_SECRET, {
+      expiresIn: '10min',
+    });
+    return `http://localhost:4000/auth/activate/${token}`;
+  }
 
-    const expirationTime = 24 * 60 * 60 * 1000; // 1 day
+  sendPasswordResetMail(recipient: string): void {
+    setTimeout(async () => {
 
-    await this.cacheManager.set(
-      `temp-user-email-verification-key__${verificationKey}`,
-      recipient,
-      expirationTime,
-    );
+      const resetPasswordCode = this.generateResetPasswordCode();
 
-    return `http://localhost:4000/auth/activate/${verificationKey}`;
+      await this.mailerService.sendMail({
+        to: recipient,
+        subject: 'Password Reset Code',
+        text: `Your password reset code is: ${resetPasswordCode}`,
+        html: `<p>Your password reset code is: <strong>${resetPasswordCode}</strong></p>`,
+      });
+    });
+  }
+
+  generateResetPasswordCode(): string {
+    let code = '';
+    for (let i = 0; i < this.passwordCodeLength; i++) {
+      const randomIndex = Math.floor(Math.random() * this.chars.length);
+      code += this.chars[randomIndex];
+    }
+    return code;
   }
 }

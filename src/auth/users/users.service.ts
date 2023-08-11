@@ -15,7 +15,8 @@ import { Request, Response } from 'express';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { MailService } from '../../mail/mail.service';
-import html = Mocha.reporters.html;
+import * as jwt from 'jsonwebtoken';
+
 
 @Injectable()
 export class UsersService {
@@ -180,28 +181,34 @@ export class UsersService {
 
   // mails (verification etc.)
 
-  async verifyEmail(verificationKey: string): Promise<string> {
+  async activateAccount(verificationKey: string): Promise<string> {
 
-    const userEmail: string = await this.cacheManager.get(
-      `temp-user-email-verification-key__${verificationKey}`,
-    );
+    const decoded: any = jwt.verify(verificationKey, process.env.EMAIL_ACTIVATION_SECRET)
 
-    if (!userEmail)
-      throw new HttpException(
-        'No temporary user email verification key found',
-        HttpStatus.UNAUTHORIZED,
-      );
+    if (!decoded) {
+      throw new HttpException('Token is invalid or expired', HttpStatus.UNAUTHORIZED);
+    }
 
-    const user = await this.usersRepository.findOne({ where: { username: userEmail } });
+    const userEmail = decoded.recipient
 
-    if (!user)
-      throw new HttpException('No user found', HttpStatus.UNAUTHORIZED);
+    if (!userEmail){
+      throw new HttpException('Invalid address email', HttpStatus.UNAUTHORIZED);
+    }
+
+    const user = await this.usersRepository.findOne({where: {username: userEmail}})
+
+    if (!user){
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
 
     await this.usersRepository.update(user.id, {activatedAccount: true})
 
-    return "You have activated your account."
+    return "you have activated your account"
 
   }
 
+  async resetPassword(){
+
+  }
 
 }

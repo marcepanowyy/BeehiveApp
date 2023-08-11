@@ -94,7 +94,7 @@ export class UsersController {
 
   @Get('activate/:verificationKey')
   verifyEmail(@Param('verificationKey') verificationKey: string){
-    return this.usersService.verifyEmail(verificationKey)
+    return this.usersService.activateAccount(verificationKey)
   }
 
 
