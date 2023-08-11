@@ -48,3 +48,8 @@ mat-error{
   font-size: 0.8rem;
 }
 
+.forgot-password-link{
+  text-align: right;
+  width: 90%;
+  padding: 0.5rem;
+}

@@ -14,12 +14,12 @@ export class RegisterComponent{
   constructor(private api: ApiService,
               private router: Router){}
 
-  // at least 6 chars, one special char, one uppercase letter, two digits, max 24 chars
+  // at least 6 chars, one special char, one uppercase letter, two digits, max 28 chars
 
   // form control
 
   registerForm = new FormGroup({
-    email: new FormControl("", [Validators.required, Validators.email, Validators.minLength(6), Validators.maxLength(18)]),
+    email: new FormControl("", [Validators.required, Validators.email, Validators.minLength(6), Validators.maxLength(28)]),
     pwd: new FormControl("", [Validators.required, Validators.minLength(6), Validators.maxLength(24), Validators.pattern(/^(?=.*\d.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).*$/)]),
     rpwd: new FormControl("", [Validators.required, Validators.minLength(6), Validators.maxLength(24), Validators.pattern(/^(?=.*\d.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).*$/)])
   })
