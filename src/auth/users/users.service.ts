@@ -79,13 +79,17 @@ export class UsersService {
     return user.toResponseUser();
   }
 
-  async register(data: UsersDto): Promise<UsersRO> {
+  async register(data: UsersDto): Promise<{ message: string }> {
     const { username, password } = data;
     let user = await this.usersRepository.findOne({ where: { username } });
     if (user) {
       if (user.type === UserTypeEnum.GOOGLE) {
         user.type = UserTypeEnum.BOTH;
         user.password = password;
+        return {
+          message:
+            'You previously created account with Google. Now it has been merged.',
+        };
       } else if (!user.activatedAccount) {
         user.password = password;
       } else {
@@ -100,7 +104,9 @@ export class UsersService {
     //send activating mail
     await this.mailService.sendActivatingMail(username);
 
-    return user.toResponseUser();
+    return {
+      message: 'Account created successfully. Activate your account to log in.',
+    };
   }
 
   async getRoleByUserId(userId: string): Promise<number> {
