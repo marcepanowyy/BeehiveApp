@@ -10,7 +10,7 @@ import {UserResponse} from "../interfaces/user/UserResponse";
 import {OrdersResponse} from "../interfaces/order/OrdersResponse";
 import {OrderRequest} from "../interfaces/order/OrderRequest";
 import {OrderResponse} from "../interfaces/order/OrderResponse";
-import {Observable} from "rxjs";
+import {RegistrationResponse} from "../interfaces/user/RegistationResponse";
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +33,7 @@ export class ApiService {
   // users
 
   registerUser(data: UserRequest){
-    return this.http.post<UserResponse>("http://localhost:4000/auth/register", data)
+    return this.http.post<RegistrationResponse>("http://localhost:4000/auth/register", data)
   }
 
   loginUser(data: UserRequest){
@@ -53,6 +53,20 @@ export class ApiService {
 
     return this.http.post<any>("http://localhost:4000/auth/google/login", {}, options);
   }
+
+  // sendResetPasswordMail(userTempId: string, tokenIgnore: boolean = false){
+  //   const headers = new HttpHeaders({
+  //     Authorization: `Bearer ${userTempId}`
+  //   });
+  //
+  //   const options = {
+  //     headers: headers,
+  //     params: { tokenIgnore: tokenIgnore.toString() }
+  //   };
+  //
+  //   return this.http.post<any>("http://localhost:4000/auth/reset/password", {}, options);
+  // }
+
 
   // products
 

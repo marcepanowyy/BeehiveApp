@@ -59,15 +59,13 @@ export class RegisterComponent{
 
     this.api.registerUser(data).subscribe({
       next: (res) => {
-        alert("Registration completed.")
-        localStorage.setItem('token', res.token)
-        this.router.navigate(['Products'])
+        alert(res.message)
+        this.router.navigate(['Login'])
       },
       error: (err) => {
         alert(err.error.message)
       }
     })
-
   }
 
   // errors

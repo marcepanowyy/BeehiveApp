@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
+import {ApiService} from "../../services/api.service";
 
 @Component({
   selector: 'app-reset.password',
@@ -15,5 +16,17 @@ export class ResetPasswordComponent {
     secondCtrl: ['', Validators.required],
   });
 
-  constructor(private _formBuilder: FormBuilder) {}
+  constructor(private _formBuilder: FormBuilder,
+              private api: ApiService) {}
+
+
+  sendVerificationCode(){
+
+
+  }
+
+
+
+
+
 }
