@@ -39,9 +39,10 @@ describe('UsersService', () => {
     assert.strictEqual(result.username, user.username);
   });
 
-  it('should throw an error when registering when the username is already taken', async () => {
+  it('should throw an error when registering when the username is already taken and the account activated', async () => {
 
-    await createUser(testingContainer, userData)
+    const user = await createUser(testingContainer, userData)
+    await testingContainer.repositories.usersRepository.update(user.id, {activatedAccount: true})
 
     await assert.rejects(
       async () => {
@@ -56,13 +57,32 @@ describe('UsersService', () => {
     );
   });
 
-  it('should log in user with valid credentials', async () => {
+  it('should log in user with valid credentials & activated account', async () => {
 
-    await createUser(testingContainer, userData)
+    const user = await createUser(testingContainer, userData)
+    await testingContainer.repositories.usersRepository.update(user.id, {activatedAccount: true})
 
     const result = await testingContainer.services.usersService.login({ ...userData });
 
     assert.strictEqual(result.username, userData.username);
+  });
+
+  it('should throw an error when logging in user with valid credentials & not activated account', async () => {
+
+    await createUser(testingContainer, userData)
+
+    await assert.rejects(
+      async () => {
+        await testingContainer.services.usersService.login(userData)
+      },
+      (err: any) => {
+        assert.strictEqual(err instanceof HttpException, true);
+        assert.strictEqual(err.response, 'Account is not activated');
+        assert.strictEqual(err.status, HttpStatus.UNAUTHORIZED);
+        return true;
+      },
+    );
+
   });
 
   it('should throw an error when logging in with invalid credentials', async () => {
