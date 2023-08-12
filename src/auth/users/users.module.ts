@@ -11,7 +11,7 @@ import { MailModule } from '../../mail/mail.module';
 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UsersEntity, ProductsReviewEntity]), CacheModule.register(), MailModule],
+  imports: [TypeOrmModule.forFeature([UsersEntity, ProductsReviewEntity]), MailModule],
   controllers: [UsersController],
   providers: [UsersService, GoogleStrategy, SessionSerializer],
 })

@@ -86,10 +86,8 @@ export class UsersService {
     }
     await this.usersRepository.save(user);
 
-    // send welcoming mail
-    this.mailService.sendWelcomingMail(username)
     //send activating mail
-    this.mailService.sendActivatingMail(username)
+    await this.mailService.sendActivatingMail(username)
 
     return user.toResponseUser();
   }
@@ -146,10 +144,6 @@ export class UsersService {
         activatedAccount: true, // when creating google users, automatically activate their accounts
       });
       await this.usersRepository.save(user);
-
-      // send welcoming email
-      this.mailService.sendWelcomingMail(email)
-
       return user.toResponseUser();
     } else if (user.type === UserTypeEnum.STANDARD) {
       await this.usersRepository.update(user.id, {
@@ -183,31 +177,52 @@ export class UsersService {
 
   async activateAccount(verificationKey: string): Promise<string> {
 
-    const decoded: any = jwt.verify(verificationKey, process.env.EMAIL_ACTIVATION_SECRET)
+    const userEmail: string = await this.cacheManager.get(
+      `temp-user-email-verification-key__${verificationKey}`,
+    );
 
-    if (!decoded) {
-      throw new HttpException('Token is invalid or expired', HttpStatus.UNAUTHORIZED);
-    }
+    if (!userEmail)
+      throw new HttpException(
+        'Unauthorized',
+        HttpStatus.UNAUTHORIZED,
+      );
 
-    const userEmail = decoded.recipient
+    const user = await this.usersRepository.findOne({ where: { username: userEmail } });
 
-    if (!userEmail){
-      throw new HttpException('Invalid address email', HttpStatus.UNAUTHORIZED);
-    }
-
-    const user = await this.usersRepository.findOne({where: {username: userEmail}})
-
-    if (!user){
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
+    if (!user)
+      throw new HttpException('No user found', HttpStatus.UNAUTHORIZED);
 
     await this.usersRepository.update(user.id, {activatedAccount: true})
 
-    return "you have activated your account"
+    return "You have activated your account."
 
   }
 
-  async resetPassword(){
+  async sendResetPasswordCode(req: Request){
+
+    const authorization = req.get('Authorization');
+    if (!authorization)
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+
+    const userTempId = authorization.replace('Bearer ', '');
+
+    if (!userTempId)
+      throw new HttpException(
+        'No user temporary Id found',
+        HttpStatus.UNAUTHORIZED,
+      );
+
+    const googleUser: GoogleUser = await this.cacheManager.get(
+      `temp-google-user__${userTempId}`,
+    );
+
+    //
+    // await this.cacheManager.set(
+    //   `temp-user-email-verification-key__${verificationKey}`,
+    //   recipient,
+    //   expirationTime,
+    // );
+
 
   }
 

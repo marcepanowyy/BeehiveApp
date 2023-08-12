@@ -1,16 +1,18 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
-import * as jwt from 'jsonwebtoken';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager'
+// import crypto from 'crypto';
 
 @Injectable()
 export class MailService {
   private passwordCodeLength = 6;
   private chars = '0123456789';
 
-  constructor(private mailerService: MailerService) {}
+  constructor(private mailerService: MailerService,
+              @Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
-  sendWelcomingMail(recipient: string): void {
-    setTimeout(async () => {
+  async sendWelcomingMail(recipient: string): Promise<void> {
       await this.mailerService.sendMail({
         to: recipient,
         subject: 'Welcome to Our Community!',
@@ -27,13 +29,11 @@ export class MailService {
         <p style="color: #555;">The Beehive Team</p>
       </div>
     `,
-      });
     });
   }
 
-  sendActivatingMail(recipient: string): void {
-    setTimeout(async () => {
-      const activationCode = this.generateVerificationKey(recipient);
+  async sendActivatingMail(recipient: string): Promise<void> {
+      const activationCode = await this.generateActivationCode(recipient);
 
       await this.mailerService.sendMail({
         to: recipient,
@@ -51,36 +51,83 @@ export class MailService {
       </div>
     `,
       });
-    }, 1000);
   }
 
-  generateVerificationKey(recipient: string): string {
-    const token = jwt.sign({ recipient }, process.env.EMAIL_ACTIVATION_SECRET, {
-      expiresIn: '10min',
-    });
-    return `http://localhost:4000/auth/activate/${token}`;
+  private async generateActivationCode(recipient: string): Promise<string> {
+    const verificationKey = crypto.randomUUID();
+
+    const expirationTime = 24 * 60 * 60 * 1000; // 1 day
+
+    await this.cacheManager.set(
+      `temp-user-email-verification-key__${verificationKey}`,
+      recipient,
+      expirationTime,
+    );
+
+    return `http://localhost:4000/auth/activate/${verificationKey}`;
   }
 
-  sendPasswordResetMail(recipient: string): void {
-    setTimeout(async () => {
+  // sendPasswordResetMail(recipient: string): void {
+  //   setTimeout(async () => {
+  //
+  //     const code = this.generatePasswordResetCode(recipient)
+  //
+  //     await this.mailerService.sendMail({
+  //       to: recipient,
+  //       subject: 'Password Reset Code',
+  //       text: `Your password reset code is: ${code}`,
+  //       html: `<p>Your password reset code is: <strong>${code}</strong></p>`,
+  //     });
+  //   });
+  // }
 
-      const resetPasswordCode = this.generateResetPasswordCode();
+  // async generatePasswordResetCode(recipient: string): Promise<string>{
+  //
+  //   const code = this.getRandomCode();
+  //   const expirationTime = 2 * 60 * 1000 // 2 minutes
+  //   const resetPasswordKey = crypto.createHash('sha256').update(code).digest('hex');
+  //   const resetPasswordKey1 = crypto.createHash('sha256').update(code).digest('hex');
+  //
+  //   console.log(resetPasswordKey)
+  //   console.log(resetPasswordKey1)
+  //
+  //   await this.cacheManager.set(
+  //     `temp-reset-password-key__${resetPasswordKey}`,
+  //     { recipient },
+  //     expirationTime,
+  //   );
+  //   return code;
+  // }
 
-      await this.mailerService.sendMail({
-        to: recipient,
-        subject: 'Password Reset Code',
-        text: `Your password reset code is: ${resetPasswordCode}`,
-        html: `<p>Your password reset code is: <strong>${resetPasswordCode}</strong></p>`,
-      });
-    });
-  }
-
-  generateResetPasswordCode(): string {
+  getRandomCode(): string{
     let code = '';
     for (let i = 0; i < this.passwordCodeLength; i++) {
       const randomIndex = Math.floor(Math.random() * this.chars.length);
       code += this.chars[randomIndex];
     }
-    return code;
+    return code
   }
+
+
+  // async generateResetPasswordCode(recipient: string): Promise<string> {
+  //
+  //   let code = '';
+  //   for (let i = 0; i < this.passwordCodeLength; i++) {
+  //     const randomIndex = Math.floor(Math.random() * this.chars.length);
+  //     code += this.chars[randomIndex];
+  //   }
+  //
+  //   const verificationKey = crypto.randomUUID();
+  //   const expirationTime = 2 * 60 * 1000 // 2 minutes
+  //
+  //   await this.cacheManager.set(
+  //     `temp-user-reset-password-key__${verificationKey}`,
+  //     recipient,
+  //     expirationTime,
+  //   );
+  //   return code;
+  // }
+
+
+
 }

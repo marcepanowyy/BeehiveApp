@@ -15,6 +15,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { MailModule } from './mail/mail.module';
 
 import 'dotenv/config';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import 'dotenv/config';
         },
       },
     }),
+    CacheModule.register({isGlobal: true})
   ],
   controllers: [],
   providers: [

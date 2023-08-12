@@ -93,9 +93,16 @@ export class UsersController {
   // sending mails
 
   @Get('activate/:verificationKey')
-  verifyEmail(@Param('verificationKey') verificationKey: string){
+  activateAccount(@Param('verificationKey') verificationKey: string){
     return this.usersService.activateAccount(verificationKey)
   }
+
+
+  // @Post('reset/password')
+  // resetPassword(@Req req){
+  //   return this.usersService.resetPassword(req)
+  // }
+
 
 
 }
