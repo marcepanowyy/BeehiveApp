@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager'
+import { Cache } from 'cache-manager';
 // import crypto from 'crypto';
 
 @Injectable()
@@ -9,15 +9,17 @@ export class MailService {
   private passwordCodeLength = 6;
   private chars = '0123456789';
 
-  constructor(private mailerService: MailerService,
-              @Inject(CACHE_MANAGER) private cacheManager: Cache) {}
+  constructor(
+    private mailerService: MailerService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   async sendWelcomingMail(recipient: string): Promise<void> {
-      await this.mailerService.sendMail({
-        to: recipient,
-        subject: 'Welcome to Our Community!',
-        text: 'Welcome to our amazing community!',
-        html: `
+    await this.mailerService.sendMail({
+      to: recipient,
+      subject: 'Welcome to Our Community!',
+      text: 'Welcome to our amazing community!',
+      html: `
       <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
         <h2 style="color: #333;">Welcome to Our Community!</h2>
         <p style="color: #555;">Dear ${recipient},</p>
@@ -33,13 +35,13 @@ export class MailService {
   }
 
   async sendActivatingMail(recipient: string): Promise<void> {
-      const activationCode = await this.generateActivationCode(recipient);
+    const activationCode = await this.generateActivationCode(recipient);
 
-      await this.mailerService.sendMail({
-        to: recipient,
-        subject: 'Activate Your Account',
-        text: `Hello, ${recipient}!\n\nPlease use the following activation code to activate your account: ${activationCode}\n\nThank you!\n\nThe Beehive Team`,
-        html: `
+    await this.mailerService.sendMail({
+      to: recipient,
+      subject: 'Activate Your Account',
+      text: `Hello, ${recipient}!\n\nPlease use the following activation code to activate your account: ${activationCode}\n\nThank you!\n\nThe Beehive Team`,
+      html: `
       <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
         <h2 style="color: #333;">Activate Your Account</h2>
         <p style="color: #555;">Hello, ${recipient}!</p>
@@ -50,7 +52,7 @@ export class MailService {
         <p style="color: #555;">The Beehive Team</p>
       </div>
     `,
-      });
+    });
   }
 
   private async generateActivationCode(recipient: string): Promise<string> {
@@ -99,15 +101,14 @@ export class MailService {
   //   return code;
   // }
 
-  getRandomCode(): string{
+  getRandomCode(): string {
     let code = '';
     for (let i = 0; i < this.passwordCodeLength; i++) {
       const randomIndex = Math.floor(Math.random() * this.chars.length);
       code += this.chars[randomIndex];
     }
-    return code
+    return code;
   }
-
 
   // async generateResetPasswordCode(recipient: string): Promise<string> {
   //
@@ -127,7 +128,4 @@ export class MailService {
   //   );
   //   return code;
   // }
-
-
-
 }

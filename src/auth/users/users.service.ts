@@ -17,7 +17,6 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { MailService } from '../../mail/mail.service';
 import * as jwt from 'jsonwebtoken';
 
-
 @Injectable()
 export class UsersService {
   constructor(
@@ -70,24 +69,36 @@ export class UsersService {
         HttpStatus.UNAUTHORIZED,
       );
     }
+    // login only when account is activated
+    if (!user.activatedAccount) {
+      throw new HttpException(
+        'Account is not activated',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     return user.toResponseUser();
   }
 
   async register(data: UsersDto): Promise<UsersRO> {
     const { username, password } = data;
     let user = await this.usersRepository.findOne({ where: { username } });
-    if (user && user.type === UserTypeEnum.GOOGLE) {
-      user.type = UserTypeEnum.BOTH;
-      user.password = password;
-    } else if (user) {
-      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+    if (user) {
+      if (user.type === UserTypeEnum.GOOGLE) {
+        user.type = UserTypeEnum.BOTH;
+        user.password = password;
+      } else if (!user.activatedAccount) {
+        user.password = password;
+      } else {
+        throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+      }
     } else {
       user = await this.usersRepository.create(data);
     }
+
     await this.usersRepository.save(user);
 
     //send activating mail
-    await this.mailService.sendActivatingMail(username)
+    await this.mailService.sendActivatingMail(username);
 
     return user.toResponseUser();
   }
@@ -176,30 +187,30 @@ export class UsersService {
   // mails (verification etc.)
 
   async activateAccount(verificationKey: string): Promise<string> {
-
     const userEmail: string = await this.cacheManager.get(
       `temp-user-email-verification-key__${verificationKey}`,
     );
 
     if (!userEmail)
-      throw new HttpException(
-        'Unauthorized',
-        HttpStatus.UNAUTHORIZED,
-      );
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
 
-    const user = await this.usersRepository.findOne({ where: { username: userEmail } });
+    const user = await this.usersRepository.findOne({
+      where: { username: userEmail },
+    });
+
+    if (user.activatedAccount) {
+      return 'The account has been already activated';
+    }
 
     if (!user)
       throw new HttpException('No user found', HttpStatus.UNAUTHORIZED);
 
-    await this.usersRepository.update(user.id, {activatedAccount: true})
+    await this.usersRepository.update(user.id, { activatedAccount: true });
 
-    return "You have activated your account."
-
+    return 'You have activated your account.';
   }
 
-  async sendResetPasswordCode(req: Request){
-
+  async sendResetPasswordCode(req: Request) {
     const authorization = req.get('Authorization');
     if (!authorization)
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
@@ -222,8 +233,5 @@ export class UsersService {
     //   recipient,
     //   expirationTime,
     // );
-
-
   }
-
 }

@@ -5,7 +5,8 @@ import {
   Param,
   Post,
   Query,
-  Req, Res,
+  Req,
+  Res,
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
@@ -82,27 +83,23 @@ export class UsersController {
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
   handleGoogleRedirect(@Req() req, @Res() res) {
-    return this.usersService.googleRedirect(req, res)
+    return this.usersService.googleRedirect(req, res);
   }
 
   @Post('google/login')
-  googleLogin(@Req() req){
-    return this.usersService.googleLoginHandler(req)
+  googleLogin(@Req() req) {
+    return this.usersService.googleLoginHandler(req);
   }
 
   // sending mails
 
   @Get('activate/:verificationKey')
-  activateAccount(@Param('verificationKey') verificationKey: string){
-    return this.usersService.activateAccount(verificationKey)
+  activateAccount(@Param('verificationKey') verificationKey: string) {
+    return this.usersService.activateAccount(verificationKey);
   }
-
 
   // @Post('reset/password')
   // resetPassword(@Req req){
   //   return this.usersService.resetPassword(req)
   // }
-
-
-
 }

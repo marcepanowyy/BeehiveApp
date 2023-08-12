@@ -37,7 +37,7 @@ import { CacheModule } from '@nestjs/cache-manager';
         },
       },
     }),
-    CacheModule.register({isGlobal: true})
+    CacheModule.register({ isGlobal: true }),
   ],
   controllers: [],
   providers: [
