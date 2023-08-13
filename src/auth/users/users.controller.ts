@@ -102,4 +102,9 @@ export class UsersController {
   sendResetCode(@Body('recipient') recipient: string) {
     return this.usersService.handleResetPasswordRequest(recipient);
   }
+
+  @Post('password/code/confirmation')
+  confirmCode(@Body('recipient') recipient: string, @Body('code') code: string) {
+    return this.usersService.handleResetPasswordCodeConfirmation(recipient, code)
+  }
 }

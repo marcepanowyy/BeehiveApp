@@ -5,12 +5,12 @@ import * as jwt from 'jsonwebtoken';
 import { compare } from 'bcryptjs';
 import { ROLE_KEY } from '../../../shared/decorators/roles.decorator';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UsersService } from '../users/users.service';
+// import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
   constructor(
-    // @InjectRepository(UsersService) private usersService: UsersService,
+    // private usersService: UsersService,
     private reflector: Reflector,
   ) {}
 

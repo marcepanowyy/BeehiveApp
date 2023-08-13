@@ -3,8 +3,6 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 
-import crypto from 'crypto';
-
 @Injectable()
 export class MailService {
   constructor(
@@ -33,6 +31,7 @@ export class MailService {
   }
 
   async sendActivatingMail(recipient: string): Promise<void> {
+
     const activationCode = await this.generateActivationCode(recipient);
 
     await this.mailerService.sendMail({
@@ -88,8 +87,8 @@ export class MailService {
     const expirationTime = 10 * 60 * 1000; // 10 minutes
 
     await this.cacheManager.set(
-      `temp-user-reset-password-key__${process.env.PASSWORD_RESET_SECRET}__${recipient}__${code}`,
-      { recipient, code },
+      `temp-user-reset-password-key__${recipient}`,
+      code,
       expirationTime,
     );
 

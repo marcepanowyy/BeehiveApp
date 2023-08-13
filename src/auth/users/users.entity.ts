@@ -106,4 +106,5 @@ export class UsersEntity {
       { expiresIn: '30days' },
     );
   }
+
 }

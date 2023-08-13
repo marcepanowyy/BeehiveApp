@@ -6,7 +6,6 @@ import { UsersEntity } from './users.entity';
 import { ProductsReviewEntity } from '../../products.review/products.review.entity';
 import { GoogleStrategy } from '../strategy/google.strategy';
 import { SessionSerializer } from '../serializer/session.serializer';
-import { CacheModule } from '@nestjs/cache-manager';
 import { MailModule } from '../../mail/mail.module';
 
 @Module({

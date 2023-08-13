@@ -14,6 +14,7 @@ import {
   UsersRO,
 } from './users.dto';
 import { UserTypeEnum } from '../../../shared/enums/user.type.enum';
+import * as bcrypt from 'bcryptjs';
 
 import { Request, Response } from 'express';
 import { Cache } from 'cache-manager';
@@ -228,7 +229,28 @@ export class UsersService {
     if (user) {
       await this.mailService.sendPasswordResetMail(recipient);
     }
+    // sending 200 whether we have found user or not
     return true
   }
+
+  async handleResetPasswordCodeConfirmation(recipient: string, userCode: string): Promise<boolean>{
+
+    if(!recipient || !userCode){
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED)
+    }
+
+    const user = this.usersRepository.findOne({where: {username: recipient}})
+    if(!user){
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED)
+    }
+
+    const cacheCode = await this.cacheManager.get(`temp-user-reset-password-key__${recipient}`)
+
+    if(cacheCode !== userCode){
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED)
+    }
+    return true
+  }
+
 
 }
