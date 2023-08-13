@@ -58,6 +58,10 @@ export class ApiService {
     return this.http.post<any>("http://localhost:4000/auth/reset", {recipient});
   }
 
+  confirmCode(recipient: string, code: string){
+    return this.http.post<any>("http://localhost:4000/auth/password/code/confirmation", {recipient, code})
+  }
+
   // products
 
   getFilteredProducts(data: Filter, page: number = 1){
