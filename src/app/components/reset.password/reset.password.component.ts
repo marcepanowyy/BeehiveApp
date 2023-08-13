@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {FormBuilder, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ApiService} from "../../services/api.service";
 
 @Component({
@@ -9,15 +9,32 @@ import {ApiService} from "../../services/api.service";
 })
 export class ResetPasswordComponent {
 
+  hide1: boolean = true;
+  hide2: boolean = true;
+
+  constructor(private _formBuilder: FormBuilder,
+              private api: ApiService) {}
+
+
   firstFormGroup = this._formBuilder.group({
-    firstCtrl: ['', Validators.required],
+    firstCtrl: ['', [Validators.required, Validators.email]],
   });
   secondFormGroup = this._formBuilder.group({
     secondCtrl: ['', Validators.required],
   });
 
-  constructor(private _formBuilder: FormBuilder,
-              private api: ApiService) {}
+  thirdFormGroup = this._formBuilder.group({
+    pwd: new FormControl("", [Validators.required, Validators.minLength(6), Validators.maxLength(24), Validators.pattern(/^(?=.*\d.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).*$/)]),
+    rpwd: new FormControl("", [Validators.required, Validators.minLength(6), Validators.maxLength(24), Validators.pattern(/^(?=.*\d.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).*$/)])
+  })
+
+  get pwd(): FormControl{
+    return this.thirdFormGroup.get("pwd") as FormControl
+  }
+
+  get rpwd(): FormControl{
+    return this.thirdFormGroup.get("rpwd") as FormControl
+  }
 
 
   sendVerificationCode(){
