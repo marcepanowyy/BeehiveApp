@@ -17,16 +17,21 @@ export class ResetPasswordComponent {
 
 
   firstFormGroup = this._formBuilder.group({
-    firstCtrl: ['', [Validators.required, Validators.email]],
+    email: ['', [Validators.required, Validators.email]],
   });
+
   secondFormGroup = this._formBuilder.group({
-    secondCtrl: ['', Validators.required],
+    code: ['', Validators.required],
   });
 
   thirdFormGroup = this._formBuilder.group({
     pwd: new FormControl("", [Validators.required, Validators.minLength(6), Validators.maxLength(24), Validators.pattern(/^(?=.*\d.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).*$/)]),
     rpwd: new FormControl("", [Validators.required, Validators.minLength(6), Validators.maxLength(24), Validators.pattern(/^(?=.*\d.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).*$/)])
   })
+
+  get email(): FormControl{
+    return this.firstFormGroup.get('email') as FormControl
+  }
 
   get pwd(): FormControl{
     return this.thirdFormGroup.get("pwd") as FormControl
@@ -36,9 +41,15 @@ export class ResetPasswordComponent {
     return this.thirdFormGroup.get("rpwd") as FormControl
   }
 
-
   sendVerificationCode(){
 
+    this.api.sendResetPasswordMail(this.email.value).subscribe({
+      next: (res) => {
+      },
+      error: (err) => {
+        alert(err)
+      }
+    })
 
   }
 

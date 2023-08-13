@@ -54,19 +54,9 @@ export class ApiService {
     return this.http.post<any>("http://localhost:4000/auth/google/login", {}, options);
   }
 
-  // sendResetPasswordMail(userTempId: string, tokenIgnore: boolean = false){
-  //   const headers = new HttpHeaders({
-  //     Authorization: `Bearer ${userTempId}`
-  //   });
-  //
-  //   const options = {
-  //     headers: headers,
-  //     params: { tokenIgnore: tokenIgnore.toString() }
-  //   };
-  //
-  //   return this.http.post<any>("http://localhost:4000/auth/reset/password", {}, options);
-  // }
-
+  sendResetPasswordMail(recipient: string){
+    return this.http.post<any>("http://localhost:4000/auth/reset", {recipient});
+  }
 
   // products
 
