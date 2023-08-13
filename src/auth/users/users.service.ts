@@ -8,14 +8,17 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersEntity } from './users.entity';
 import { Repository } from 'typeorm';
-import { GoogleUser, UsersDto, UsersRO } from './users.dto';
+import {
+  GoogleUser,
+  UsersDto,
+  UsersRO,
+} from './users.dto';
 import { UserTypeEnum } from '../../../shared/enums/user.type.enum';
 
 import { Request, Response } from 'express';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { MailService } from '../../mail/mail.service';
-import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class UsersService {
@@ -208,36 +211,24 @@ export class UsersService {
       return 'The account has been already activated';
     }
 
-    if (!user)
-      throw new HttpException('No user found', HttpStatus.UNAUTHORIZED);
+    if (!user) throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
 
     await this.usersRepository.update(user.id, { activatedAccount: true });
-
+    await this.mailService.sendWelcomingMail(userEmail);
     return 'You have activated your account.';
   }
 
-  async sendResetPasswordCode(req: Request) {
-    const authorization = req.get('Authorization');
-    if (!authorization)
-      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+  async handleResetPasswordRequest(
+    recipient: string,
+  ): Promise<boolean> {
+    const user = await this.usersRepository.findOne({
+      where: { username: recipient },
+    });
 
-    const userTempId = authorization.replace('Bearer ', '');
-
-    if (!userTempId)
-      throw new HttpException(
-        'No user temporary Id found',
-        HttpStatus.UNAUTHORIZED,
-      );
-
-    const googleUser: GoogleUser = await this.cacheManager.get(
-      `temp-google-user__${userTempId}`,
-    );
-
-    //
-    // await this.cacheManager.set(
-    //   `temp-user-email-verification-key__${verificationKey}`,
-    //   recipient,
-    //   expirationTime,
-    // );
+    if (user) {
+      await this.mailService.sendPasswordResetMail(recipient);
+    }
+    return true
   }
+
 }

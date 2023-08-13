@@ -2,13 +2,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-// import crypto from 'crypto';
+
+import crypto from 'crypto';
 
 @Injectable()
 export class MailService {
-  private passwordCodeLength = 6;
-  private chars = '0123456789';
-
   constructor(
     private mailerService: MailerService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
@@ -40,25 +38,41 @@ export class MailService {
     await this.mailerService.sendMail({
       to: recipient,
       subject: 'Activate Your Account',
-      text: `Hello, ${recipient}!\n\nPlease use the following activation code to activate your account: ${activationCode}\n\nThank you!\n\nThe Beehive Team`,
+      text: `Hello, ${recipient}!\n\nPlease use the following activation link to activate your account within 10 minutes: ${activationCode}\n\nThank you!\n\nThe Beehive Team`,
       html: `
-      <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
-        <h2 style="color: #333;">Activate Your Account</h2>
-        <p style="color: #555;">Hello, ${recipient}!</p>
-        <p style="color: #555;">Please use the following activation code to activate your account:</p>
-        <p style="color: #555; font-size: 18px; padding: 10px; background-color: #ddd;">${activationCode}</p>
-        <p style="color: #555;">Thank you for choosing Beehive</p>
-        <p style="color: #555;">Best regards,</p>
-        <p style="color: #555;">The Beehive Team</p>
-      </div>
+    <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+      <h2 style="color: #333;">Activate Your Account</h2>
+      <p style="color: #555;">Hello, ${recipient}!</p>
+      <p style="color: #555;">Please use the following activation link to activate your account within 10 minutes:</p>
+      <p style="color: #555; font-size: 18px; padding: 10px; background-color: #ddd;">
+        <a href="${activationCode}" style="text-decoration: none; color: #333;">Activate Account</a>
+      </p>
+      <p style="color: #555;">Activation is required to log in. If 10 minutes have passed, please register again.</p>
+      <p style="color: #555;">Thank you for choosing Beehive</p>
+      <p style="color: #555;">Best regards,</p>
+      <p style="color: #555;">The Beehive Team</p>
+    </div>
+    `,
+    });
+  }
+
+  async sendPasswordResetMail(recipient: string): Promise<void> {
+    const code = await this.generatePasswordResetCode(recipient);
+
+    await this.mailerService.sendMail({
+      to: recipient,
+      subject: 'Password Reset Code',
+      text: `Your password reset code is: ${code}\n\nPlease note that this code is valid for 10 minutes only.`,
+      html: `
+      <p>Your password reset code is: <strong>${code}</strong></p>
+      <p>Please note that this code is valid for 10 minutes only.</p>
     `,
     });
   }
 
   private async generateActivationCode(recipient: string): Promise<string> {
     const verificationKey = crypto.randomUUID();
-
-    const expirationTime = 24 * 60 * 60 * 1000; // 1 day
+    const expirationTime = 10 * 60 * 1000; // 10 minutes
 
     await this.cacheManager.set(
       `temp-user-email-verification-key__${verificationKey}`,
@@ -69,19 +83,18 @@ export class MailService {
     return `http://localhost:4000/auth/activate/${verificationKey}`;
   }
 
-  // sendPasswordResetMail(recipient: string): void {
-  //   setTimeout(async () => {
-  //
-  //     const code = this.generatePasswordResetCode(recipient)
-  //
-  //     await this.mailerService.sendMail({
-  //       to: recipient,
-  //       subject: 'Password Reset Code',
-  //       text: `Your password reset code is: ${code}`,
-  //       html: `<p>Your password reset code is: <strong>${code}</strong></p>`,
-  //     });
-  //   });
-  // }
+  async generatePasswordResetCode(recipient: string): Promise<string> {
+    const code = Math.floor(Math.random() * 899999 + 100000) + ''; // 6 digit code
+    const expirationTime = 10 * 60 * 1000; // 10 minutes
+
+    await this.cacheManager.set(
+      `temp-user-reset-password-key__${process.env.PASSWORD_RESET_SECRET}__${recipient}__${code}`,
+      { recipient, code },
+      expirationTime,
+    );
+
+    return code;
+  }
 
   // async generatePasswordResetCode(recipient: string): Promise<string>{
   //
@@ -100,15 +113,6 @@ export class MailService {
   //   );
   //   return code;
   // }
-
-  getRandomCode(): string {
-    let code = '';
-    for (let i = 0; i < this.passwordCodeLength; i++) {
-      const randomIndex = Math.floor(Math.random() * this.chars.length);
-      code += this.chars[randomIndex];
-    }
-    return code;
-  }
 
   // async generateResetPasswordCode(recipient: string): Promise<string> {
   //

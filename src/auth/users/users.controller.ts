@@ -98,8 +98,8 @@ export class UsersController {
     return this.usersService.activateAccount(verificationKey);
   }
 
-  // @Post('reset/password')
-  // resetPassword(@Req req){
-  //   return this.usersService.resetPassword(req)
-  // }
+  @Post('reset')
+  sendResetCode(@Body('recipient') recipient: string) {
+    return this.usersService.handleResetPasswordRequest(recipient);
+  }
 }

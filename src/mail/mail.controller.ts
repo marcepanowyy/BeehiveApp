@@ -1,11 +1,9 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param, Post } from '@nestjs/common';
 import { MailService } from './mail.service';
 
 @Controller('mail')
 export class MailController {
-
-  constructor(private mailService: MailService) {
-  }
+  constructor(private mailService: MailService) {}
 
   // @Get('welcoming')
   // sendWelcomingMail(){
@@ -16,5 +14,4 @@ export class MailController {
   // sendActivatingMail(){
   //   return this.mailService.sendActivatingMail('psyduck281@gmail.com')
   // }
-
 }
