@@ -62,6 +62,10 @@ export class ApiService {
     return this.http.post<any>("http://localhost:4000/auth/password/code/confirmation", {recipient, code})
   }
 
+  changePassword(recipient: string, code: string, password: string){
+    return this.http.post<any>("http://localhost:4000/auth/password/change", {recipient, code, password})
+  }
+
   // products
 
   getFilteredProducts(data: Filter, page: number = 1){

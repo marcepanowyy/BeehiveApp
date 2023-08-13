@@ -22,7 +22,7 @@ export class ResetPasswordComponent {
   });
 
   secondFormGroup = this._formBuilder.group({
-    code: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern('[0-9]+')]]
+    code: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]]
   });
 
   thirdFormGroup = this._formBuilder.group({
@@ -44,6 +44,22 @@ export class ResetPasswordComponent {
 
   get rpwd(): FormControl{
     return this.thirdFormGroup.get("rpwd") as FormControl
+  }
+
+  getPasswordErrorMessage() {
+    if (this.pwd.hasError('minlength')) {
+      return 'You must enter a password with a minimum of 6 characters.';
+    }
+
+    if (this.pwd.hasError('maxlength')) {
+      return 'You must enter a password with a maximum of 24 characters.';
+    }
+
+    return 'At least two digits, one uppercase & lowercase letter, one special character';
+  }
+
+  validatePasswords(){
+    return this.pwd.value === this.rpwd.value
   }
 
   sendVerificationCode(){
@@ -69,6 +85,7 @@ export class ResetPasswordComponent {
       this.api.confirmCode(this.email.value, this.code.value).subscribe({
         next: (res) => {
           this.disableChangePassword = false
+          alert('Verification code has been accepted')
         },
         error: () => {
           alert('Please enter the valid verification code.')
@@ -76,12 +93,32 @@ export class ResetPasswordComponent {
       })
     }
     else {
-      alert('Invalid verification code - it should be 6-digit')
+      alert('Invalid verification code. It should be a 6-digit numeric value.')
+    }
+  }
+
+  changePassword(){
+
+    if(this.pwd.value === this.rpwd.value){
+      this.api.changePassword(this.email.value, this.code.value, this.pwd.value).subscribe({
+        next: (res) => {
+          console.log(res)
+          alert(res)
+        },
+        error: (err) => {
+          console.log(err)
+          alert(err)
+        }
+      })
     }
 
-
+    else {
+      alert('Passwords do not match.')
+    }
 
   }
+
+
 
 
 
