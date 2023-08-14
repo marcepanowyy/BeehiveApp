@@ -1,29 +1,49 @@
 
-<div class="login-container">
+<div class="stepper-container">
 
-  <mat-card class="form-container">
-
-    <mat-form-field>
-      <mat-label>Enter your email</mat-label>
-      <input matInput placeholder="pat@example.com" [formControl]="email" required>
-      <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
-    </mat-form-field>
-
-    <mat-form-field>
-      <mat-label>Enter your password</mat-label>
-      <input matInput [type]="hide1 ? 'password' : 'text'" [formControl]="pwd">
-      <button mat-icon-button matSuffix (click)="hide1 = !hide1" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide1">
-        <mat-icon>{{hide1 ? 'visibility_off' : 'visibility'}}</mat-icon>
-      </button>
-    </mat-form-field>
-
-    <button mat-raised-button class="submit-btn" color="primary" (click) = onSubmitClick()>Submit</button>
-
-    <app-google>
-    </app-google>
-
-    <a class="forgot-password-link" href="http://localhost:4200/ResetPassword">Forgot password?</a>
-
-  </mat-card>
-
+  <mat-stepper orientation="vertical" linear="true" #stepper>
+    <mat-step [stepControl]="firstFormGroup">
+      <form [formGroup]="firstFormGroup">
+        <ng-template matStepLabel>Enter Your Email Address
+        </ng-template>
+        <mat-form-field style="width: 15rem">
+          <mat-label>Enter your email</mat-label>
+          <input matInput placeholder="pat@example.com" [formControl]="email" required>
+        </mat-form-field>
+        <div style="margin-top: 0.5rem">
+          <button mat-raised-button color="primary" matStepperNext style="margin-bottom: 1.5rem">Next</button> <br>
+          <app-google></app-google>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="secondFormGroup">
+      <form [formGroup]="secondFormGroup">
+        <ng-template matStepLabel>Enter Your Password</ng-template>
+        <mat-form-field style="width: 14rem">
+          <mat-label>Enter your password</mat-label>
+          <input matInput [type]="hide1 ? 'password' : 'text'" [formControl]="pwd">
+          <button mat-icon-button matSuffix (click)="hide1 = !hide1" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide1">
+            <mat-icon>{{hide1 ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+        </mat-form-field>
+        <div style="margin-top: 0.5rem">
+          <button mat-raised-button matStepperPrevious>Back</button>
+          <button mat-raised-button color="primary" matStepperNext style="margin: 0 1rem">Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Login</ng-template>
+      <div style="margin-top: 1.5rem">
+        <button mat-raised-button matStepperPrevious>Back</button>
+        <button mat-raised-button color="primary" (click)="login()" style="margin: 0 1rem">Login</button>
+      </div>
+    </mat-step>
+  </mat-stepper>
 </div>
+
+
+<!--    <app-google>-->
+<!--    </app-google>-->
+<!---->
+<!--    <a class="forgot-password-link" href="http://localhost:4200/ResetPassword">Forgot password?</a>-->

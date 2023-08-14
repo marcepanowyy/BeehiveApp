@@ -1,9 +1,8 @@
 import {Component} from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ApiService} from "../../services/api.service";
 import {Router} from "@angular/router";
 import {UserRequest} from "../../interfaces/user/UserRequest";
-
 
 @Component({
   selector: 'app-login',
@@ -12,36 +11,30 @@ import {UserRequest} from "../../interfaces/user/UserRequest";
 })
 export class LoginComponent{
 
-  constructor(private api: ApiService,
-              private router: Router
-  ){
-
-  }
-
-  // form control
-
-  loginForm = new FormGroup({
-    email: new FormControl("", [Validators.required, Validators.email, Validators.minLength(6), Validators.maxLength(28)]),
-    pwd: new FormControl("", [Validators.required, Validators.minLength(6), Validators.maxLength(24), Validators.pattern(/^(?=.*\d.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).*$/)]),
-  })
-
   hide1 = true;
 
+  constructor(private api: ApiService,
+              private router: Router,
+              private _formBuilder: FormBuilder
+  ){}
+
+  firstFormGroup = this._formBuilder.group({
+    email: ['', [Validators.required, Validators.email]],
+  });
+
+  secondFormGroup = this._formBuilder.group({
+    pwd: ['', [Validators.required]]
+  });
+
   get email(): FormControl{
-    return this.loginForm.get("email") as FormControl
+    return this.firstFormGroup.get("email") as FormControl
   }
 
   get pwd(): FormControl{
-    return this.loginForm.get("pwd") as FormControl
+    return this.secondFormGroup.get("pwd") as FormControl
   }
 
-  // login
-
-  onSubmitClick(){
-    this.loginUser()
-  }
-
-  loginUser(){
+  login(){
 
     const data: UserRequest = {
       username: this.email.value,
@@ -50,7 +43,7 @@ export class LoginComponent{
 
     this.api.loginUser(data).subscribe({
       next: (res) => {
-        alert("You are logged in.")
+        alert("Login successful")
         localStorage.setItem('token', res.token)
         this.router.navigate(['Products'])
 
@@ -59,15 +52,6 @@ export class LoginComponent{
         alert(err.error.message)
       }
     })
-  }
-
-  // errors
-
-  getEmailErrorMessage() {
-    if (this.email.hasError('required')) {
-      return 'You must enter a value';
-    }
-    return this.email.hasError('email') ? 'Not a valid email' : '';
   }
 
 }

@@ -107,7 +107,7 @@ export class ResetPasswordComponent {
     }
   }
 
-  changePassword(stepper: MatStepper){
+  changePassword(){
 
     if(this.pwd.value === this.rpwd.value){
 
