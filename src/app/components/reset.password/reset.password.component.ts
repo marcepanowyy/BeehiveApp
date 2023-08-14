@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ApiService} from "../../services/api.service";
+import {MatStepper} from "@angular/material/stepper";
 
 @Component({
   selector: 'app-reset.password',
@@ -65,7 +66,10 @@ export class ResetPasswordComponent {
   sendVerificationCode(){
 
     if(this.email.valid){
-      this.api.sendResetPasswordMail(this.email.value).subscribe({
+
+      const data = {recipient: this.email.value}
+
+      this.api.sendResetPasswordMail(data).subscribe({
         next: (res) => {
         },
         error: (err) => {
@@ -82,7 +86,13 @@ export class ResetPasswordComponent {
   confirmCode(){
 
     if(this.email.valid){
-      this.api.confirmCode(this.email.value, this.code.value).subscribe({
+
+      const data = {
+        recipient: this.email.value,
+        code: this.code.value
+      }
+
+      this.api.confirmCode(data).subscribe({
         next: (res) => {
           this.disableChangePassword = false
           alert('Verification code has been accepted')
@@ -97,17 +107,23 @@ export class ResetPasswordComponent {
     }
   }
 
-  changePassword(){
+  changePassword(stepper: MatStepper){
 
     if(this.pwd.value === this.rpwd.value){
-      this.api.changePassword(this.email.value, this.code.value, this.pwd.value).subscribe({
-        next: (res) => {
-          console.log(res)
-          alert(res)
+
+      const data = {
+        recipient: this.email.value,
+        code: this.code.value,
+        newPassword: this.pwd.value
+      }
+
+      this.api.changePassword(data).subscribe({
+        next: () => {
+          alert("You have changed the password successfully.")
+          location.reload()
         },
-        error: (err) => {
-          console.log(err)
-          alert(err)
+        error: () => {
+          alert("You have encountered problem with changing the password. Try again")
         }
       })
     }
@@ -117,11 +133,5 @@ export class ResetPasswordComponent {
     }
 
   }
-
-
-
-
-
-
 
 }

@@ -11,6 +11,7 @@ import {OrdersResponse} from "../interfaces/order/OrdersResponse";
 import {OrderRequest} from "../interfaces/order/OrderRequest";
 import {OrderResponse} from "../interfaces/order/OrderResponse";
 import {RegistrationResponse} from "../interfaces/user/RegistationResponse";
+import {ResetPasswordRequest} from "../interfaces/user/ResetPasswordRequest";
 
 @Injectable({
   providedIn: 'root'
@@ -54,16 +55,16 @@ export class ApiService {
     return this.http.post<any>("http://localhost:4000/auth/google/login", {}, options);
   }
 
-  sendResetPasswordMail(recipient: string){
-    return this.http.post<any>("http://localhost:4000/auth/reset", {recipient});
+  sendResetPasswordMail(data: Partial<ResetPasswordRequest>){
+    return this.http.post<boolean>("http://localhost:4000/auth/reset", data);
   }
 
-  confirmCode(recipient: string, code: string){
-    return this.http.post<any>("http://localhost:4000/auth/password/code/confirmation", {recipient, code})
+  confirmCode(data: Partial<ResetPasswordRequest>){
+    return this.http.post<boolean>("http://localhost:4000/auth/password/code/confirmation", data)
   }
 
-  changePassword(recipient: string, code: string, password: string){
-    return this.http.post<any>("http://localhost:4000/auth/password/change", {recipient, code, password})
+  changePassword(data: ResetPasswordRequest){
+    return this.http.post<boolean>("http://localhost:4000/auth/password/change", data)
   }
 
   // products
@@ -89,3 +90,4 @@ export class ApiService {
 
 
 }
+
