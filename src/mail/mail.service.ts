@@ -95,40 +95,4 @@ export class MailService {
     return code;
   }
 
-  // async generatePasswordResetCode(recipient: string): Promise<string>{
-  //
-  //   const code = this.getRandomCode();
-  //   const expirationTime = 2 * 60 * 1000 // 2 minutes
-  //   const resetPasswordKey = crypto.createHash('sha256').update(code).digest('hex');
-  //   const resetPasswordKey1 = crypto.createHash('sha256').update(code).digest('hex');
-  //
-  //   console.log(resetPasswordKey)
-  //   console.log(resetPasswordKey1)
-  //
-  //   await this.cacheManager.set(
-  //     `temp-reset-password-key__${resetPasswordKey}`,
-  //     { recipient },
-  //     expirationTime,
-  //   );
-  //   return code;
-  // }
-
-  // async generateResetPasswordCode(recipient: string): Promise<string> {
-  //
-  //   let code = '';
-  //   for (let i = 0; i < this.passwordCodeLength; i++) {
-  //     const randomIndex = Math.floor(Math.random() * this.chars.length);
-  //     code += this.chars[randomIndex];
-  //   }
-  //
-  //   const verificationKey = crypto.randomUUID();
-  //   const expirationTime = 2 * 60 * 1000 // 2 minutes
-  //
-  //   await this.cacheManager.set(
-  //     `temp-user-reset-password-key__${verificationKey}`,
-  //     recipient,
-  //     expirationTime,
-  //   );
-  //   return code;
-  // }
 }

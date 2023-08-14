@@ -281,8 +281,8 @@ export class UsersService {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
-    await this.usersRepository.update(user.id, {password: newPassword})
-
+    user.password = newPassword
+    await this.usersRepository.save(user)
     return true
 
   }
