@@ -51,3 +51,14 @@ export class GoogleUser {
   picture?: string;
   accessToken?: string;
 }
+
+export class PasswordResetDto {
+  recipient: string;
+  code: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @Length(6, 24)
+  @Matches(/^(?=.*\d.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).*$/)
+  newPassword: string;
+}

@@ -11,7 +11,7 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UsersDto } from './users.dto';
+import { PasswordResetDto, UsersDto } from './users.dto';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -99,12 +99,18 @@ export class UsersController {
   }
 
   @Post('reset')
-  sendResetCode(@Body('recipient') recipient: string) {
-    return this.usersService.handleResetPasswordRequest(recipient);
+  sendResetCode(@Body() data: Partial<PasswordResetDto>) {
+    return this.usersService.handleResetPasswordRequest(data);
   }
 
   @Post('password/code/confirmation')
-  confirmCode(@Body('recipient') recipient: string, @Body('code') code: string) {
-    return this.usersService.handleResetPasswordCodeConfirmation(recipient, code)
+  confirmCode(@Body() data: Partial<PasswordResetDto>) {
+    return this.usersService.handleResetPasswordCodeConfirmation(data)
   }
+
+  @Post('password/change')
+  changePassword(@Body() data: PasswordResetDto){
+    return this.usersService.changePassword(data)
+  }
+
 }

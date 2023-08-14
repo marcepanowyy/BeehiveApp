@@ -1,20 +1,9 @@
-import {
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersEntity } from './users.entity';
 import { Repository } from 'typeorm';
-import {
-  GoogleUser,
-  UsersDto,
-  UsersRO,
-} from './users.dto';
+import { GoogleUser, PasswordResetDto, UsersDto, UsersRO } from './users.dto';
 import { UserTypeEnum } from '../../../shared/enums/user.type.enum';
-import * as bcrypt from 'bcryptjs';
 
 import { Request, Response } from 'express';
 import { Cache } from 'cache-manager';
@@ -194,7 +183,9 @@ export class UsersService {
     return await this.usersRepository.findOneBy({ id });
   }
 
-  // mails (verification etc.)
+  // end google
+
+  // mailing (verification etc.)
 
   async activateAccount(verificationKey: string): Promise<string> {
     const userEmail: string = await this.cacheManager.get(
@@ -220,8 +211,14 @@ export class UsersService {
   }
 
   async handleResetPasswordRequest(
-    recipient: string,
+    data: Partial<PasswordResetDto>,
   ): Promise<boolean> {
+    const { recipient } = data;
+
+    if (!recipient) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+
     const user = await this.usersRepository.findOne({
       where: { username: recipient },
     });
@@ -230,27 +227,65 @@ export class UsersService {
       await this.mailService.sendPasswordResetMail(recipient);
     }
     // sending 200 whether we have found user or not
-    return true
+    return true;
   }
 
-  async handleResetPasswordCodeConfirmation(recipient: string, userCode: string): Promise<boolean>{
+  async handleResetPasswordCodeConfirmation(
+    data: Partial<PasswordResetDto>,
+  ): Promise<boolean> {
+    const { recipient, code } = data;
 
-    if(!recipient || !userCode){
-      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED)
+    if (!recipient || !code) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
-    const user = this.usersRepository.findOne({where: {username: recipient}})
-    if(!user){
-      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED)
+    const cacheCode = await this.cacheManager.get(
+      `temp-user-reset-password-key__${recipient}`,
+    );
+
+    if (cacheCode !== code) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
-    const cacheCode = await this.cacheManager.get(`temp-user-reset-password-key__${recipient}`)
-
-    if(cacheCode !== userCode){
-      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED)
+    const user = await this.usersRepository.findOne({
+      where: { username: recipient },
+    });
+    if (!user) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
-    return true
+
+
+    return true;
   }
 
+  async changePassword(data: PasswordResetDto): Promise<boolean> {
+    const { recipient, code, newPassword } = data;
 
+    if(!recipient || !code || !newPassword){
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+
+    const cacheCode = await this.cacheManager.get(
+      `temp-user-reset-password-key__${recipient}`,
+    );
+
+    if (cacheCode !== code) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+
+    const user = await this.usersRepository.findOne({
+      where: { username: recipient },
+    });
+
+    if (!user) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+
+    await this.usersRepository.update(user.id, {password: newPassword})
+
+    return true
+
+  }
+
+  // end mailing
 }
