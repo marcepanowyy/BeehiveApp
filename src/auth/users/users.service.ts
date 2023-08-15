@@ -254,14 +254,13 @@ export class UsersService {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
-
     return true;
   }
 
   async changePassword(data: PasswordResetDto): Promise<boolean> {
     const { recipient, code, newPassword } = data;
 
-    if(!recipient || !code || !newPassword){
+    if (!recipient || !code || !newPassword) {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
@@ -281,10 +280,9 @@ export class UsersService {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
-    user.password = newPassword
-    await this.usersRepository.save(user)
-    return true
-
+    user.password = newPassword;
+    await this.usersRepository.save(user);
+    return true;
   }
 
   // end mailing

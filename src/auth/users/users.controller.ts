@@ -105,12 +105,11 @@ export class UsersController {
 
   @Post('password/code/confirmation')
   confirmCode(@Body() data: Partial<PasswordResetDto>) {
-    return this.usersService.handleResetPasswordCodeConfirmation(data)
+    return this.usersService.handleResetPasswordCodeConfirmation(data);
   }
 
   @Post('password/change')
-  changePassword(@Body() data: PasswordResetDto){
-    return this.usersService.changePassword(data)
+  changePassword(@Body() data: PasswordResetDto) {
+    return this.usersService.changePassword(data);
   }
-
 }

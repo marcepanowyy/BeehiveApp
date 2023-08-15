@@ -16,6 +16,7 @@ import { MailModule } from './mail/mail.module';
 
 import 'dotenv/config';
 import { CacheModule } from '@nestjs/cache-manager';
+import { FakeModule } from './fake/fake.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { CacheModule } from '@nestjs/cache-manager';
       },
     }),
     CacheModule.register({ isGlobal: true }),
+    FakeModule,
   ],
   controllers: [],
   providers: [
