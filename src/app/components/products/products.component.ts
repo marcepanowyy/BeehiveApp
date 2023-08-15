@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { ApiService } from "../../services/api.service";
 import { FormControl } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
@@ -9,6 +9,8 @@ import { Category } from "../../interfaces/category/Category";
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import {Product} from "../../interfaces/product/Product";
+import {MatPaginator} from "@angular/material/paginator";
+
 
 @Component({
   selector: 'app-products',
@@ -16,6 +18,8 @@ import {Product} from "../../interfaces/product/Product";
   styleUrls: ['./products.component.css'],
 })
 export class ProductsComponent implements OnInit {
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   categories: Category[] = [];
   products: Product[] = [];
@@ -62,6 +66,7 @@ export class ProductsComponent implements OnInit {
         this.totalPages = info.totalPages;
         this.pageSize = info.pageSize;
         this.totalItems = info.totalItems;
+        this.paginator.firstPage();
       },
       error: (err) => {
         alert(err.error.message);
