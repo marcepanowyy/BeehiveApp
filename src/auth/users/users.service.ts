@@ -130,14 +130,15 @@ export class UsersService {
     const userTempId = authorization.replace('Bearer ', '');
 
     if (!userTempId)
-      throw new HttpException(
-        'No user temporary Id found',
-        HttpStatus.UNAUTHORIZED,
-      );
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
 
     const googleUser: GoogleUser = await this.cacheManager.get(
       `temp-google-user__${userTempId}`,
     );
+
+    if (!googleUser) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
 
     return this.googleLogin(googleUser);
   }

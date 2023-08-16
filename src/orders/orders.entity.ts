@@ -19,7 +19,7 @@ export class OrdersEntity {
 
   @UpdateDateColumn() updated: Date;
 
-  @Column('text', { default: StatusEnum.PROCESSING }) status: string;
+  @Column('integer', { default: StatusEnum.PROCESSING }) status: number;
 
   // relationships
 

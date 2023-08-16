@@ -66,7 +66,7 @@ export class OrdersController {
   @UseGuards(new AuthGuard())
   getOrdersByUserAndStatus(
     @User('id') userId: string,
-    @Param('status') status: string,
+    @Param('status') status: number,
     @Query('page') page: number,
   ) {
     return this.ordersService.getOrdersByUserAndStatus(userId, status, page);

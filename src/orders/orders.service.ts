@@ -62,7 +62,7 @@ export class OrdersService {
     const responseObject: any = {
       id,
       created,
-      status,
+      status: StatusEnum[status],
       products,
     };
 
@@ -87,13 +87,6 @@ export class OrdersService {
       skip: 10 * (page - 1),
     });
     return this.toResponseOrders(orders);
-  }
-
-  validateStatus(status: string): boolean {
-    if (!Object.values(StatusEnum).includes(status as StatusEnum)) {
-      throw new HttpException('Invalid status', HttpStatus.BAD_REQUEST);
-    }
-    return true;
   }
 
   async create(data: OrdersDto, userId: string): Promise<OrdersRo> {
@@ -180,15 +173,13 @@ export class OrdersService {
 
   async getOrdersByUserAndStatus(
     userId: string,
-    status: string,
+    status: number,
     page: number = 1,
   ): Promise<OrdersRo[]> {
     const user = await this.usersRepository.findOne({ where: { id: userId } });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-
-    this.validateStatus(status);
 
     const orders = await this.ordersRepository.find({
       where: { customer: { id: userId }, status },

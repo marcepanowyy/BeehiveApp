@@ -15,7 +15,7 @@ export class OrdersRo {
   id?: string;
   updated?: Date;
   created: Date;
-  status: string;
+  status: number;
   customer?: UsersRO | UsersEntity;
   products?: ProductsRo;
   orderDetails?: OrderDetailsEntity[]

@@ -3,13 +3,16 @@ import { CategoriesEntity } from '../../src/categories/categories.entity';
 import { UsersEntity } from '../../src/auth/users/users.entity';
 import { ProductsEntity } from '../../src/products/products.entity';
 import { OrdersEntity } from '../../src/orders/orders.entity';
+import { StatusEnum } from '../enums/status.enum';
 
 // casting because create returns array of object which is falsy
 
 export async function createUser(
   testingContainer: ITestingContainer,
   userData,
+  activated: boolean = false
 ): Promise<UsersEntity> {
+  if(activated) userData.activatedAccount = true
   const user = testingContainer.repositories.usersRepository.create(userData);
   await testingContainer.repositories.usersRepository.save(user);
   return user as unknown as UsersEntity;
@@ -38,10 +41,10 @@ export async function createProduct(
   return product as unknown as ProductsEntity;
 }
 
-export async function createOrder(testingContainer, orderData, customer): Promise<OrdersEntity> {
+export async function createOrder(testingContainer, orderData, customer, randomStatus = 1): Promise<OrdersEntity> {
 
   const order =
-    await testingContainer.repositories.ordersRepository.create({ customer: customer });
+    await testingContainer.repositories.ordersRepository.create({ customer: customer, status: randomStatus});
   await testingContainer.repositories.ordersRepository.save(order);
 
   for (const reqProd of orderData.productsArray) {
@@ -67,3 +70,5 @@ export async function createOrder(testingContainer, orderData, customer): Promis
 
   return order as unknown as OrdersEntity
 }
+
+

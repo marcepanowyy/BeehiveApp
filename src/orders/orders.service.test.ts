@@ -7,7 +7,6 @@ import {
 } from '../../shared/test/utils';
 import { In } from 'typeorm';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { StatusEnum } from '../../shared/enums/status.enum';
 import {
   sampleCategoryData,
   sampleProductData,
@@ -18,6 +17,7 @@ import {
   createProduct,
   createUser,
 } from '../../shared/test/helpers';
+import { StatusEnum } from '../../shared/enums/status.enum';
 
 describe('OrdersService', () => {
   let testingContainer: ITestingContainer;
@@ -167,56 +167,6 @@ describe('OrdersService', () => {
     );
   });
 
-  it('should validate status with valid data', async () => {
-    const validStatus1 = StatusEnum.PROCESSING;
-    const validStatus2 = StatusEnum.SHIPPED;
-    const validStatus3 = StatusEnum.DELIVERED;
-    const validStatus4 = StatusEnum.CANCELLED;
-
-    const result1 =
-      testingContainer.services.ordersService.validateStatus(validStatus1);
-    const result2 =
-      testingContainer.services.ordersService.validateStatus(validStatus2);
-    const result3 =
-      testingContainer.services.ordersService.validateStatus(validStatus3);
-    const result4 =
-      testingContainer.services.ordersService.validateStatus(validStatus4);
-
-    assert.strictEqual(result1, true);
-    assert.strictEqual(result2, true);
-    assert.strictEqual(result3, true);
-    assert.strictEqual(result4, true);
-  });
-
-  it('should throw an error when validating status with invalid data', async () => {
-    const invalidStatus1 = 'invalidStatus';
-    const invalidStatus2 = '';
-
-    await assert.rejects(
-      async () => {
-        testingContainer.services.ordersService.validateStatus(invalidStatus1);
-      },
-      (err: any) => {
-        assert.strictEqual(err instanceof HttpException, true);
-        assert.strictEqual(err.response, 'Invalid status');
-        assert.strictEqual(err.status, HttpStatus.BAD_REQUEST);
-        return true;
-      },
-    );
-
-    await assert.rejects(
-      async () => {
-        testingContainer.services.ordersService.validateStatus(invalidStatus2);
-      },
-      (err: any) => {
-        assert.strictEqual(err instanceof HttpException, true);
-        assert.strictEqual(err.response, 'Invalid status');
-        assert.strictEqual(err.status, HttpStatus.BAD_REQUEST);
-        return true;
-      },
-    );
-  });
-
   it('should update an order with valid data', async () => {
 
     const order = await createOrder(testingContainer, orderData1, user1)
@@ -237,7 +187,7 @@ describe('OrdersService', () => {
       });
 
     assert.strictEqual(updatedOrder.id, order.id);
-    assert.strictEqual(updatedOrder.status, 'shipped');
+    assert.strictEqual(updatedOrder.status, 2);
   });
 
   it('should delete an order by valid order id', async () => {
