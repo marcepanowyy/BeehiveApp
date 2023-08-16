@@ -47,26 +47,26 @@ export class ProductsComponent implements OnInit {
               private matDialog: MatDialog) {}
 
   ngOnInit() {
-    this.filterSubject.pipe(debounceTime(300)).subscribe((filter) => {
-      this.getFilteredProducts(filter);
-    });
-    this.getFilteredProducts(this.data);
+    this.initializeFilter()
+    this.getFilteredProducts();
     this.getAllCategories();
   }
 
-  onPageChange(event: any) {
-    this.currPage = event.pageIndex + 1;
+  private initializeFilter(){
+    this.filterSubject.pipe(debounceTime(300)).subscribe(() => {
+      this.paginator.firstPage();
+      this.getFilteredProducts();
+    })
   }
 
-  private getFilteredProducts(filter: Filter) {
-    this.api.getFilteredProducts(filter, this.currPage).subscribe({
+  private getFilteredProducts() {
+    this.api.getFilteredProducts(this.data, this.currPage).subscribe({
       next: (res) => {
         const { products, info } = res;
         this.products = products;
         this.totalPages = info.totalPages;
         this.pageSize = info.pageSize;
         this.totalItems = info.totalItems;
-        this.paginator.firstPage();
       },
       error: (err) => {
         alert(err.error.message);
@@ -83,6 +83,11 @@ export class ProductsComponent implements OnInit {
         alert(err.error.message);
       }
     });
+  }
+
+  onPageChange(event: any) {
+    this.currPage = event.pageIndex + 1;
+    this.getFilteredProducts()
   }
 
   onCategorySelection(event: any) {
