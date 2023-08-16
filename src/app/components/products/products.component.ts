@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { ApiService } from "../../services/api.service";
 import { FormControl } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
@@ -88,6 +88,7 @@ export class ProductsComponent implements OnInit {
   onPageChange(event: any) {
     this.currPage = event.pageIndex + 1;
     this.getFilteredProducts()
+    this.scrollPageToTop();
   }
 
   onCategorySelection(event: any) {
@@ -130,5 +131,10 @@ export class ProductsComponent implements OnInit {
   isLoggedIn() {
     return localStorage.getItem('token') !== null;
   }
+
+  private scrollPageToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
 
 }
