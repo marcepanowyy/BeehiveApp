@@ -11,12 +11,12 @@ export class MailService {
   ) {}
 
   async sendWelcomeMail(recipient: string): Promise<void> {
-    console.log('Sending welcome mail to:', recipient);
+    console.log('Enqueueing welcome mail at', this.currentTimestamp);
     return this.publishToQueue('welcome-mail', { recipient });
   }
 
   async sendActivationMail(recipient: string): Promise<void> {
-    console.log('Sending activation mail to:', recipient);
+    console.log('Enqueueing activation mail at', this.currentTimestamp);
     const activationCode = await this.generateActivationCode(recipient);
     return this.publishToQueue('activation-mail', {
       recipient,
@@ -25,7 +25,7 @@ export class MailService {
   }
 
   async sendPasswordResetMail(recipient: string): Promise<void> {
-    console.log('Sending password reset mail to:', recipient);
+    console.log('Enqueueing password reset mail at', this.currentTimestamp);
     const resetCode = await this.generatePasswordResetCode(recipient);
     return this.publishToQueue('password-reset-mail', {
       recipient,
@@ -61,5 +61,17 @@ export class MailService {
     );
 
     return code;
+  }
+
+  get currentTimestamp() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const milliseconds = String(now.getMilliseconds()).padStart(3, '0');
+    return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}:${milliseconds}`;
   }
 }

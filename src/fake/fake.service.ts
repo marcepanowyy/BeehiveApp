@@ -27,7 +27,7 @@ export class FakeService {
   private productsInfo = FakeServiceConfig.productsInfo;
   private ordersInfo = FakeServiceConfig.ordersInfo;
 
-  async generate() {
+  async generate(): Promise<void> {
     this.testingContainer = await createTestingContainer();
 
     const productsId = []
@@ -89,8 +89,6 @@ export class FakeService {
       }
     }
 
-    let flag = false
-
     for (let i = 0; i < this.usersInfo.number; i++) {
       let username: string;
       do {
@@ -137,12 +135,6 @@ export class FakeService {
         await createOrder(this.testingContainer, orderData, user, randomStatus)
 
       }
-
-      if(!flag){
-        console.log(userData)
-      }
-      flag = true
-
     }
 
   }
