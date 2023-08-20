@@ -31,7 +31,7 @@ export class MessageHandlerService {
     `,
     });
 
-    console.log('Welcoming mail has been sent to:', recipient);
+    console.log(`Welcoming mail has been sent to: ${recipient}`);
   }
 
   async sendActivationEmail(message: ActivationMessage): Promise<void> {
@@ -57,7 +57,7 @@ export class MessageHandlerService {
     `,
     });
 
-    console.log('Activation mail has been sent to:', recipient);
+    console.log(`Activation mail has been sent to: ${recipient}`);
   }
 
   async sendPasswordResetEmail(message: PasswordResetMessage): Promise<void> {
@@ -73,6 +73,6 @@ export class MessageHandlerService {
     `,
     });
 
-    console.log('Password reset mail has been sent to:', recipient);
+    console.log(`Password reset mail has been sent to: ${recipient}`);
   }
 }
