@@ -17,24 +17,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     //     },
     //   },
     // }),
-    // ClientsModule.register([
-    //   {
-    //     name: 'MATH_SERVICE',
-    //     transport: Transport.RMQ,
-    //     options: {
-    //       urls: ['amqp://localhost:5672'],
-    //       queue: 'mail-queue',
-    //       queueOptions: {
-    //         durable: false
-    //       },
-    //     },
-    //   },
-    // ]),
-
-    // CacheModule.register({ isGlobal: true }),
-
   ],
-  controllers: [MailHandlerController],
-  // providers: [MailHandlerService],
+  controllers: [],
 })
 export class AppModule {}
