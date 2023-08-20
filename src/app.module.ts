@@ -1,23 +1,8 @@
 import { Module } from '@nestjs/common';
-import { MailHandlerController } from './mail.handler/mail.handler.controller';
-// import { MailHandlerService } from './mail.handler/mail.handler.service';
-import { MailHandlerModule } from './mail.handler/mail.handler.module';
-// import { MailerModule } from '@nestjs-modules/mailer';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { MessageHandlerModule } from './message.handler/message.handler.module';
 
 @Module({
-  imports: [MailHandlerModule,
-
-    // MailerModule.forRoot({
-    //   transport: {
-    //     host: process.env.EMAIL_HOST,
-    //     auth: {
-    //       user: process.env.EMAIL_USER,
-    //       pass: process.env.EMAIL_PASS,
-    //     },
-    //   },
-    // }),
-  ],
+  imports: [MessageHandlerModule],
   controllers: [],
 })
 export class AppModule {}
