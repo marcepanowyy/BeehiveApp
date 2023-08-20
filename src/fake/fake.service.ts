@@ -13,10 +13,6 @@ import {
 
 import { faker } from '@faker-js/faker';
 import { FakeServiceConfig } from '../../config/fake.service.config';
-import passport from 'passport';
-import { raw } from 'express';
-import { userInfo } from 'os';
-import { StatusEnum } from '../../shared/enums/status.enum';
 
 @Injectable()
 export class FakeService {

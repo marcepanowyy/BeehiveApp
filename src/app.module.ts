@@ -11,7 +11,6 @@ import { OrderDetailsModule } from './order.details/order.details.module';
 import { ProductsReviewModule } from './products.review/products.review.module';
 import { RoleGuard } from './auth/guards/role.guard';
 import { PassportModule } from '@nestjs/passport';
-import { MailerModule } from '@nestjs-modules/mailer';
 import { MailModule } from './mail/mail.module';
 
 import 'dotenv/config';
@@ -29,15 +28,6 @@ import { FakeModule } from './fake/fake.module';
     ProductsReviewModule,
     PassportModule.register({ session: true }),
     MailModule,
-    MailerModule.forRoot({
-      transport: {
-        host: process.env.EMAIL_HOST,
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      },
-    }),
     CacheModule.register({ isGlobal: true }),
     FakeModule,
   ],

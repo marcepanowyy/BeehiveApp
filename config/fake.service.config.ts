@@ -1,9 +1,11 @@
 export const FakeServiceConfig = {
   usersInfo: {
-    number: 1
+    number: 10
   },
+
   categoriesInfo: {
-    number: 1,
+    number: 20,
+    // products number per category
     productsNumber: {
       min: 5,
       max: 30
@@ -24,7 +26,7 @@ export const FakeServiceConfig = {
     },
   },
   ordersInfo: {
-    // per customer
+    // orders per customer
     number: {
       min: 0,
       max: 20

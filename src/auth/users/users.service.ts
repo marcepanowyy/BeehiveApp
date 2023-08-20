@@ -95,7 +95,7 @@ export class UsersService {
     await this.usersRepository.save(user);
 
     //send activating mail
-    await this.mailService.sendActivatingMail(username);
+    await this.mailService.sendActivationMail(username);
 
     return {
       message: 'Account created successfully. Activate your account to log in.',
@@ -155,6 +155,7 @@ export class UsersService {
         activatedAccount: true, // when creating google users, automatically activate their accounts
       });
       await this.usersRepository.save(user);
+      await this.mailService.sendWelcomeMail(email)
       return user.toResponseUser();
     } else if (user.type === UserTypeEnum.STANDARD) {
       await this.usersRepository.update(user.id, {
@@ -207,7 +208,7 @@ export class UsersService {
     if (!user) throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
 
     await this.usersRepository.update(user.id, { activatedAccount: true });
-    await this.mailService.sendWelcomingMail(userEmail);
+    await this.mailService.sendWelcomeMail(userEmail);
     return 'You have activated your account.';
   }
 
@@ -225,6 +226,11 @@ export class UsersService {
     });
 
     if (user) {
+
+      if(!user.activatedAccount){
+        throw new HttpException('Account has not been activated', HttpStatus.BAD_REQUEST)
+      }
+
       await this.mailService.sendPasswordResetMail(recipient);
     }
     // sending 200 whether we have found user or not
