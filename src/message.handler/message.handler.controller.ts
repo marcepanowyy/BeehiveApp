@@ -14,21 +14,21 @@ export class MessageHandlerController {
   @EventPattern('welcome-mail')
   handleWelcomeMail(@Ctx() context: RmqContext): Promise<void> {
     const message: WelcomeMessage = this.getData(context);
-    console.log(`\nGot message from the queue at ${this.currentTimestamp}, handling welcome mail...`);
+    console.log(`\nReceived message from the queue at ${this.currentTimestamp}, handling welcome mail...`);
     return this.messageHandlerService.sendWelcomeEmail(message);
   }
 
   @EventPattern('activation-mail')
   handleActivationMail(@Ctx() context: RmqContext) {
     const message: ActivationMessage = this.getData(context);
-    console.log(`\nGot message from the queue at ${this.currentTimestamp}, handling activation mail...`);
+    console.log(`\nReceived message from the queue at ${this.currentTimestamp}, handling activation mail...`);
     return this.messageHandlerService.sendActivationEmail(message);
   }
 
   @EventPattern('password-reset-mail')
   HandleResetMail(@Ctx() context: RmqContext) {
     const message: PasswordResetMessage = this.getData(context);
-    console.log(`\nGot message from the queue at ${this.currentTimestamp}, handling password reset mail...`);
+    console.log(`\nReceived message from the queue at ${this.currentTimestamp}, handling password reset mail...`);
     return this.messageHandlerService.sendPasswordResetEmail(message);
   }
 
