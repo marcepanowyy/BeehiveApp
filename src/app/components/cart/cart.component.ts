@@ -3,6 +3,8 @@ import {ApiService} from "../../services/api.service";
 import {MatDialog} from "@angular/material/dialog";
 import {Dialog2Component} from "./dialog/dialog2.component";
 import {CartProduct} from "../../interfaces/product/CartProduct";
+import {loadStripe} from "@stripe/stripe-js";
+import {environment} from "../../../../environment";
 
 @Component({
   selector: 'app-cart',
@@ -14,13 +16,10 @@ export class CartComponent implements OnInit{
   cartProducts: CartProduct[] = []
 
   constructor(private api: ApiService,
-              private matDialog: MatDialog){
-  }
+              private matDialog: MatDialog){}
 
   ngOnInit() {
-
     this.getProductsById()
-
   }
 
   getProductsById(){
@@ -79,6 +78,23 @@ export class CartComponent implements OnInit{
       },
       error: (err) => {
         alert(err.error.message)
+      }
+    })
+
+  }
+
+  async checkout() {
+
+    this.api.checkout().subscribe({
+      next: async (session: any) => {
+        console.log(session)
+        const stripe = await loadStripe(environment.stripeConfig.publishable_key);
+        stripe?.redirectToCheckout({
+          sessionId: session.id
+        })
+      },
+      error: (err) => {
+        alert(err)
       }
     })
 

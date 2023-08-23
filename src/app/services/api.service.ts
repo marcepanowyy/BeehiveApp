@@ -31,6 +31,11 @@ export class ApiService {
     return this.http.post<OrderResponse>("http://localhost:4000/orders", order)
   }
 
+  checkout(){
+    return this.http.post("http://localhost:4000/payment", {
+    })
+  }
+
   // users
 
   registerUser(data: UserRequest){

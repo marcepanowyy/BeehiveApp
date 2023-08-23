@@ -49,7 +49,7 @@
                 <mat-card-title class="desc">{{product.name}}</mat-card-title>
                 <mat-card-subtitle class="desc">Price: ${{product.price}}</mat-card-subtitle>
                 <mat-card-title class="desc">Number of articles: {{product.quantity}}</mat-card-title>
-                <mat-card-subtitle class="desc">Total: ${{product.quantity * product.price}}</mat-card-subtitle>
+                <mat-card-subtitle class="desc">Total: ${{(product.quantity * product.price).toFixed(2)}}</mat-card-subtitle>
 
                 </div>
 

@@ -73,7 +73,11 @@ export class ResetPasswordComponent {
         next: (res) => {
         },
         error: (err) => {
-          alert(err)
+          setTimeout( async () => {
+              alert(err.error.message)
+            }, 2000
+          )
+          alert(err.error.message)
         }
       })
     }
