@@ -12,7 +12,7 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
-import { OrdersDto, OrderStatusDto } from './orders.dto';
+import { OrdersDto, OrderStatusDto, PaymentRequestBody } from './orders.dto';
 import { ValidationPipe } from '../../shared/validation.pipe';
 import { User } from '../../shared/decorators/users.decorator';
 import { ApiTags } from '@nestjs/swagger';
@@ -53,7 +53,7 @@ export class OrdersController {
   @UseGuards(new AuthGuard())
   @UsePipes(new ValidationPipe())
   showOrdersByUser(@User('id') userId: string, @Query('page') page: number) {
-    this.logData({userId})
+    this.logData({ userId });
     return this.ordersService.getOrdersByUser(userId, page);
   }
 

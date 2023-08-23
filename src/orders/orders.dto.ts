@@ -25,3 +25,16 @@ export class OrderStatusDto{
   customerId: string;
   status: StatusEnum;
 }
+
+
+export interface PaymentRequestBody {
+  products: PaymentProduct[];
+  currency: string
+}
+
+export interface PaymentProduct {
+  id: string,
+  title: string,
+  price: number,
+  quantity: number
+}

@@ -3,16 +3,15 @@ import { CategoriesEntity } from '../../src/categories/categories.entity';
 import { UsersEntity } from '../../src/auth/users/users.entity';
 import { ProductsEntity } from '../../src/products/products.entity';
 import { OrdersEntity } from '../../src/orders/orders.entity';
-import { StatusEnum } from '../enums/status.enum';
 
 // casting because create returns array of object which is falsy
 
 export async function createUser(
   testingContainer: ITestingContainer,
-  userData,
-  activated: boolean = false
+  userData: UserData,
+  activated: boolean = false,
 ): Promise<UsersEntity> {
-  if(activated) userData.activatedAccount = true
+  if (activated) userData.activatedAccount = true;
   const user = testingContainer.repositories.usersRepository.create(userData);
   await testingContainer.repositories.usersRepository.save(user);
   return user as unknown as UsersEntity;
@@ -20,7 +19,7 @@ export async function createUser(
 
 export async function createCategory(
   testingContainer: ITestingContainer,
-  categoryData,
+  categoryData: CategoryData,
 ): Promise<CategoriesEntity> {
   const category =
     testingContainer.repositories.categoriesRepository.create(categoryData);
@@ -30,7 +29,7 @@ export async function createCategory(
 
 export async function createProduct(
   testingContainer: ITestingContainer,
-  productData,
+  productData: ProductData,
   category: CategoriesEntity,
 ): Promise<ProductsEntity> {
   const product = testingContainer.repositories.productsRepository.create({
@@ -41,10 +40,16 @@ export async function createProduct(
   return product as unknown as ProductsEntity;
 }
 
-export async function createOrder(testingContainer, orderData, customer, randomStatus = 1): Promise<OrdersEntity> {
-
-  const order =
-    await testingContainer.repositories.ordersRepository.create({ customer: customer, status: randomStatus});
+export async function createOrder(
+  testingContainer: ITestingContainer,
+  orderData,
+  customer: UsersEntity,
+  randomStatus = 1,
+): Promise<OrdersEntity> {
+  const order = await testingContainer.repositories.ordersRepository.create({
+    customer: customer,
+    status: randomStatus,
+  });
   await testingContainer.repositories.ordersRepository.save(order);
 
   for (const reqProd of orderData.productsArray) {
@@ -68,7 +73,24 @@ export async function createOrder(testingContainer, orderData, customer, randomS
     );
   }
 
-  return order as unknown as OrdersEntity
+  return order as unknown as OrdersEntity;
 }
 
+export interface UserData {
+  username: string;
+  password: string;
+  activatedAccount?: boolean;
+}
+
+export interface CategoryData {
+  name: string;
+  description: string;
+}
+
+export interface ProductData {
+  name: string,
+  description: string,
+  unitsOnStock: number,
+  price: number
+}
 

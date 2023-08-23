@@ -5,7 +5,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { OrdersDto, OrdersRo, OrderStatusDto } from './orders.dto';
 import { ProductsEntity } from '../products/products.entity';
 import { OrderDetailsEntity } from '../order.details/order.details.entity';
-import { ProductItem } from '../products/products.dto';
 import { UsersRO } from '../auth/users/users.dto';
 import { UsersEntity } from '../auth/users/users.entity';
 import { StatusEnum } from '../../shared/enums/status.enum';

@@ -111,6 +111,9 @@ export class ProductsService {
     product = await this.productsRepository.findOne({
       where: { id: productId },
     });
+    if (!product) {
+      throw new HttpException('Product not found by id', HttpStatus.NOT_FOUND);
+    }
     return this.toResponseProduct(product);
   }
 

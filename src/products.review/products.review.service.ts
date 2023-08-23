@@ -61,6 +61,10 @@ export class ProductsReviewService {
       where: { id: reviewId },
       relations: ['customer', 'product'],
     });
+
+    if (!review) {
+      throw new HttpException('Review not found by id', HttpStatus.NOT_FOUND);
+    }
     return this.toResponseReview(review);
   }
 
@@ -91,9 +95,7 @@ export class ProductsReviewService {
       take: 5,
       skip: 5 * (page - 1)
     })
-
     return this.toResponseReviews(reviews)
-
   }
 
   async create(userId: string, data: ProductsReviewDto, productId: string) {
@@ -151,8 +153,10 @@ export class ProductsReviewService {
 
     const updatedReview = await this.productsReviewRepository.findOne({where: {id: reviewId}})
 
+    if(!updatedReview){
+      throw new HttpException('Review not found by id', HttpStatus.NOT_FOUND);
+    }
     return this.toResponseReview(updatedReview)
-
   }
 
 }
