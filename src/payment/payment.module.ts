@@ -12,8 +12,8 @@ import { OrdersModule } from '../orders/orders.module';
   imports: [
     TypeOrmModule.forFeature([ProductsEntity]),
     ProductsModule,
-    OrdersModule
+    OrdersModule,
   ],
-  exports: [PaymentService]
+  exports: [PaymentService],
 })
 export class PaymentModule {}

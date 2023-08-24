@@ -41,7 +41,6 @@ export class FilteredProductsDto{
   descending: boolean = false
 }
 
-
 export class ProductsRo {
   id?: string;
   created?: Date;
@@ -55,12 +54,3 @@ export class ProductsRo {
   reviews?: ProductsReviewEntity[];
 }
 
-export class ProductItem {
-  @IsString()
-  @IsNotEmpty()
-  productId: string;
-
-  @IsInt()
-  @Min(1)
-  quantity: number;
-}

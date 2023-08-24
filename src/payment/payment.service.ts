@@ -4,7 +4,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ProductsEntity } from '../products/products.entity';
 import { Repository } from 'typeorm';
 import { ProductsService } from '../products/products.service';
-import { CartItem, ProcessedCartItem } from './payment.dto';
+import { CartItem, ProcessedCartItem, ProductForOrder } from './payment.dto';
+import { OrdersService } from '../orders/orders.service';
+import { PaymentStatusEnum } from '../../shared/enums/payment.status.enum';
 
 @Injectable()
 export class PaymentService {
@@ -12,17 +14,18 @@ export class PaymentService {
   constructor(
     @InjectRepository(ProductsEntity)
     private productsRepository: Repository<ProductsEntity>,
-    private productsService: ProductsService
+    private productsService: ProductsService,
+    private ordersService: OrdersService
   ) {}
 
   private stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
     apiVersion: '2023-08-16'
   });
 
-  async processPayment(cartItems: CartItem[]) {
+  async processPayment(userId: string, cartItems: CartItem[]) {
 
     const processedCartItems: ProcessedCartItem[] = await this.getProcessedCartItems(cartItems)
-    return this.createSession(processedCartItems)
+    return this.createSession(userId, processedCartItems)
 
   }
 
@@ -33,27 +36,16 @@ export class PaymentService {
       case 'checkout.session.completed': {
 
         const session = event.data.object;
+        const products = await this.getProductsFromStripeEvent(event)
+        const userId = await this.getUserFromStripeEvent(event)
 
-        // const sessionWithLineItems = await this.stripe.checkout.sessions.retrieve(
-        //   event.data.object.id,
-        //   {
-        //     expand: ['line_items']
-        //   }
-        // )
-        // const lineItems = sessionWithLineItems.line_items
-        // console.log(lineItems)
-
-        // Save an order in your database, marked as 'awaiting payment'
-        // createOrder(session);
-
-        // Check if the order is paid (for example, from a card payment)
-        //
-        // A delayed notification payment will have an `unpaid` status, as
-        // you're still waiting for funds to be transferred from the customer's
-        // account.
         if (session.payment_status === 'paid') {
-          // fulfillOrder(session);
+          // await this.ordersService.createOrder(userId, products, PaymentStatusEnum.PAID)
         }
+        else{
+          // await this.ordersService.createOrder(userId, products, PaymentStatusEnum.AWAITING)
+        }
+
         break;
       }
 
@@ -76,24 +68,9 @@ export class PaymentService {
       }
     }
 
-    if(event.type === 'checkout.session.completed'){
-
-      const sessionWithLineItems = await this.stripe.checkout.sessions.retrieve(
-        event.data.object.id,
-        {
-          expand: ['line_items']
-        }
-      )
-      const lineItems = sessionWithLineItems.line_items
-      console.log(lineItems)
-      console.log('fulfilling order')
-
-    }
-
-
   }
 
-  async createSession(processedCartItems: ProcessedCartItem[]){
+  async createSession(userId: string, processedCartItems: ProcessedCartItem[]){
 
     return this.stripe.checkout.sessions.create({
       line_items: processedCartItems.map(item => ({
@@ -102,7 +79,10 @@ export class PaymentService {
           unit_amount: item.price * 100,
           product_data: {
             name: item.name,
-            images: ['https://material.angular.io/assets/img/examples/shiba1.jpg'] // test img
+            images: ['https://material.angular.io/assets/img/examples/shiba1.jpg'], // test img
+            metadata: {
+              product_id: item.productId
+            }
           },
         },
         quantity: item.quantity,
@@ -110,6 +90,9 @@ export class PaymentService {
       mode: 'payment',
       success_url: process.env.STRIPE_SUCCESS_URL,
       cancel_url: process.env.STRIPE_CANCEL_URL,
+      metadata: {
+        userId
+      }
     });
   }
 
@@ -137,6 +120,51 @@ export class PaymentService {
     return processedCartItems
   }
 
+  async getProductsFromStripeEvent(event: any): Promise<ProductForOrder[]>{
+
+    const sessionWithLineItems = await this.stripe.checkout.sessions.retrieve(
+      event.data.object.id,
+      {
+        expand: ['line_items.data.price.product']
+      }
+    )
+
+    const lineItems = [...sessionWithLineItems.line_items.data];
+
+    return lineItems.map((item: any) => {
+      const metadata = item.price.product.metadata
+      return {
+        productId: metadata.product_id,
+        name: item.description,
+        quantity: item.quantity,
+        currency: item.currency,
+        unitAmount: item.price.unit_amount,
+        image: item.price.product.images[0],
+      }
+    })
+
+  }
+
+  async getUserFromStripeEvent(event: any): Promise<string>{
+
+    const sessionWithLineItems = await this.stripe.checkout.sessions.retrieve(
+      event.data.object.id,
+      {
+        expand: ['line_items.data']
+      }
+    )
+
+    const email = sessionWithLineItems.customer_details.email
+    const userId = sessionWithLineItems.metadata.userId
+
+    // console.log(email, userId) // check if they are connected -> if not, throw exception
+
+    return sessionWithLineItems.metadata.userId
+
+
+  }
 
 
 }
+
+

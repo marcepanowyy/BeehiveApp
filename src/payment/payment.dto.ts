@@ -9,3 +9,12 @@ export class ProcessedCartItem {
   quantity: number;
   price: number;
 }
+
+export class ProductForOrder {
+  productId: string;
+  name: string;
+  quantity: number;
+  currency: string;
+  unitAmount: number;
+  image: string | null;
+}

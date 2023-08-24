@@ -25,7 +25,7 @@ export class ProductsEntity {
 
   @Column('integer') unitsOnStock: number;
 
-  @Column('numeric', { precision: 10, scale: 2 }) price: number;
+  @Column('decimal', { precision: 10, scale: 2 }) price: number;
 
   // relationships
 
@@ -41,5 +41,9 @@ export class ProductsEntity {
   reviews: ProductsReviewEntity[];
 
   // end of relationships
-
 }
+
+// todo - add currency field
+
+// todo - add product price history entity, when updating price - old price goes to this table
+//  with its creation date and end date

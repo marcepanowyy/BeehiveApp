@@ -9,6 +9,7 @@ import { UsersEntity } from '../auth/users/users.entity';
 import { DeliveryStatusEnum } from '../../shared/enums/delivery.status.enum';
 import { PaymentStatusEnum } from '../../shared/enums/payment.status.enum';
 import { OrdersRo } from './orders.dto';
+import { ProductForOrder } from '../payment/payment.dto';
 
 // TODO - redis lock on order creating
 
@@ -91,18 +92,17 @@ export class OrdersService {
   }
 
   // TODO - add transaction
-  // async create(data: OrdersDto, userId: string): Promise<OrdersRo> {
-  //   const { productsArray } = data;
-  //   for (const productItem of productsArray) {
-  //     const product = await this.productsRepository.findOne({
-  //       where: { id: productItem.productId },
+  // async createOrder(userId: string, products: ProductForOrder[], paymentStatus: PaymentStatusEnum): Promise<OrdersRo> {
+  //   for (const product of products) {
+  //     const foundProduct = await this.productsRepository.findOne({
+  //       where: { id: product.productId },
   //     });
-  //     if (!product) {
+  //     if (!foundProduct) {
   //       throw new HttpException("Product's ID not found", HttpStatus.NOT_FOUND);
   //     }
-  //     if (product.unitsOnStock - productItem.quantity < 0) {
+  //     if (foundProduct.unitsOnStock - product.quantity < 0) {
   //       throw new HttpException(
-  //         `Insufficient stock for product: ${product.name}`,
+  //         `Insufficient stock for product: ${foundProduct.name}`,
   //         HttpStatus.BAD_REQUEST,
   //       );
   //     }
@@ -112,21 +112,21 @@ export class OrdersService {
   //   if (!user)
   //     throw new HttpException("Invalid user's ID", HttpStatus.NOT_FOUND);
   //
-  //   const order = await this.ordersRepository.create({ customer: user });
+  //   const order = await this.ordersRepository.create({ customer: user, paymentStatus });
   //   await this.ordersRepository.save(order);
   //
-  //   for (const productItem of productsArray) {
-  //     const product = await this.productsRepository.findOne({
-  //       where: { id: productItem.productId },
+  //   for (const product of products) {
+  //     const foundProduct = await this.productsRepository.findOne({
+  //       where: { id: product.productId },
   //     });
-  //     await this.productsRepository.update(product.id, {
-  //       unitsOnStock: product.unitsOnStock - productItem.quantity,
+  //     await this.productsRepository.update(foundProduct.id, {
+  //       unitsOnStock: foundProduct.unitsOnStock - product.quantity,
   //     });
   //
   //     const orderDetails = await this.orderDetailsRepository.create({
-  //       product,
+  //       product: foundProduct,
   //       order,
-  //       quantity: productItem.quantity,
+  //       quantity: product.quantity,
   //     });
   //
   //     await this.orderDetailsRepository.save(orderDetails);

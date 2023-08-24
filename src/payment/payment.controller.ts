@@ -1,6 +1,8 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CartItem } from './payment.dto';
+import { AuthGuard } from '../auth/guards/auth.guard';
+import { User } from '../../shared/decorators/users.decorator';
 
 @Controller('payment')
 export class PaymentController {
@@ -9,8 +11,9 @@ export class PaymentController {
   }
 
   @Post('checkout')
-  async createPayment(@Body() data: CartItem[]){
-    return this.paymentService.processPayment(data)
+  @UseGuards(new AuthGuard())
+  async createPayment(@User('id') userId: string, @Body() cartItems: CartItem[]){
+    return this.paymentService.processPayment(userId, cartItems)
   }
 
   // running stripe listen --forward-to localhost:4000/payment/webhook
