@@ -66,6 +66,7 @@ export class PaymentService {
       }
 
       case 'checkout.session.async_payment_failed': {
+
         const session = event.data.object;
 
         // Send an email to the customer asking them to retry their order

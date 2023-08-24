@@ -33,6 +33,24 @@ export class MailService {
     });
   }
 
+  // add type to products
+  async sendPaymentConfirmationMail(recipient: string, products: any): Promise<void> {
+    console.log('Enqueueing payment confirmation mail at', this.currentTimestamp);
+    return this.publishToQueue('payment-confirmation-mail', {
+      recipient,
+      products,
+    });
+  }
+
+  // add type to products
+  async sendPaymentCancellationMail(recipient: string, products: any): Promise<void> {
+    console.log('Enqueueing payment cancellation mail at', this.currentTimestamp);
+    return this.publishToQueue('payment-cancellation-mail', {
+      recipient,
+      products,
+    });
+  }
+
   private async publishToQueue(pattern: string, data: any): Promise<void> {
     await this.client.emit(pattern, data);
   }
