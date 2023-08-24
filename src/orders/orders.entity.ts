@@ -8,8 +8,9 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { OrderDetailsEntity } from '../order.details/order.details.entity';
-import { StatusEnum } from '../../shared/enums/status.enum';
 import { UsersEntity } from '../auth/users/users.entity';
+import { DeliveryStatusEnum } from '../../shared/enums/delivery.status.enum';
+import { PaymentStatusEnum } from '../../shared/enums/payment.status.enum';
 
 @Entity('orders')
 export class OrdersEntity {
@@ -19,7 +20,9 @@ export class OrdersEntity {
 
   @UpdateDateColumn() updated: Date;
 
-  @Column('integer', { default: StatusEnum.PROCESSING }) status: number;
+  @Column('integer', { default: DeliveryStatusEnum.PROCESSING }) deliveryStatus: number;
+
+  @Column('integer', {default: PaymentStatusEnum.AWAITING}) paymentStatus: number
 
   // relationships
 

@@ -44,11 +44,13 @@ export async function createOrder(
   testingContainer: ITestingContainer,
   orderData,
   customer: UsersEntity,
-  randomStatus = 1,
+  randomDeliveryStatus = 1,
+  randomPaymentStatus = 1,
 ): Promise<OrdersEntity> {
   const order = await testingContainer.repositories.ordersRepository.create({
     customer: customer,
-    status: randomStatus,
+    deliveryStatus: randomDeliveryStatus,
+    paymentStatus: randomPaymentStatus
   });
   await testingContainer.repositories.ordersRepository.save(order);
 

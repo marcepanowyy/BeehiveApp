@@ -26,6 +26,73 @@ export class PaymentService {
 
   }
 
+  async handleStripeEvent(event: any){
+
+    switch (event.type) {
+      case 'checkout.session.completed': {
+
+        const session = event.data.object;
+
+        const sessionWithLineItems = await this.stripe.checkout.sessions.retrieve(
+          event.data.object.id,
+          {
+            expand: ['line_items']
+          }
+        )
+        const lineItems = sessionWithLineItems.line_items
+        console.log(lineItems)
+
+        // Save an order in your database, marked as 'awaiting payment'
+        // createOrder(session);
+
+        // Check if the order is paid (for example, from a card payment)
+        //
+        // A delayed notification payment will have an `unpaid` status, as
+        // you're still waiting for funds to be transferred from the customer's
+        // account.
+        if (session.payment_status === 'paid') {
+          // fulfillOrder(session);
+        }
+        break;
+      }
+
+      case 'checkout.session.async_payment_succeeded': {
+
+        const session = event.data.object;
+        // Fulfill the purchase...
+        // fulfillOrder(session);
+        break;
+      }
+
+      case 'checkout.session.async_payment_failed': {
+        const session = event.data.object;
+
+        // Send an email to the customer asking them to retry their order
+        // emailCustomerAboutFailedPayment(session);
+
+        break;
+      }
+    }
+
+    if(event.type === 'checkout.session.completed'){
+
+      const sessionWithLineItems = await this.stripe.checkout.sessions.retrieve(
+        event.data.object.id,
+        {
+          expand: ['line_items']
+        }
+      )
+      const lineItems = sessionWithLineItems.line_items
+      console.log(lineItems)
+      console.log('fulfilling order')
+
+    }
+
+
+  }
+
+
+
   async createSession(processedCartItems: ProcessedCartItem[]){
 
     return this.stripe.checkout.sessions.create({
@@ -69,5 +136,7 @@ export class PaymentService {
 
     return processedCartItems
   }
+
+
 
 }

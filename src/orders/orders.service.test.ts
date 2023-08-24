@@ -17,7 +17,6 @@ import {
   createProduct,
   createUser,
 } from '../../shared/test/helpers';
-import { StatusEnum } from '../../shared/enums/status.enum';
 
 describe('OrdersService', () => {
   let testingContainer: ITestingContainer;
@@ -122,7 +121,8 @@ describe('OrdersService', () => {
         where: { id: product2.id },
       });
 
-    assert.strictEqual(result.status, 'processing');
+    assert.strictEqual(result.deliveryStatus, 'processing');
+    assert.strictEqual(result.paymentStatus, 'awaiting');
     assert.strictEqual(result.customer.id, user1.id);
 
     const products = result.products;
@@ -165,29 +165,6 @@ describe('OrdersService', () => {
         return true;
       },
     );
-  });
-
-  it('should update an order with valid data', async () => {
-
-    const order = await createOrder(testingContainer, orderData1, user1)
-
-    const orderStatusData = {
-      customerId: user1.id,
-      status: StatusEnum.SHIPPED,
-    };
-
-    await testingContainer.services.ordersService.updateStatusById(
-      order.id,
-      orderStatusData,
-    );
-
-    const updatedOrder =
-      await testingContainer.repositories.ordersRepository.findOne({
-        where: { id: order.id },
-      });
-
-    assert.strictEqual(updatedOrder.id, order.id);
-    assert.strictEqual(updatedOrder.status, 2);
   });
 
   it('should delete an order by valid order id', async () => {

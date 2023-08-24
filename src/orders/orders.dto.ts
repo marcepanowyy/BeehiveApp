@@ -3,7 +3,8 @@ import { ProductItem, ProductsRo } from '../products/products.dto';
 import { OrderDetailsEntity } from '../order.details/order.details.entity';
 import { UsersEntity } from '../auth/users/users.entity';
 import { UsersRO } from '../auth/users/users.dto';
-import { StatusEnum } from '../../shared/enums/status.enum';
+import { DeliveryStatusEnum } from '../../shared/enums/delivery.status.enum';
+import { PaymentStatusEnum } from '../../shared/enums/payment.status.enum';
 
 export class OrdersDto {
   @ArrayNotEmpty()
@@ -15,7 +16,8 @@ export class OrdersRo {
   id?: string;
   updated?: Date;
   created: Date;
-  status: number;
+  deliveryStatus: number;
+  paymentStatus: number;
   customer?: UsersRO | UsersEntity;
   products?: ProductsRo;
   orderDetails?: OrderDetailsEntity[]
@@ -23,7 +25,8 @@ export class OrdersRo {
 
 export class OrderStatusDto{
   customerId: string;
-  status: StatusEnum;
+  deliveryStatus: DeliveryStatusEnum;
+  paymentStatus: PaymentStatusEnum
 }
 
 

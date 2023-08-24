@@ -7,7 +7,8 @@ import { ProductsEntity } from '../products/products.entity';
 import { OrderDetailsEntity } from '../order.details/order.details.entity';
 import { UsersRO } from '../auth/users/users.dto';
 import { UsersEntity } from '../auth/users/users.entity';
-import { StatusEnum } from '../../shared/enums/status.enum';
+import { DeliveryStatusEnum } from '../../shared/enums/delivery.status.enum';
+import { PaymentStatusEnum } from '../../shared/enums/payment.status.enum';
 
 // TODO - redis lock on order creating
 
@@ -47,7 +48,7 @@ export class OrdersService {
     order: OrdersEntity,
     showCustomer: boolean = true,
   ): Promise<OrdersRo> {
-    const { id, created, status } = order;
+    const { id, created, deliveryStatus, paymentStatus } = order;
 
     const orderProducts = await this.getProductsForOrder(order);
 
@@ -61,7 +62,8 @@ export class OrdersService {
     const responseObject: any = {
       id,
       created,
-      status: StatusEnum[status],
+      deliveryStatus: DeliveryStatusEnum[deliveryStatus],
+      paymentStatus: PaymentStatusEnum[paymentStatus],
       products,
     };
 
@@ -168,59 +170,6 @@ export class OrdersService {
       },
     };
     return { ...responseObject };
-  }
-
-  async getOrdersByUserAndStatus(
-    userId: string,
-    status: number,
-    page: number = 1,
-  ): Promise<OrdersRo[]> {
-    const user = await this.usersRepository.findOne({ where: { id: userId } });
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-
-    const orders = await this.ordersRepository.find({
-      where: { customer: { id: userId }, status },
-      relations: ['customer'],
-      take: 10,
-      skip: 10 * (page - 1),
-    });
-
-    return this.toResponseOrders(orders, false);
-  }
-
-  async updateStatusById(orderId: string, data: OrderStatusDto) {
-    const { customerId, status } = data;
-
-    const user = await this.usersRepository.findOne({
-      where: { id: customerId },
-    });
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-
-    let order = await this.ordersRepository.findOne({
-      where: { id: orderId },
-      relations: ['customer'],
-    });
-    if (!order) {
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
-    }
-
-    if (order.customer.id !== customerId) {
-      throw new HttpException(
-        'Order does not belong to user',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    await this.ordersRepository.update({ id: orderId }, { status });
-    order = await this.ordersRepository.findOne({
-      where: { id: orderId },
-      relations: ['customer'],
-    });
-    return this.toResponseOrder(order, false);
   }
 
   async destroy(orderId: string, customerId: string): Promise<OrdersRo> {

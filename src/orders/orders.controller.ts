@@ -62,26 +62,6 @@ export class OrdersController {
     return this.ordersService.getOrderById(orderId);
   }
 
-  @Get('user/:status')
-  @UseGuards(new AuthGuard())
-  getOrdersByUserAndStatus(
-    @User('id') userId: string,
-    @Param('status') status: number,
-    @Query('page') page: number,
-  ) {
-    return this.ordersService.getOrdersByUserAndStatus(userId, status, page);
-  }
-
-  // // TODO - members only
-  @Put(':id')
-  // @UseGuards(new AuthGuard())
-  updateOrderStatusById(
-    @Body() data: OrderStatusDto,
-    @Param('id') orderId: string,
-  ) {
-    return this.ordersService.updateStatusById(orderId, data);
-  }
-
   @Delete(':id')
   // @UseGuards(new AuthGuard())
   destroyOrder(

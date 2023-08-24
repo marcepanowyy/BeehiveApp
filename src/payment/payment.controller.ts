@@ -7,7 +7,6 @@ export class PaymentController {
   constructor(private paymentService: PaymentService) {
   }
 
-
   @Post('checkout')
   async createPayment(@Body() data: CartItem[]){
     return this.paymentService.processPayment(data)
@@ -16,8 +15,7 @@ export class PaymentController {
   // running stripe listen --forward-to localhost:4000/payment/webhook
   @Post('webhook')
   async handleStripeEvent(@Body() event: any){
-    console.log(event)
-    return true
+    return this.paymentService.handleStripeEvent(event)
   }
 
 }
