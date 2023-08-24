@@ -5,14 +5,11 @@ import {
   Get,
   Logger,
   Param,
-  Post,
-  Put,
   Query,
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
-import { OrdersDto, OrderStatusDto, PaymentRequestBody } from './orders.dto';
 import { ValidationPipe } from '../../shared/validation.pipe';
 import { User } from '../../shared/decorators/users.decorator';
 import { ApiTags } from '@nestjs/swagger';
@@ -39,15 +36,15 @@ export class OrdersController {
     return this.ordersService.showAll(page);
   }
 
-  // TODO - add transaction
+  // not valid endpoint anymore - should go through payments first
 
-  @Post()
-  @UseGuards(new AuthGuard())
-  @UsePipes(new ValidationPipe())
-  createOrder(@User('id') userId: string, @Body() data: OrdersDto) {
-    this.logData({ userId, data });
-    return this.ordersService.create(data, userId);
-  }
+  // @Post()
+  // @UseGuards(new AuthGuard())
+  // @UsePipes(new ValidationPipe())
+  // createOrder(@User('id') userId: string, @Body() data: OrdersDto) {
+  //   this.logData({ userId, data });
+  //   return this.ordersService.create(data, userId);
+  // }
 
   @Get('/user')
   @UseGuards(new AuthGuard())

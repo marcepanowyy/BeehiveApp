@@ -26,6 +26,5 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 
   ],
   exports: [MailService],
-  imports: []
 })
 export class MailModule {}

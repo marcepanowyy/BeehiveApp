@@ -18,5 +18,6 @@ import { UsersEntity } from '../auth/users/users.entity';
   ],
   providers: [OrdersService],
   controllers: [OrdersController],
+  exports: [OrdersService]
 })
 export class OrdersModule {}

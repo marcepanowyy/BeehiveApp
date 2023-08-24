@@ -2,13 +2,13 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { OrdersEntity } from './orders.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { OrdersDto, OrdersRo, OrderStatusDto } from './orders.dto';
 import { ProductsEntity } from '../products/products.entity';
 import { OrderDetailsEntity } from '../order.details/order.details.entity';
 import { UsersRO } from '../auth/users/users.dto';
 import { UsersEntity } from '../auth/users/users.entity';
 import { DeliveryStatusEnum } from '../../shared/enums/delivery.status.enum';
 import { PaymentStatusEnum } from '../../shared/enums/payment.status.enum';
+import { OrdersRo } from './orders.dto';
 
 // TODO - redis lock on order creating
 
@@ -90,48 +90,49 @@ export class OrdersService {
     return this.toResponseOrders(orders);
   }
 
-  async create(data: OrdersDto, userId: string): Promise<OrdersRo> {
-    const { productsArray } = data;
-    for (const productItem of productsArray) {
-      const product = await this.productsRepository.findOne({
-        where: { id: productItem.productId },
-      });
-      if (!product) {
-        throw new HttpException("Product's ID not found", HttpStatus.NOT_FOUND);
-      }
-      if (product.unitsOnStock - productItem.quantity < 0) {
-        throw new HttpException(
-          `Insufficient stock for product: ${product.name}`,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-    }
-
-    const user = await this.usersRepository.findOne({ where: { id: userId } });
-    if (!user)
-      throw new HttpException("Invalid user's ID", HttpStatus.NOT_FOUND);
-
-    const order = await this.ordersRepository.create({ customer: user });
-    await this.ordersRepository.save(order);
-
-    for (const productItem of productsArray) {
-      const product = await this.productsRepository.findOne({
-        where: { id: productItem.productId },
-      });
-      await this.productsRepository.update(product.id, {
-        unitsOnStock: product.unitsOnStock - productItem.quantity,
-      });
-
-      const orderDetails = await this.orderDetailsRepository.create({
-        product,
-        order,
-        quantity: productItem.quantity,
-      });
-
-      await this.orderDetailsRepository.save(orderDetails);
-    }
-    return this.toResponseOrder(order);
-  }
+  // TODO - add transaction
+  // async create(data: OrdersDto, userId: string): Promise<OrdersRo> {
+  //   const { productsArray } = data;
+  //   for (const productItem of productsArray) {
+  //     const product = await this.productsRepository.findOne({
+  //       where: { id: productItem.productId },
+  //     });
+  //     if (!product) {
+  //       throw new HttpException("Product's ID not found", HttpStatus.NOT_FOUND);
+  //     }
+  //     if (product.unitsOnStock - productItem.quantity < 0) {
+  //       throw new HttpException(
+  //         `Insufficient stock for product: ${product.name}`,
+  //         HttpStatus.BAD_REQUEST,
+  //       );
+  //     }
+  //   }
+  //
+  //   const user = await this.usersRepository.findOne({ where: { id: userId } });
+  //   if (!user)
+  //     throw new HttpException("Invalid user's ID", HttpStatus.NOT_FOUND);
+  //
+  //   const order = await this.ordersRepository.create({ customer: user });
+  //   await this.ordersRepository.save(order);
+  //
+  //   for (const productItem of productsArray) {
+  //     const product = await this.productsRepository.findOne({
+  //       where: { id: productItem.productId },
+  //     });
+  //     await this.productsRepository.update(product.id, {
+  //       unitsOnStock: product.unitsOnStock - productItem.quantity,
+  //     });
+  //
+  //     const orderDetails = await this.orderDetailsRepository.create({
+  //       product,
+  //       order,
+  //       quantity: productItem.quantity,
+  //     });
+  //
+  //     await this.orderDetailsRepository.save(orderDetails);
+  //   }
+  //   return this.toResponseOrder(order);
+  // }
 
   async getOrderById(orderId: string): Promise<OrdersRo> {
     const order = await this.ordersRepository.findOne({

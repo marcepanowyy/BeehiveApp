@@ -103,69 +103,69 @@ describe('OrdersService', () => {
 
   });
 
-  it('should create an order with valid data', async () => {
+  // it('should create an order with valid data', async () => {
+  //
+  //   const result = await testingContainer.services.ordersService.create(
+  //     orderData1,
+  //     user1.id,
+  //   );
+  //
+  //   // when we order, product's quantity decrease
+  //
+  //   const updatedProduct1 =
+  //     await testingContainer.repositories.productsRepository.findOne({
+  //       where: { id: product1.id },
+  //     });
+  //   const updatedProduct2 =
+  //     await testingContainer.repositories.productsRepository.findOne({
+  //       where: { id: product2.id },
+  //     });
+  //
+  //   assert.strictEqual(result.deliveryStatus, 'processing');
+  //   assert.strictEqual(result.paymentStatus, 'awaiting');
+  //   assert.strictEqual(result.customer.id, user1.id);
+  //
+  //   const products = result.products;
+  //
+  //   assert.strictEqual(products[0].productId, product1.id);
+  //   assert.strictEqual(products[0].quantity, 1);
+  //   assert.strictEqual(updatedProduct1.unitsOnStock, 1); // 2 - 1 = 1
+  //
+  //   assert.strictEqual(products[1].productId, product2.id);
+  //   assert.strictEqual(products[1].quantity, 3);
+  //   assert.strictEqual(updatedProduct2.unitsOnStock, 20); // 23 - 3 = 20
+  //
+  //   // check whether rows added in Order Details table
+  //   const [_, productCount1] =
+  //     await testingContainer.repositories.orderDetailsRepository.findAndCount({
+  //       where: {
+  //         order: { id: result.id },
+  //         product: { id: In([products[0].productId, products[1].productId]) },
+  //       },
+  //     });
+  //
+  //   assert.strictEqual(productCount1, 2);
+  // });
 
-    const result = await testingContainer.services.ordersService.create(
-      orderData1,
-      user1.id,
-    );
-
-    // when we order, product's quantity decrease
-
-    const updatedProduct1 =
-      await testingContainer.repositories.productsRepository.findOne({
-        where: { id: product1.id },
-      });
-    const updatedProduct2 =
-      await testingContainer.repositories.productsRepository.findOne({
-        where: { id: product2.id },
-      });
-
-    assert.strictEqual(result.deliveryStatus, 'processing');
-    assert.strictEqual(result.paymentStatus, 'awaiting');
-    assert.strictEqual(result.customer.id, user1.id);
-
-    const products = result.products;
-
-    assert.strictEqual(products[0].productId, product1.id);
-    assert.strictEqual(products[0].quantity, 1);
-    assert.strictEqual(updatedProduct1.unitsOnStock, 1); // 2 - 1 = 1
-
-    assert.strictEqual(products[1].productId, product2.id);
-    assert.strictEqual(products[1].quantity, 3);
-    assert.strictEqual(updatedProduct2.unitsOnStock, 20); // 23 - 3 = 20
-
-    // check whether rows added in Order Details table
-    const [_, productCount1] =
-      await testingContainer.repositories.orderDetailsRepository.findAndCount({
-        where: {
-          order: { id: result.id },
-          product: { id: In([products[0].productId, products[1].productId]) },
-        },
-      });
-
-    assert.strictEqual(productCount1, 2);
-  });
-
-  it('should throw an error when creating order, if product has insufficient units on stock', async () => {
-    await assert.rejects(
-      async () => {
-        await testingContainer.services.ordersService.create(
-          orderData2,
-          user1.id,
-        );
-      },
-      (err: any) => {
-        assert.strictEqual(err instanceof HttpException, true);
-        assert.strictEqual(
-          err.response,
-          'Insufficient stock for product: testProductName3',
-        );
-        assert.strictEqual(err.status, HttpStatus.BAD_REQUEST);
-        return true;
-      },
-    );
-  });
+  // it('should throw an error when creating order, if product has insufficient units on stock', async () => {
+  //   await assert.rejects(
+  //     async () => {
+  //       await testingContainer.services.ordersService.create(
+  //         orderData2,
+  //         user1.id,
+  //       );
+  //     },
+  //     (err: any) => {
+  //       assert.strictEqual(err instanceof HttpException, true);
+  //       assert.strictEqual(
+  //         err.response,
+  //         'Insufficient stock for product: testProductName3',
+  //       );
+  //       assert.strictEqual(err.status, HttpStatus.BAD_REQUEST);
+  //       return true;
+  //     },
+  //   );
+  // });
 
   it('should delete an order by valid order id', async () => {
 

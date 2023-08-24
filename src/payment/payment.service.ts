@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ProductsEntity } from '../products/products.entity';
 import { Repository } from 'typeorm';
 import { ProductsService } from '../products/products.service';
-import { CartItem, ProcessedCartItem } from './payment.controller';
+import { CartItem, ProcessedCartItem } from './payment.dto';
 
 @Injectable()
 export class PaymentService {
@@ -16,10 +16,10 @@ export class PaymentService {
   ) {}
 
   private stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: '2023-08-16',
+    apiVersion: '2023-08-16'
   });
 
-  async processPayment(cartItems) {
+  async processPayment(cartItems: CartItem[]) {
 
     const processedCartItems: ProcessedCartItem[] = await this.getProcessedCartItems(cartItems)
     return this.createSession(processedCartItems)
@@ -29,18 +29,19 @@ export class PaymentService {
   async handleStripeEvent(event: any){
 
     switch (event.type) {
+
       case 'checkout.session.completed': {
 
         const session = event.data.object;
 
-        const sessionWithLineItems = await this.stripe.checkout.sessions.retrieve(
-          event.data.object.id,
-          {
-            expand: ['line_items']
-          }
-        )
-        const lineItems = sessionWithLineItems.line_items
-        console.log(lineItems)
+        // const sessionWithLineItems = await this.stripe.checkout.sessions.retrieve(
+        //   event.data.object.id,
+        //   {
+        //     expand: ['line_items']
+        //   }
+        // )
+        // const lineItems = sessionWithLineItems.line_items
+        // console.log(lineItems)
 
         // Save an order in your database, marked as 'awaiting payment'
         // createOrder(session);
@@ -90,8 +91,6 @@ export class PaymentService {
 
 
   }
-
-
 
   async createSession(processedCartItems: ProcessedCartItem[]){
 

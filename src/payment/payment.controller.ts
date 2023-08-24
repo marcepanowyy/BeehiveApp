@@ -1,5 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { PaymentService } from './payment.service';
+import { CartItem } from './payment.dto';
 
 @Controller('payment')
 export class PaymentController {
@@ -18,18 +19,5 @@ export class PaymentController {
     return this.paymentService.handleStripeEvent(event)
   }
 
-}
-
-
-export interface CartItem{
-  productId: string,
-  quantity: number,
-}
-
-export interface ProcessedCartItem {
-  productId: string,
-  name: string,
-  quantity: number,
-  price: number
 }
 
