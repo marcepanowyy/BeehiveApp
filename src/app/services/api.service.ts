@@ -8,10 +8,10 @@ import {Category} from "../interfaces/category/Category";
 import {Product} from "../interfaces/product/Product";
 import {UserResponse} from "../interfaces/user/UserResponse";
 import {OrdersResponse} from "../interfaces/order/OrdersResponse";
-import {OrderRequest} from "../interfaces/order/OrderRequest";
 import {OrderResponse} from "../interfaces/order/OrderResponse";
 import {RegistrationResponse} from "../interfaces/user/RegistationResponse";
 import {ResetPasswordRequest} from "../interfaces/user/ResetPasswordRequest";
+import {ProductRequest} from "../interfaces/product/ProductRequest";
 
 @Injectable({
   providedIn: 'root'
@@ -27,13 +27,8 @@ export class ApiService {
     return this.http.get<OrdersResponse>(`http://localhost:4000/orders/user/?page=${page}`)
   }
 
-  createOrder(order: OrderRequest){
-    return this.http.post<OrderResponse>("http://localhost:4000/orders", order)
-  }
-
-  checkout(){
-    return this.http.post("http://localhost:4000/payment", {
-    })
+  checkout(products: ProductRequest[]){
+    return this.http.post("http://localhost:4000/payment/checkout", products)
   }
 
   // users

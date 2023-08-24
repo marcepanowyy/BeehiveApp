@@ -18,7 +18,6 @@ export class Dialog1Component implements OnInit{
 
   ngOnInit() {
     this.product = this.data
-    console.log(this.product)
   }
 
   closeDialog(){
@@ -38,9 +37,6 @@ export class Dialog1Component implements OnInit{
     } else {
       productsArray.push({ ...myObject });
     }
-
-    console.log(productsArray)
-
     localStorage.setItem('productsArray', JSON.stringify(productsArray));
 }
 

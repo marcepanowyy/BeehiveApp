@@ -65,27 +65,11 @@ export class CartComponent implements OnInit{
     return JSON.parse(localStorage.getItem('productsArray') || '[]');
   }
 
-  buyItems(){
-
-    const productsArray = this.getArrFromLocalStorage()
-
-    this.api.createOrder({productsArray: [...productsArray]}).subscribe({
-      next: (res) => {
-        alert("Thank you for your purchase")
-        localStorage.removeItem('productsArray')
-        window.location.reload()
-        console.log(res)
-      },
-      error: (err) => {
-        alert(err.error.message)
-      }
-    })
-
-  }
-
   async checkout() {
 
-    this.api.checkout().subscribe({
+    const cartProducts = this.getArrFromLocalStorage()
+
+    this.api.checkout(cartProducts).subscribe({
       next: async (session: any) => {
         console.log(session)
         const stripe = await loadStripe(environment.stripeConfig.publishable_key);
@@ -97,7 +81,6 @@ export class CartComponent implements OnInit{
         alert(err)
       }
     })
-
   }
 
 
