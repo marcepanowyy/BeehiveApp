@@ -39,7 +39,7 @@ export class PaymentService {
   async handleStripeEvent(event: any) {
     const session = event.data.object;
 
-    if (event.type === 'checkout.session') {
+    if (event.type.startsWith('checkout.session')) {
       const products = await this.getProductsFromStripeEvent(event);
       const { recipient, userId } = await this.getUserIdFromStripeEvent(event);
 
