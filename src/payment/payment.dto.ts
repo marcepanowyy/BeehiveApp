@@ -18,3 +18,8 @@ export class ProductForOrder {
   unitAmount: number;
   image: string | null;
 }
+
+export class UserFromStripeEvent {
+  userId: string;
+  recipient: string;
+}

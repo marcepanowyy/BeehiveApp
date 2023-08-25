@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { ClientProxy } from '@nestjs/microservices';
+import { ProductForOrder } from '../payment/payment.dto';
 
 @Injectable()
 export class MailService {
@@ -33,8 +34,7 @@ export class MailService {
     });
   }
 
-  // add type to products
-  async sendPaymentConfirmationMail(recipient: string, products: any): Promise<void> {
+  async sendPaymentConfirmationMail(recipient: string, products: ProductForOrder[]): Promise<void> {
     console.log('Enqueueing payment confirmation mail at', this.currentTimestamp);
     return this.publishToQueue('payment-confirmation-mail', {
       recipient,
@@ -42,8 +42,7 @@ export class MailService {
     });
   }
 
-  // add type to products
-  async sendPaymentCancellationMail(recipient: string, products: any): Promise<void> {
+  async sendPaymentFailMail(recipient: string, products: ProductForOrder[]): Promise<void> {
     console.log('Enqueueing payment cancellation mail at', this.currentTimestamp);
     return this.publishToQueue('payment-cancellation-mail', {
       recipient,

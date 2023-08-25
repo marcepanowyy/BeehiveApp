@@ -92,47 +92,47 @@ export class OrdersService {
   }
 
   // TODO - add transaction
-  // async createOrder(userId: string, products: ProductForOrder[], paymentStatus: PaymentStatusEnum): Promise<OrdersRo> {
-  //   for (const product of products) {
-  //     const foundProduct = await this.productsRepository.findOne({
-  //       where: { id: product.productId },
-  //     });
-  //     if (!foundProduct) {
-  //       throw new HttpException("Product's ID not found", HttpStatus.NOT_FOUND);
-  //     }
-  //     if (foundProduct.unitsOnStock - product.quantity < 0) {
-  //       throw new HttpException(
-  //         `Insufficient stock for product: ${foundProduct.name}`,
-  //         HttpStatus.BAD_REQUEST,
-  //       );
-  //     }
-  //   }
-  //
-  //   const user = await this.usersRepository.findOne({ where: { id: userId } });
-  //   if (!user)
-  //     throw new HttpException("Invalid user's ID", HttpStatus.NOT_FOUND);
-  //
-  //   const order = await this.ordersRepository.create({ customer: user, paymentStatus });
-  //   await this.ordersRepository.save(order);
-  //
-  //   for (const product of products) {
-  //     const foundProduct = await this.productsRepository.findOne({
-  //       where: { id: product.productId },
-  //     });
-  //     await this.productsRepository.update(foundProduct.id, {
-  //       unitsOnStock: foundProduct.unitsOnStock - product.quantity,
-  //     });
-  //
-  //     const orderDetails = await this.orderDetailsRepository.create({
-  //       product: foundProduct,
-  //       order,
-  //       quantity: product.quantity,
-  //     });
-  //
-  //     await this.orderDetailsRepository.save(orderDetails);
-  //   }
-  //   return this.toResponseOrder(order);
-  // }
+  async createOrder(userId: string, products: ProductForOrder[], paymentStatus: PaymentStatusEnum): Promise<OrdersRo> {
+    for (const product of products) {
+      const foundProduct = await this.productsRepository.findOne({
+        where: { id: product.productId },
+      });
+      if (!foundProduct) {
+        throw new HttpException("Product's ID not found", HttpStatus.NOT_FOUND);
+      }
+      if (foundProduct.unitsOnStock - product.quantity < 0) {
+        throw new HttpException(
+          `Insufficient stock for product: ${foundProduct.name}`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    if (!user)
+      throw new HttpException("Invalid user's ID", HttpStatus.NOT_FOUND);
+
+    const order = await this.ordersRepository.create({ customer: user, paymentStatus });
+    await this.ordersRepository.save(order);
+
+    for (const product of products) {
+      const foundProduct = await this.productsRepository.findOne({
+        where: { id: product.productId },
+      });
+      await this.productsRepository.update(foundProduct.id, {
+        unitsOnStock: foundProduct.unitsOnStock - product.quantity,
+      });
+
+      const orderDetails = await this.orderDetailsRepository.create({
+        product: foundProduct,
+        order,
+        quantity: product.quantity,
+      });
+
+      await this.orderDetailsRepository.save(orderDetails);
+    }
+    return this.toResponseOrder(order);
+  }
 
   async getOrderById(orderId: string): Promise<OrdersRo> {
     const order = await this.ordersRepository.findOne({

@@ -4,68 +4,78 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ProductsEntity } from '../products/products.entity';
 import { Repository } from 'typeorm';
 import { ProductsService } from '../products/products.service';
-import { CartItem, ProcessedCartItem, ProductForOrder } from './payment.dto';
+import { CartItem, ProcessedCartItem, ProductForOrder, UserFromStripeEvent } from './payment.dto';
 import { OrdersService } from '../orders/orders.service';
-import { PaymentStatusEnum } from '../../shared/enums/payment.status.enum';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class PaymentService {
+
+  private stripe: Stripe;
 
   constructor(
     @InjectRepository(ProductsEntity)
     private productsRepository: Repository<ProductsEntity>,
     private productsService: ProductsService,
-    private ordersService: OrdersService
-  ) {}
-
-  private stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: '2023-08-16'
-  });
+    private ordersService: OrdersService,
+    private mailService: MailService
+  ) {
+    this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2023-08-16'
+    });
+  }
 
   async processPayment(userId: string, cartItems: CartItem[]) {
 
     const processedCartItems: ProcessedCartItem[] = await this.getProcessedCartItems(cartItems)
-    return this.createSession(userId, processedCartItems)
+    return await this.createSession(userId, processedCartItems)
 
   }
 
   async handleStripeEvent(event: any){
 
-    switch (event.type) {
+    const session = event.data.object;
+
+    if(event.type === 'checkout.session'){
+
+      const products = await this.getProductsFromStripeEvent(event)
+      const {recipient, userId } = await this.getUserIdFromStripeEvent(event)
+
+      switch (event.type) {
 
       case 'checkout.session.completed': {
 
-        const session = event.data.object;
-        const products = await this.getProductsFromStripeEvent(event)
-        const userId = await this.getUserFromStripeEvent(event)
+        // check if products currency is the same
+        console.log('case checkout session completed')
 
         if (session.payment_status === 'paid') {
+
+          console.log('case payment status paid')
           // await this.ordersService.createOrder(userId, products, PaymentStatusEnum.PAID)
         }
         else{
+
+          console.log('case else')
           // await this.ordersService.createOrder(userId, products, PaymentStatusEnum.AWAITING)
         }
-
         break;
       }
 
       case 'checkout.session.async_payment_succeeded': {
 
-        const session = event.data.object;
-        // Fulfill the purchase...
-        // fulfillOrder(session);
+        console.log('case session async payment succeeded')
+        // await this.ordersService.createOrder(userId, products, PaymentStatusEnum.PAID)
         break;
+
       }
 
       case 'checkout.session.async_payment_failed': {
 
-        const session = event.data.object;
-
-        // Send an email to the customer asking them to retry their order
-        // emailCustomerAboutFailedPayment(session);
-
+        console.log('case session async failed')
         break;
+        }
       }
+
     }
 
   }
@@ -142,10 +152,9 @@ export class PaymentService {
         image: item.price.product.images[0],
       }
     })
-
   }
 
-  async getUserFromStripeEvent(event: any): Promise<string>{
+  async getUserIdFromStripeEvent(event: any): Promise<UserFromStripeEvent>{
 
     const sessionWithLineItems = await this.stripe.checkout.sessions.retrieve(
       event.data.object.id,
@@ -154,16 +163,25 @@ export class PaymentService {
       }
     )
 
-    const email = sessionWithLineItems.customer_details.email
+    const recipient = sessionWithLineItems.customer_details.email
     const userId = sessionWithLineItems.metadata.userId
 
-    // console.log(email, userId) // check if they are connected -> if not, throw exception
-
-    return sessionWithLineItems.metadata.userId
-
+    // console.log(recipient, userId) // check if they are connected -> if not, throw exception
+    return { userId, recipient }
 
   }
 
+  async constructEventFromPayload(signature: string, payload: Buffer){
+
+    return this.stripe.webhooks.constructEvent(
+
+      payload,
+      signature,
+      process.env.STRIPE_WHEC_ENDPOINT_SECRET
+
+    )
+
+  }
 
 }
 

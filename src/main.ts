@@ -8,7 +8,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 const port = process.env.PORT || 8080;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {cors: true});
+  const app = await NestFactory.create(AppModule, {cors: true, rawBody: true});
 
   const config = new DocumentBuilder()
     .setTitle('Swagger for Beehive App')
