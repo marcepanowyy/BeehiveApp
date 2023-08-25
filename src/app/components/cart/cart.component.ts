@@ -71,14 +71,13 @@ export class CartComponent implements OnInit{
 
     this.api.checkout(cartProducts).subscribe({
       next: async (session: any) => {
-        console.log(session)
         const stripe = await loadStripe(environment.stripeConfig.publishable_key);
         stripe?.redirectToCheckout({
           sessionId: session.id
         })
       },
       error: (err) => {
-        alert(err)
+        alert(err.error.message)
       }
     })
   }

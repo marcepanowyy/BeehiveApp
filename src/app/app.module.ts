@@ -38,6 +38,8 @@ import {CoolSocialLoginButtonsModule} from "@angular-cool/social-login-buttons";
 import { GoogleComponent } from './components/login/google/google.component';
 import { ResetPasswordComponent } from './components/reset.password/reset.password.component';
 import {MatStepperModule} from "@angular/material/stepper";
+import { SuccessComponent } from './components/payment/success/success.component';
+import { CancelComponent } from './components/payment/cancel/cancel.component';
 
 const appRoutes: Routes = [
   {path: "Home", component: HomeComponent},
@@ -49,6 +51,8 @@ const appRoutes: Routes = [
   {path: "Cart", component: CartComponent},
   {path: "Google", component: GoogleComponent},
   {path: "ResetPassword", component: ResetPasswordComponent},
+  {path: "PaymentSuccess", component: SuccessComponent},
+  {path: "PaymentCancel", component: CancelComponent},
   {path: '', redirectTo: "Home", pathMatch: "full"},
 ]
 
@@ -67,6 +71,8 @@ const appRoutes: Routes = [
     CartComponent,
     GoogleComponent,
     ResetPasswordComponent,
+    SuccessComponent,
+    CancelComponent,
   ],
   imports: [
     BrowserModule,
@@ -106,4 +112,5 @@ const appRoutes: Routes = [
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}
+
