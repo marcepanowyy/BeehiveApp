@@ -3,6 +3,8 @@ import { MailerService } from '@nestjs-modules/mailer';
 import {
   ActivationMessage,
   PasswordResetMessage,
+  PaymentConfirmationMessage,
+  PaymentStatusEnum,
   WelcomeMessage,
 } from './message';
 
@@ -75,4 +77,80 @@ export class MessageHandlerService {
 
     console.log(`Password reset mail has been sent to: ${recipient}`);
   }
+
+  async sendPaymentConfirmationMail(
+    message: PaymentConfirmationMessage,
+  ): Promise<void> {
+    const { recipient, products, paymentStatus } = message.data;
+
+    let statusMessage = '';
+    let color = '';
+
+    if (paymentStatus === PaymentStatusEnum.PAID) {
+      statusMessage = 'Your payment has been successfully received.';
+      color = 'green';
+    } else if (paymentStatus === PaymentStatusEnum.AWAITING) {
+      statusMessage = 'Your payment is awaiting processing.';
+      color = 'blue';
+    }
+
+    const productListHtml = products
+      .map(
+        (product) => `
+      <tr>
+        <td>${product.name}</td>
+        <td>${product.quantity}</td>
+        <td>${product.currency} ${product.unitAmount.toFixed(2)}</td>
+      </tr>
+      <tr>
+        <td colspan="3">
+          <img src="${product.image}" alt="${product.name}" style="max-width: 100px; height: auto;">
+        </td>
+      </tr>
+    `
+      )
+      .join('');
+
+    const totalPrice = products.reduce(
+      (total, product) => total + product.unitAmount * product.quantity,
+      0
+    );
+
+    await this.mailerService.sendMail({
+      to: recipient,
+      subject: `Payment ${paymentStatus === PaymentStatusEnum.PAID ? 'Successful' : 'Pending'}`,
+      text: `${statusMessage}\n\nProduct list:\n${products
+        .map((product) => `${product.name} - ${product.quantity} x ${product.currency} ${(product.unitAmount / 100).toFixed(2)}`)
+        .join('\n')}\n\nTotal: ${totalPrice}`,
+      html: `
+      <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+        <h2 style="color: #333;">Payment ${paymentStatus === PaymentStatusEnum.PAID ? 'Successful' : 'Pending'}</h2>
+        <p style="color: #555;">Hello, ${recipient}!</p>
+        <p style="color: #555;">${statusMessage}</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Quantity</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${productListHtml}
+          </tbody>
+        </table>
+        <p style="color: ${color}; font-weight: bold;">Total: ${totalPrice} ${products[0].currency}</p>
+        <p style="color: #555;">Thank you for your purchase.</p>
+        <p style="color: #555;">Best regards,</p>
+        <p style="color: #555;">The Beehive Team</p>
+      </div>
+    `,
+    });
+
+    console.log(`Payment confirmation mail has been sent to: ${recipient}`);
+  }
+
+
+
+
 }

@@ -3,7 +3,7 @@ import { Ctx, EventPattern, RmqContext } from '@nestjs/microservices';
 import { MessageHandlerService } from './message.handler.service';
 import {
   ActivationMessage,
-  PasswordResetMessage,
+  PasswordResetMessage, PaymentConfirmationMessage,
   WelcomeMessage,
 } from './message';
 
@@ -26,10 +26,17 @@ export class MessageHandlerController {
   }
 
   @EventPattern('password-reset-mail')
-  HandleResetMail(@Ctx() context: RmqContext) {
+  handleResetMail(@Ctx() context: RmqContext) {
     const message: PasswordResetMessage = this.getData(context);
     console.log(`\nReceived message from the queue at ${this.currentTimestamp}, handling password reset mail...`);
     return this.messageHandlerService.sendPasswordResetEmail(message);
+  }
+
+  @EventPattern('payment-confirmation-mail')
+  handlePaymentConfirmationMail(@Ctx() context: RmqContext) {
+    const message: PaymentConfirmationMessage = this.getData(context);
+    console.log(`\nReceived message from the queue at ${this.currentTimestamp}, handling payment confirmation mail...`);
+    return this.messageHandlerService.sendPaymentConfirmationMail(message);
   }
 
   getData(context: RmqContext) {
