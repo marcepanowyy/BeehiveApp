@@ -100,7 +100,7 @@ export class MessageHandlerService {
       <tr>
         <td>${product.name}</td>
         <td>${product.quantity}</td>
-        <td>${product.currency} ${product.unitAmount.toFixed(2)}</td>
+        <td>${product.currency} ${(product.unitAmount / 100).toFixed(2)}</td>
       </tr>
       <tr>
         <td colspan="3">
@@ -121,36 +121,31 @@ export class MessageHandlerService {
       subject: `Payment ${paymentStatus === PaymentStatusEnum.PAID ? 'Successful' : 'Pending'}`,
       text: `${statusMessage}\n\nProduct list:\n${products
         .map((product) => `${product.name} - ${product.quantity} x ${product.currency} ${(product.unitAmount / 100).toFixed(2)}`)
-        .join('\n')}\n\nTotal: ${totalPrice}`,
+        .join('\n')}\n\nTotal: ${(totalPrice / 100).toFixed(2)}`,
       html: `
-      <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
-        <h2 style="color: #333;">Payment ${paymentStatus === PaymentStatusEnum.PAID ? 'Successful' : 'Pending'}</h2>
-        <p style="color: #555;">Hello, ${recipient}!</p>
-        <p style="color: #555;">${statusMessage}</p>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Quantity</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${productListHtml}
-          </tbody>
-        </table>
-        <p style="color: ${color}; font-weight: bold;">Total: ${totalPrice} ${products[0].currency}</p>
-        <p style="color: #555;">Thank you for your purchase.</p>
-        <p style="color: #555;">Best regards,</p>
-        <p style="color: #555;">The Beehive Team</p>
-      </div>
-    `,
+  <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+    <h2 style="color: #333;">Payment ${paymentStatus === PaymentStatusEnum.PAID ? 'Successful' : 'Pending'}</h2>
+    <p style="color: #555;">Hello, ${recipient}!</p>
+    <p style="color: #555;">${statusMessage}</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Quantity</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${productListHtml}
+      </tbody>
+    </table>
+    <p style="color: ${color}; font-weight: bold;">Total: ${(totalPrice / 100).toFixed(2)} ${products[0].currency}</p>
+    <p style="color: #555;">Thank you for your purchase.</p>
+    <p style="color: #555;">Best regards,</p>
+    <p style="color: #555;">The Beehive Team</p>
+  </div>
+`,
     });
-
     console.log(`Payment confirmation mail has been sent to: ${recipient}`);
   }
-
-
-
-
 }
