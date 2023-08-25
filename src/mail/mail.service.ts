@@ -3,6 +3,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { ClientProxy } from '@nestjs/microservices';
 import { ProductForOrder } from '../payment/payment.dto';
+import { PaymentStatusEnum } from '../../shared/enums/payment.status.enum';
 
 @Injectable()
 export class MailService {
@@ -34,19 +35,19 @@ export class MailService {
     });
   }
 
-  async sendPaymentConfirmationMail(recipient: string, products: ProductForOrder[]): Promise<void> {
-    console.log('Enqueueing payment confirmation mail at', this.currentTimestamp);
+  async sendPaymentConfirmationMail(
+    recipient: string,
+    products: ProductForOrder[],
+    paymentStatus: PaymentStatusEnum,
+  ): Promise<void> {
+    console.log(
+      'Enqueueing payment confirmation mail at',
+      this.currentTimestamp,
+    );
     return this.publishToQueue('payment-confirmation-mail', {
       recipient,
       products,
-    });
-  }
-
-  async sendPaymentFailMail(recipient: string, products: ProductForOrder[]): Promise<void> {
-    console.log('Enqueueing payment cancellation mail at', this.currentTimestamp);
-    return this.publishToQueue('payment-cancellation-mail', {
-      recipient,
-      products,
+      paymentStatus,
     });
   }
 
