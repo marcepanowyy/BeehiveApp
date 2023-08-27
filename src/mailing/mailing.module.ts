@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MailingService } from './mailing.service';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
+import { MailingController } from './mailing.controller';
 
 @Module({
   providers: [
@@ -22,5 +23,6 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
     },
   ],
   exports: [MailingService],
+  controllers: [MailingController],
 })
 export class MailingModule {}

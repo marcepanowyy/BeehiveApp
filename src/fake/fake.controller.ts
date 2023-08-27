@@ -4,9 +4,10 @@ import {
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
   ApiNoContentResponse,
-  ApiOperation,
+  ApiOperation, ApiTags,
 } from '@nestjs/swagger';
 
+@ApiTags('fake')
 @Controller('fake')
 export class FakeController {
 

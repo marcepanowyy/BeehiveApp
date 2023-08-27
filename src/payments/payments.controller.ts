@@ -15,7 +15,16 @@ import { AuthGuard } from '../auth/guards/auth.guard';
 import { User } from '../../shared/decorators/users.decorator';
 import { UserRoleEnum } from '../../shared/enums/user.role.enum';
 import { Role } from '../../shared/decorators/roles.decorator';
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiHeader,
+  ApiInternalServerErrorResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
+@ApiTags('payments')
 @Controller('payments')
 export class PaymentsController {
   constructor(private paymentService: PaymentsService) {}
@@ -23,6 +32,12 @@ export class PaymentsController {
   @Post('checkout')
   @UseGuards(new AuthGuard())
   @Role(UserRoleEnum.CUSTOMER)
+
+  @ApiOperation({ summary: 'Create payment session for checkout' })
+  @ApiBody({ type: [CartItem] })
+  @ApiCreatedResponse({ description: 'Payment session created successfully.' })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
+
   async createPayment(
     @User('id') userId: string,
     @Body() cartItems: CartItem[],
@@ -33,6 +48,14 @@ export class PaymentsController {
 
   // running 'stripe listen --forward-to localhost:4000/payment/webhook' in stripe CLI
   @Post('webhook')
+
+  @ApiOperation({ summary: 'Handle incoming Stripe webhook events' })
+  @ApiHeader({
+    name: 'stripe-signature',
+    description: 'Stripe webhook signature',
+  })
+  @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
+
   async handleStripeIncomingEvents(
     @Headers('stripe-signature') signature: string,
     @Req() req: RawBodyRequest<Request>,
@@ -50,4 +73,5 @@ export class PaymentsController {
     );
     return this.paymentService.handleStripeEvent(event);
   }
+
 }
