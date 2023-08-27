@@ -82,7 +82,7 @@
       </mat-card-content>
       <mat-card-actions>
         <button mat-raised-button (click)="openDialog(product)" style="position: absolute; bottom: 1.3rem; right: 1.3rem">Add to cart</button>
-        <mat-card-title style="position: absolute; bottom: 1.8rem; left: 1.2rem">Price: ${{product.price}}</mat-card-title>
+        <mat-card-title style="position: absolute; bottom: 1.8rem; left: 1.2rem">Price: ${{product.unitPrice / 100}}</mat-card-title>
       </mat-card-actions>
     </mat-card>
   </div>

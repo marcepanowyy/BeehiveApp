@@ -57,10 +57,10 @@ export class OrdersComponent implements OnInit{
 
   countOrderSum(products: CartProduct[]){
     const total = products.reduce((accumulator, product) => {
-      const productTotal = product.price * product.quantity;
+      const productTotal = product.unitPrice * product.quantity;
       return accumulator + productTotal;
     }, 0);
-    return total.toFixed(2)
+    return total / 100
   }
 
 }

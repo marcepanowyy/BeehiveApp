@@ -3,7 +3,7 @@ export interface CartProduct{
   id: string;
   name: string;
   description: string;
-  price: number;
+  unitPrice: number;
   quantity: number;
   category: string;
 

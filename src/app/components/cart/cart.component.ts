@@ -3,9 +3,6 @@ import {ApiService} from "../../services/api.service";
 import {MatDialog} from "@angular/material/dialog";
 import {Dialog2Component} from "./dialog/dialog2.component";
 import {CartProduct} from "../../interfaces/product/CartProduct";
-import {loadStripe} from "@stripe/stripe-js";
-import {environment} from "../../../../environment";
-import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-cart',
@@ -17,8 +14,7 @@ export class CartComponent implements OnInit{
   cartProducts: CartProduct[] = []
 
   constructor(private api: ApiService,
-              private matDialog: MatDialog,
-              private router: Router){}
+              private matDialog: MatDialog){}
 
   ngOnInit() {
     this.getProductsById()
@@ -32,8 +28,8 @@ export class CartComponent implements OnInit{
 
       this.api.getProductById(product.productId).subscribe({
         next: (res) => {
-          const {id, name, category, price, description} = res
-          const newProdObj: CartProduct = {id, name, category, price, description, quantity: product.quantity}
+          const {id, name, category, unitPrice, description} = res
+          const newProdObj: CartProduct = {id, name, category, unitPrice, description, quantity: product.quantity}
           this.cartProducts.push({...newProdObj})
         },
         error: (err) => {
@@ -57,10 +53,10 @@ export class CartComponent implements OnInit{
 
   calculateTotalPrice() {
     const total = this.cartProducts.reduce((accumulator, cartProduct) => {
-      const cartProductTotal = cartProduct.price * cartProduct.quantity;
+      const cartProductTotal = cartProduct.unitPrice * cartProduct.quantity;
       return accumulator + cartProductTotal;
     }, 0);
-    return total.toFixed(2)
+    return total / 100
   }
 
   getArrFromLocalStorage(){

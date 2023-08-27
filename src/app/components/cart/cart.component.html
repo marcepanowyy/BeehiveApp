@@ -13,9 +13,9 @@
         <mat-card-title class="title2">Description:</mat-card-title>
         <mat-card-subtitle class="subtitle2">{{cartProduct.description}}</mat-card-subtitle>
 
-        <mat-card-title class="price">Price: ${{cartProduct.price}}</mat-card-title>
+        <mat-card-title class="price">Price: ${{cartProduct.unitPrice / 100}}</mat-card-title>
         <mat-card-subtitle class="number">Number of articles: {{cartProduct.quantity}}</mat-card-subtitle>
-        <mat-card-subtitle class="number2">Total: ${{(cartProduct.quantity * cartProduct.price).toFixed(2)}}</mat-card-subtitle>
+        <mat-card-subtitle class="number2">Total: ${{(cartProduct.quantity * cartProduct.unitPrice) / 100}}</mat-card-subtitle>
 
       </mat-card-header>
 
