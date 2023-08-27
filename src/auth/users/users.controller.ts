@@ -2,12 +2,17 @@ import { Body, Controller, Get, Param, Post, Query, Req, Res, UseGuards, UsePipe
 import { UsersService } from './users.service';
 import { PasswordResetDto, UsersDto, UsersRO } from './users.dto';
 import {
-  ApiBadRequestResponse, ApiBody,
+  ApiBadRequestResponse,
+  ApiBody,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
-  ApiNotFoundResponse, ApiOkResponse, ApiOperation,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
   ApiTags,
   ApiUnauthorizedResponse,
+  PartialType,
 } from '@nestjs/swagger';
 import { AuthGuard } from '../guards/auth.guard';
 import { Role } from '../../../shared/decorators/roles.decorator';
@@ -18,6 +23,7 @@ import { UserRoleEnum } from '../../../shared/enums/user.role.enum';
 @ApiTags('auth')
 @Controller('auth')
 export class UsersController {
+
   constructor(private usersService: UsersService) {}
 
   @Get()
@@ -36,6 +42,7 @@ export class UsersController {
   @Role(UserRoleEnum.ADMIN)
 
   @ApiOperation({ summary: 'Get user by ID' })
+  @ApiParam({ name: 'id', description: 'User ID', example: 'b29ff321-e113-44b4-b776-92c044ad2157' })
   @ApiOkResponse({ description: 'User retrieved successfully.', type: UsersRO })
   @ApiNotFoundResponse({ description: "User's ID not found." })
   @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
@@ -101,6 +108,7 @@ export class UsersController {
   @Get('activate/:verificationKey')
 
   @ApiOperation({ summary: 'Activate user account using verification key' })
+  @ApiParam({ name: 'verificationKey', description: 'Verification key received via email', example: 'b29ff321-e113-44b4-b776-92c044ad2157' })
   @ApiOkResponse({ description: 'Account activated successfully.' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized or verification key not found.' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
@@ -112,7 +120,7 @@ export class UsersController {
   @Post('reset')
 
   @ApiOperation({ summary: 'Send password reset code to user email' })
-  @ApiBody({ type: PasswordResetDto })
+  @ApiBody({ type: PartialType(PasswordResetDto) })
   @ApiOkResponse({ description: 'Password reset code sent successfully.' })
   @ApiBadRequestResponse({ description: 'Bad request or account not activated.' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
@@ -124,7 +132,7 @@ export class UsersController {
   @Post('password/code/confirmation')
 
   @ApiOperation({ summary: 'Confirm password reset code' })
-  @ApiBody({ type: PasswordResetDto })
+  @ApiBody({ type: PartialType(PasswordResetDto) })
   @ApiOkResponse({ description: 'Password reset code confirmed.' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized or code mismatch.' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error.' })

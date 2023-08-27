@@ -9,9 +9,11 @@ import {
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
-  ApiOperation,
+  ApiOperation, ApiParam,
   ApiQuery,
-  ApiTags, ApiUnauthorizedResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+  PartialType,
 } from '@nestjs/swagger';
 import { Role } from '../../shared/decorators/roles.decorator';
 import { UserRoleEnum } from '../../shared/enums/user.role.enum';
@@ -19,6 +21,7 @@ import { UserRoleEnum } from '../../shared/enums/user.role.enum';
 @ApiTags('products')
 @Controller('products')
 export class ProductsController {
+
   constructor(private productsService: ProductsService) {}
 
   @Get()
@@ -37,6 +40,7 @@ export class ProductsController {
   @Role(UserRoleEnum.CUSTOMER)
 
   @ApiOperation({ summary: 'Get product by ID' })
+  @ApiParam({ name: 'id', description: 'Product ID', example: 'b29ff321-e113-44b4-b776-92c044ad2157' })
   @ApiNotFoundResponse({ description: 'Product not found.' })
   @ApiOkResponse({ description: 'Product retrieved successfully.', type: ProductsRo })
   @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
@@ -64,7 +68,7 @@ export class ProductsController {
   @Post('filter')
 
   @ApiOperation({ summary: 'Get filtered products' })
-  @ApiBody({ type: FilteredProductsDto })
+  @ApiBody({ type: PartialType(FilteredProductsDto) })
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiOkResponse({ description: 'Filtered products retrieved successfully.' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized.' })

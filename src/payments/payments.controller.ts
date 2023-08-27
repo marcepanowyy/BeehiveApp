@@ -27,6 +27,7 @@ import {
 @ApiTags('payments')
 @Controller('payments')
 export class PaymentsController {
+
   constructor(private paymentService: PaymentsService) {}
 
   @Post('checkout')

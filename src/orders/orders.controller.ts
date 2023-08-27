@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Logger,
   Param,
   Query,
   UseGuards,
@@ -13,13 +12,14 @@ import { OrdersService } from './orders.service';
 import { ValidationPipe } from '../../shared/validation.pipe';
 import { User } from '../../shared/decorators/users.decorator';
 import {
-  ApiBody,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiQuery,
-  ApiTags, ApiUnauthorizedResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { UserRoleEnum } from '../../shared/enums/user.role.enum';
@@ -63,6 +63,7 @@ export class OrdersController {
   @Role(UserRoleEnum.MEMBER)
 
   @ApiOperation({ summary: 'Get order by ID' })
+  @ApiParam({ name: 'id', description: 'Order ID', example: 'b29ff321-e113-44b4-b776-92c044ad2157' })
   @ApiOkResponse({ description: 'Order retrieved successfully.', type: OrdersRo })
   @ApiNotFoundResponse({ description: 'Order not found.' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
@@ -73,7 +74,9 @@ export class OrdersController {
 
   @Delete(':id')
   @Role(UserRoleEnum.ADMIN)
+
   @ApiOperation({ summary: 'Delete order by ID' })
+  @ApiParam({ name: 'id', description: 'Order ID', example: 'b29ff321-e113-44b4-b776-92c044ad2157' })
   @ApiOkResponse({ description: 'Order deleted successfully.', type: OrdersRo })
   @ApiNotFoundResponse({ description: 'Order or user not found.' })
   @ApiUnauthorizedResponse({ description: 'Order does not belong to user.' })

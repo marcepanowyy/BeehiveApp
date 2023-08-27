@@ -7,9 +7,11 @@ import {
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
-  ApiOperation,
+  ApiOperation, ApiParam,
   ApiQuery,
-  ApiTags, ApiUnauthorizedResponse, PartialType,
+  ApiTags,
+  ApiUnauthorizedResponse,
+  PartialType,
 } from '@nestjs/swagger';
 import { Role } from '../../shared/decorators/roles.decorator';
 import { UserRoleEnum } from '../../shared/enums/user.role.enum';
@@ -17,8 +19,8 @@ import { UserRoleEnum } from '../../shared/enums/user.role.enum';
 @ApiTags('categories')
 @Controller('categories')
 export class CategoriesController {
-  constructor(private categoriesService: CategoriesService) {}
 
+  constructor(private categoriesService: CategoriesService) {}
 
   @Get('all')
 
@@ -44,6 +46,7 @@ export class CategoriesController {
   @Get(':id')
 
   @ApiOperation({ summary: 'Get a category by ID' })
+  @ApiParam({ name: 'id', description: 'Category ID', example: 'b29ff321-e113-44b4-b776-92c044ad2157' })
   @ApiOkResponse({ description: 'Category retrieved successfully.', type: CategoriesRo })
   @ApiNotFoundResponse({ description: 'Category not found.' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
@@ -71,6 +74,7 @@ export class CategoriesController {
   @UsePipes(new ValidationPipe())
 
   @ApiOperation({ summary: 'Update a category by ID' })
+  @ApiParam({ name: 'id', description: 'Category ID', example: 'b29ff321-e113-44b4-b776-92c044ad2157' })
   @ApiBody({ type: PartialType(CategoriesDto) })
   @ApiOkResponse({ description: 'Category updated successfully.', type: CategoriesRo })
   @ApiNotFoundResponse({ description: 'Category not found.' })
@@ -88,6 +92,7 @@ export class CategoriesController {
   @Role(UserRoleEnum.ADMIN)
 
   @ApiOperation({ summary: 'Delete a category by ID' })
+  @ApiParam({ name: 'id', description: 'Category ID', example: 'b29ff321-e113-44b4-b776-92c044ad2157' })
   @ApiOkResponse({ description: 'Category deleted successfully.', type: CategoriesRo })
   @ApiNotFoundResponse({ description: 'Category not found.' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
