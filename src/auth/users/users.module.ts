@@ -15,5 +15,6 @@ import { MailModule } from '../../mail/mail.module';
   ],
   controllers: [UsersController],
   providers: [UsersService, GoogleStrategy, SessionSerializer],
+  exports: [UsersService]
 })
 export class UsersModule {}

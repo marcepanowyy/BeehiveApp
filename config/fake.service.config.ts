@@ -1,10 +1,10 @@
 export const FakeServiceConfig = {
   usersInfo: {
-    number: 10
+    number: 1
   },
 
   categoriesInfo: {
-    number: 20,
+    number: 1,
     // products number per category
     productsNumber: {
       min: 5,

@@ -9,6 +9,7 @@ import { Request, Response } from 'express';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { MailService } from '../../mail/mail.service';
+import { UserRoleEnum } from '../../../shared/enums/user.role.enum';
 
 @Injectable()
 export class UsersService {
@@ -102,10 +103,10 @@ export class UsersService {
     };
   }
 
-  async getRoleByUserId(userId: string): Promise<number> {
+  async getRoleByUserId(userId: string): Promise<UserRoleEnum> {
     const user = await this.usersRepository.findOne({ where: { id: userId } });
     if (!user) {
-      throw new HttpException('User not found by ID', HttpStatus.NOT_FOUND);
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
     return user.role;
   }

@@ -14,6 +14,8 @@ import { UsersRO } from './users.dto';
 import { OrdersEntity } from '../../orders/orders.entity';
 import { OrdersRo } from '../../orders/orders.dto';
 import { ProductsReviewEntity } from '../../products.review/products.review.entity';
+import { UserRoleEnum } from '../../../shared/enums/user.role.enum';
+import { UserTypeEnum } from '../../../shared/enums/user.type.enum';
 
 @Entity('users')
 export class UsersEntity {
@@ -33,11 +35,11 @@ export class UsersEntity {
   })
   password: string;
 
-  @Column({ type: 'integer', default: 1 })
-  role: number;
+  @Column('enum', { enum: UserRoleEnum, default: UserRoleEnum.CUSTOMER })
+  role: UserRoleEnum;
 
-  @Column({ type: 'integer', default: 1 })
-  type: number;
+  @Column('enum', { enum: UserTypeEnum, default: UserTypeEnum.STANDARD })
+  type: UserTypeEnum;
 
   @Column({ type: 'boolean', default: false, nullable: false })
   activatedAccount: boolean;
@@ -93,18 +95,14 @@ export class UsersEntity {
   }
 
   private get token(): string {
-    const { id, username, role } = this;
+    const { id, username } = this;
     return jwt.sign(
       {
         id,
         username,
-        // TODO - don't save role to jwt payload, instead, use id to get
-        //  user from db and check for role in decorator
-        role,
       },
       process.env.SECRET,
-      { expiresIn: '30days' },
+      { expiresIn: process.env.TOKEN_EXPIRY_TIME },
     );
   }
-
 }

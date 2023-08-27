@@ -75,16 +75,14 @@ export class FakeService {
           unitPrice: this.getRandomInteger(
             this.productsInfo.unitPrice.min,
             this.productsInfo.unitPrice.max
-          ) / 100,
+          ),
         };
         const product = await createProduct(
           this.testingContainer,
           productData,
           category,
         );
-
         productsId.push(product.id)
-
       }
     }
 
