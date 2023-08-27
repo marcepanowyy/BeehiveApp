@@ -1,4 +1,5 @@
 export const FakeServiceConfig = {
+
   usersInfo: {
     number: 1
   },
@@ -11,6 +12,7 @@ export const FakeServiceConfig = {
       max: 30
     }
   },
+
   productsInfo: {
     descriptionLength: {
       minWords: 25,
@@ -25,6 +27,7 @@ export const FakeServiceConfig = {
       max: 100000,
     },
   },
+
   ordersInfo: {
     // orders per customer
     number: {

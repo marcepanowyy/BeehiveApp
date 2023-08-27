@@ -43,7 +43,5 @@ export class ProductsEntity {
   // end of relationships
 }
 
-// todo - add currency field
-
 // todo - add product price history entity, when updating price - old price goes to this table
 //  with its creation date and end date

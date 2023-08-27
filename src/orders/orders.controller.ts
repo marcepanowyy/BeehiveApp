@@ -29,8 +29,6 @@ export class OrdersController {
     return this.ordersService.showAll(page);
   }
 
-  // not valid endpoint anymore - should go through payments first
-
   @Get('/user')
   @UseGuards(new AuthGuard())
   @Role(UserRoleEnum.MEMBER)

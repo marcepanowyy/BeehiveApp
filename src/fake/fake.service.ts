@@ -12,7 +12,7 @@ import {
 } from '../../shared/test/utils';
 
 import { faker } from '@faker-js/faker';
-import { FakeServiceConfig } from '../../config/fake.service.config';
+import { FakeServiceConfig } from './fake.service.config';
 
 @Injectable()
 export class FakeService {
@@ -30,7 +30,7 @@ export class FakeService {
   async generate(): Promise<void> {
     this.testingContainer = await createTestingContainer();
 
-    const productsId = []
+    const productsId = [];
 
     for (let i = 0; i < this.categoriesInfo.number; i++) {
       let categoryName: string;
@@ -65,8 +65,8 @@ export class FakeService {
         const productData = {
           name: productName,
           description: faker.lorem.sentence({
-              min: this.productsInfo.descriptionLength.minWords,
-              max: this.productsInfo.descriptionLength.maxWords
+            min: this.productsInfo.descriptionLength.minWords,
+            max: this.productsInfo.descriptionLength.maxWords,
           }),
           unitsOnStock: this.getRandomInteger(
             this.productsInfo.unitsOnStock.min,
@@ -74,7 +74,7 @@ export class FakeService {
           ),
           unitPrice: this.getRandomInteger(
             this.productsInfo.unitPrice.min,
-            this.productsInfo.unitPrice.max
+            this.productsInfo.unitPrice.max,
           ),
         };
         const product = await createProduct(
@@ -82,7 +82,7 @@ export class FakeService {
           productData,
           category,
         );
-        productsId.push(product.id)
+        productsId.push(product.id);
       }
     }
 
@@ -95,42 +95,46 @@ export class FakeService {
 
       const userData = {
         username,
-        password: this.generatePassword()
+        password: this.generatePassword(),
       };
 
       const user = await createUser(this.testingContainer, userData, true);
 
       const randomNumberOfOrders = this.getRandomInteger(
         this.ordersInfo.number.min,
-        this.ordersInfo.number.max
+        this.ordersInfo.number.max,
       );
 
-      for(let j = 0; j < randomNumberOfOrders; j++){
+      for (let j = 0; j < randomNumberOfOrders; j++) {
         const orderData = [];
 
-        const randomNumberOfProductsInOrder = this.getRandomInteger(this.ordersInfo.productsInOrder.min,
-          this.ordersInfo.productsInOrder.max)
+        const randomNumberOfProductsInOrder = this.getRandomInteger(
+          this.ordersInfo.productsInOrder.min,
+          this.ordersInfo.productsInOrder.max,
+        );
 
-        for(let k = 0; k < randomNumberOfProductsInOrder; k++){
-
-          const randomProductIndex = this.getRandomInteger(0, productsId.length)
-          const selectedProductId = productsId[randomProductIndex]
-          const quantity = this.getRandomInteger(this.ordersInfo.productsQuantity.min, this.ordersInfo.productsQuantity.max)
+        for (let k = 0; k < randomNumberOfProductsInOrder; k++) {
+          const randomProductIndex = this.getRandomInteger(
+            0,
+            productsId.length,
+          );
+          const selectedProductId = productsId[randomProductIndex];
+          const quantity = this.getRandomInteger(
+            this.ordersInfo.productsQuantity.min,
+            this.ordersInfo.productsQuantity.max,
+          );
 
           orderData.push({
             productId: selectedProductId,
             quantity,
-            currency: 'usd'
-          })
-
+            currency: 'usd',
+          });
         }
 
-        const randomStatus = this.getRandomInteger(1, 4)
-        await createOrder(this.testingContainer, orderData, user, randomStatus)
-
+        const randomStatus = this.getRandomInteger(1, 4);
+        await createOrder(this.testingContainer, orderData, user, randomStatus);
       }
     }
-
   }
 
   async delete(): Promise<void> {
@@ -153,12 +157,15 @@ export class FakeService {
       password += faker.helpers.fromRegExp('[A-Za-z0-9]');
     }
 
-    password += specialChars.charAt(Math.floor(Math.random() * specialChars.length));
-    password += upperCaseChars.charAt(Math.floor(Math.random() * upperCaseChars.length));
+    password += specialChars.charAt(
+      Math.floor(Math.random() * specialChars.length),
+    );
+    password += upperCaseChars.charAt(
+      Math.floor(Math.random() * upperCaseChars.length),
+    );
     password += digits.charAt(Math.floor(Math.random() * digits.length));
     password += digits.charAt(Math.floor(Math.random() * digits.length));
 
     return password;
   }
-
 }

@@ -12,14 +12,20 @@ export class ProcessedCartItem {
 
 export class ProductForOrder {
   productId: string;
-  // name: string;
   quantity: number;
   currency: string;
-  // unitAmount: number;
-  // image: string | null;
 }
 
 export class UserFromStripeEvent {
   userId: string;
   recipient: string;
+}
+
+export class ProductFromEvent {
+  productId: string;
+  name: string;
+  quantity: number;
+  currency: string;
+  unitAmount: number;
+  image: string | null;
 }

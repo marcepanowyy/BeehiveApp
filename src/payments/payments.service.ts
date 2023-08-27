@@ -7,7 +7,7 @@ import { ProductsService } from '../products/products.service';
 import {
   CartItem,
   ProcessedCartItem,
-  ProductForOrder,
+  ProductForOrder, ProductFromEvent,
   UserFromStripeEvent,
 } from './payments.dto';
 import { OrdersService } from '../orders/orders.service';
@@ -134,7 +134,7 @@ export class PaymentsService {
     return processedCartItems;
   }
 
-  async getProductsFromStripeEvent(event: any): Promise<ProductForOrder[]> {
+  async getProductsFromStripeEvent(event: any): Promise<ProductFromEvent[]> {
     const sessionWithLineItems = await this.stripe.checkout.sessions.retrieve(
       event.data.object.id,
       {

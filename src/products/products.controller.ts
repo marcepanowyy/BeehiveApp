@@ -25,8 +25,8 @@ export class ProductsController {
 
 
   @Post()
-  @UsePipes(new ValidationPipe())
   @Role(UserRoleEnum.ADMIN)
+  @UsePipes(new ValidationPipe())
   createProduct(@Body() data: ProductsDto) {
     return this.productsService.create(data);
   }

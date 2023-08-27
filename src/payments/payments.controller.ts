@@ -16,7 +16,7 @@ import { User } from '../../shared/decorators/users.decorator';
 import { UserRoleEnum } from '../../shared/enums/user.role.enum';
 import { Role } from '../../shared/decorators/roles.decorator';
 
-@Controller('payment')
+@Controller('payments')
 export class PaymentsController {
   constructor(private paymentService: PaymentsService) {}
 
