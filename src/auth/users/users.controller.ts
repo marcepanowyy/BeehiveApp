@@ -1,12 +1,11 @@
 import { Body, Controller, Get, Param, Post, Query, Req, Res, UseGuards, UsePipes } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { PasswordResetDto, UsersDto } from './users.dto';
+import { PasswordResetDto, UsersDto, UsersRO } from './users.dto';
 import {
   ApiBadRequestResponse, ApiBody,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse, ApiOkResponse, ApiOperation,
-  ApiParam,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -26,7 +25,7 @@ export class UsersController {
   @Role(UserRoleEnum.ADMIN)
 
   @ApiOperation({ summary: 'Get list of all users' })
-  @ApiOkResponse({ description: 'List of users retrieved successfully.' })
+  @ApiOkResponse({ description: 'List of users retrieved successfully.', type: [UsersRO] })
   @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
 
   showAllUsers(@Query('page') page: number) {
@@ -37,12 +36,7 @@ export class UsersController {
   @Role(UserRoleEnum.ADMIN)
 
   @ApiOperation({ summary: 'Get user by ID' })
-  @ApiParam({
-    name: 'id',
-    description: 'User id',
-    example: 'b29ff321-e113-44b4-b776-92c044ad2157',
-  })
-  @ApiOkResponse({ description: 'User retrieved successfully.' })
+  @ApiOkResponse({ description: 'User retrieved successfully.', type: UsersRO })
   @ApiNotFoundResponse({ description: "User's ID not found." })
   @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
 
@@ -56,7 +50,7 @@ export class UsersController {
   @ApiOperation({ summary: 'User login' })
   @ApiBody({ type: UsersDto })
   @ApiOkResponse({ description: 'Logged in successfully.' })
-  @ApiUnauthorizedResponse({ description: 'Unauthorized or invalid credentials.' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized or invalid credentials.', type: UsersRO })
   @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
 
   login(@Body() data: UsersDto) {
@@ -68,7 +62,7 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Register a new user' })
   @ApiBody({ type: UsersDto })
-  @ApiCreatedResponse({ description: 'User registered successfully.' })
+  @ApiCreatedResponse({ description: 'User registered successfully.', type: UsersRO })
   @ApiBadRequestResponse({ description: 'Bad request or user already exists.' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
 

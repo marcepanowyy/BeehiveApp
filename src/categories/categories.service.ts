@@ -103,4 +103,5 @@ export class CategoriesService {
     await this.categoriesRepository.delete({ id: categoryId });
     return this.toResponseCategory(category);
   }
+
 }
