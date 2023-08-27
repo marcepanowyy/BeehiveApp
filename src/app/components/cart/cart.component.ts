@@ -5,6 +5,7 @@ import {Dialog2Component} from "./dialog/dialog2.component";
 import {CartProduct} from "../../interfaces/product/CartProduct";
 import {loadStripe} from "@stripe/stripe-js";
 import {environment} from "../../../../environment";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-cart',
@@ -16,7 +17,8 @@ export class CartComponent implements OnInit{
   cartProducts: CartProduct[] = []
 
   constructor(private api: ApiService,
-              private matDialog: MatDialog){}
+              private matDialog: MatDialog,
+              private router: Router){}
 
   ngOnInit() {
     this.getProductsById()
@@ -68,20 +70,15 @@ export class CartComponent implements OnInit{
   async checkout() {
 
     const cartProducts = this.getArrFromLocalStorage()
-
     this.api.checkout(cartProducts).subscribe({
-      next: async (session: any) => {
-        const stripe = await loadStripe(environment.stripeConfig.publishable_key);
-        stripe?.redirectToCheckout({
-          sessionId: session.id
-        })
+
+      next: (res: {url: string}) => {
+        window.location.href = res.url
       },
       error: (err) => {
         alert(err.error.message)
       }
     })
   }
-
-
 }
 

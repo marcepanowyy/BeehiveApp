@@ -28,7 +28,7 @@ export class ApiService {
   }
 
   checkout(products: ProductRequest[]){
-    return this.http.post("http://localhost:4000/payment/checkout", products)
+    return this.http.post<{url: string}>("http://localhost:4000/payment/checkout", products)
   }
 
   // users
