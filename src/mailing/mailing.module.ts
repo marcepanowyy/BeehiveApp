@@ -1,12 +1,10 @@
 import { Module } from '@nestjs/common';
-import { MailController } from './mail.controller';
-import { MailService } from './mail.service';
+import { MailingService } from './mailing.service';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 
 @Module({
-  controllers: [MailController],
-  providers: [MailService,
-
+  providers: [
+    MailingService,
     {
       provide: 'MAIL_CLIENT',
       useFactory: () => {
@@ -21,10 +19,8 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
           },
         });
       },
-    }
-
-
+    },
   ],
-  exports: [MailService],
+  exports: [MailingService],
 })
-export class MailModule {}
+export class MailingModule {}

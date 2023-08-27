@@ -3,7 +3,8 @@ import {
   Controller,
   Get,
   Param,
-  Post, Put,
+  Post,
+  Put,
   Query,
   UseGuards,
   UsePipes,
@@ -14,6 +15,8 @@ import { ProductsReviewService } from './products.review.service';
 import { ValidationPipe } from '../../shared/validation.pipe';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { ApiTags } from '@nestjs/swagger';
+import { Role } from '../../shared/decorators/roles.decorator';
+import { UserRoleEnum } from '../../shared/enums/user.role.enum';
 
 @ApiTags('reviews')
 @Controller('reviews')
@@ -26,13 +29,14 @@ export class ProductsReviewController {
   }
 
   @Get(':id')
-  readReview(@Param('id') reviewId: string){
-    return this.productsReviewService.showReviewById(reviewId)
+  readReview(@Param('id') reviewId: string) {
+    return this.productsReviewService.showReviewById(reviewId);
   }
 
   @Post(':id')
-  @UsePipes(new ValidationPipe())
   @UseGuards(new AuthGuard())
+  @Role(UserRoleEnum.CUSTOMER)
+  @UsePipes(new ValidationPipe())
   createReview(
     @User('id') userId: string,
     @Body() data: ProductsReviewDto,
@@ -42,15 +46,14 @@ export class ProductsReviewController {
   }
 
   @Put(':id')
-  @UsePipes(new ValidationPipe())
   @UseGuards(new AuthGuard())
+  @Role(UserRoleEnum.CUSTOMER)
+  @UsePipes(new ValidationPipe())
   updateReview(
     @User('id') userId: string,
     @Param('id') reviewId: string,
     @Body() data: Partial<ProductsReviewDto>,
-  ){
-    return this.productsReviewService.updateReview(userId, reviewId, data)
+  ) {
+    return this.productsReviewService.updateReview(userId, reviewId, data);
   }
-
-
 }

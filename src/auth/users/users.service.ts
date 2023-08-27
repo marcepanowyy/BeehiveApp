@@ -4,12 +4,11 @@ import { UsersEntity } from './users.entity';
 import { Repository } from 'typeorm';
 import { GoogleUser, PasswordResetDto, UsersDto, UsersRO } from './users.dto';
 import { UserTypeEnum } from '../../../shared/enums/user.type.enum';
-
 import { Request, Response } from 'express';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { MailService } from '../../mail/mail.service';
 import { UserRoleEnum } from '../../../shared/enums/user.role.enum';
+import { MailingService } from '../../mailing/mailing.service';
 
 @Injectable()
 export class UsersService {
@@ -17,7 +16,7 @@ export class UsersService {
     @InjectRepository(UsersEntity)
     private usersRepository: Repository<UsersEntity>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    private mailService: MailService,
+    private mailingService: MailingService,
   ) {}
 
   // 5 customers, show for each up to 5 orders -> just to check who ordered sth ...
@@ -96,7 +95,7 @@ export class UsersService {
     await this.usersRepository.save(user);
 
     //send activating mail
-    await this.mailService.sendActivationMail(username);
+    await this.mailingService.sendActivationMail(username);
 
     return {
       message: 'Account created successfully. Activate your account to log in.',
@@ -156,7 +155,7 @@ export class UsersService {
         activatedAccount: true, // when creating google users, automatically activate their accounts
       });
       await this.usersRepository.save(user);
-      await this.mailService.sendWelcomeMail(email)
+      await this.mailingService.sendWelcomeMail(email);
       return user.toResponseUser();
     } else if (user.type === UserTypeEnum.STANDARD) {
       await this.usersRepository.update(user.id, {
@@ -209,7 +208,7 @@ export class UsersService {
     if (!user) throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
 
     await this.usersRepository.update(user.id, { activatedAccount: true });
-    await this.mailService.sendWelcomeMail(userEmail);
+    await this.mailingService.sendWelcomeMail(userEmail);
     return 'You have activated your account.';
   }
 
@@ -227,12 +226,14 @@ export class UsersService {
     });
 
     if (user) {
-
-      if(!user.activatedAccount){
-        throw new HttpException('Account has not been activated', HttpStatus.BAD_REQUEST)
+      if (!user.activatedAccount) {
+        throw new HttpException(
+          'Account has not been activated',
+          HttpStatus.BAD_REQUEST,
+        );
       }
 
-      await this.mailService.sendPasswordResetMail(recipient);
+      await this.mailingService.sendPasswordResetMail(recipient);
     }
     // sending 200 whether we have found user or not
     return true;

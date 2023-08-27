@@ -9,13 +9,13 @@ import {
   ProcessedCartItem,
   ProductForOrder,
   UserFromStripeEvent,
-} from './payment.dto';
+} from './payments.dto';
 import { OrdersService } from '../orders/orders.service';
-import { MailService } from '../mail/mail.service';
 import { PaymentStatusEnum } from '../../shared/enums/payment.status.enum';
+import { MailingService } from '../mailing/mailing.service';
 
 @Injectable()
-export class PaymentService {
+export class PaymentsService {
   private stripe: Stripe;
 
   constructor(
@@ -23,7 +23,7 @@ export class PaymentService {
     private productsRepository: Repository<ProductsEntity>,
     private productsService: ProductsService,
     private ordersService: OrdersService,
-    private mailService: MailService,
+    private mailService: MailingService,
   ) {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
       apiVersion: '2023-08-16',
@@ -148,11 +148,11 @@ export class PaymentService {
       const metadata = item.price.product.metadata;
       return {
         productId: metadata.product_id,
-        // name: item.description,
+        name: item.description,
         quantity: item.quantity,
         currency: item.currency,
-        // unitAmount: item.price.unit_amount,
-        // image: item.price.product.images[0],
+        unitAmount: item.price.unit_amount,
+        image: item.price.product.images[0],
       };
     });
   }
@@ -167,8 +167,6 @@ export class PaymentService {
 
     const recipient = sessionWithLineItems.customer_details.email;
     const userId = sessionWithLineItems.metadata.userId;
-
-    // console.log(recipient, userId) // check if they are connected -> if not, throw exception
     return { userId, recipient };
   }
 

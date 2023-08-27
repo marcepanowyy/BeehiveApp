@@ -2,11 +2,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { ClientProxy } from '@nestjs/microservices';
-import { ProductForOrder } from '../payment/payment.dto';
+import { ProductForOrder } from '../payments/payments.dto';
 import { PaymentStatusEnum } from '../../shared/enums/payment.status.enum';
 
 @Injectable()
-export class MailService {
+export class MailingService {
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @Inject('MAIL_CLIENT') private client: ClientProxy,

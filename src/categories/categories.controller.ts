@@ -1,18 +1,10 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
-  UsePipes,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UsePipes } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CategoriesDto } from './categories.dto';
 import { ValidationPipe } from '../../shared/validation.pipe';
 import { ApiTags } from '@nestjs/swagger';
+import { Role } from '../../shared/decorators/roles.decorator';
+import { UserRoleEnum } from '../../shared/enums/user.role.enum';
 
 @ApiTags('categories')
 @Controller('categories')
@@ -35,17 +27,15 @@ export class CategoriesController {
     return this.categoriesService.read(categoryId);
   }
 
-  // TODO - admin only
-
   @Post()
+  @Role(UserRoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
   createCategory(@Body() data: CategoriesDto) {
     return this.categoriesService.create(data);
   }
 
-  // TODO - admin only
-
   @Put(':id')
+  @Role(UserRoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
   updateCategory(
     @Param('id') categoryId: string,
@@ -54,9 +44,8 @@ export class CategoriesController {
     return this.categoriesService.update(categoryId, data);
   }
 
-  // TODO - admin only
-
   @Delete(':id')
+  @Role(UserRoleEnum.ADMIN)
   deleteCategory(@Param('id') categoryId: string) {
     return this.categoriesService.delete(categoryId);
   }

@@ -1,15 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Query,
-  Req,
-  Res,
-  UseGuards,
-  UsePipes,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req, Res, UseGuards, UsePipes } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { PasswordResetDto, UsersDto } from './users.dto';
 import {
@@ -18,7 +7,6 @@ import {
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiParam,
-  ApiProperty,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -26,16 +14,16 @@ import { AuthGuard } from '../guards/auth.guard';
 import { Role } from '../../../shared/decorators/roles.decorator';
 import { ValidationPipe } from '../../../shared/validation.pipe';
 import { GoogleAuthGuard } from '../guards/google.auth.guard';
+import { UserRoleEnum } from '../../../shared/enums/user.role.enum';
 
 @ApiTags('auth')
 @Controller('auth')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  // TODO - admin only
   @Get()
   @UseGuards(new AuthGuard())
-  @Role(1)
+  @Role(UserRoleEnum.ADMIN)
   @ApiCreatedResponse({ description: 'Created users object as response.' })
   @ApiBadRequestResponse({ description: 'Cannot create the user. Try again.' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
@@ -43,8 +31,8 @@ export class UsersController {
     return this.usersService.showAll(page);
   }
 
-  // TODO - admin only
   @Get('users/:id')
+  @Role(UserRoleEnum.ADMIN)
   @ApiParam({
     name: 'id',
     description: 'User id',
@@ -91,6 +79,8 @@ export class UsersController {
     return this.usersService.googleLoginHandler(req);
   }
 
+  // end google oauth 2.0
+
   // sending mails
 
   @Get('activate/:verificationKey')
@@ -112,4 +102,7 @@ export class UsersController {
   changePassword(@Body() data: PasswordResetDto) {
     return this.usersService.changePassword(data);
   }
+
+  // end sending mails
+
 }

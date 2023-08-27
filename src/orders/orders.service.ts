@@ -9,7 +9,7 @@ import { UsersEntity } from '../auth/users/users.entity';
 import { DeliveryStatusEnum } from '../../shared/enums/delivery.status.enum';
 import { PaymentStatusEnum } from '../../shared/enums/payment.status.enum';
 import { OrdersRo } from './orders.dto';
-import { ProductForOrder } from '../payment/payment.dto';
+import { ProductForOrder } from '../payments/payments.dto';
 
 // TODO - redis lock on order creating
 

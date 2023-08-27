@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { databaseModule } from '../orm.config';
 import { OrdersModule } from './orders/orders.module';
 import { HttpErrorFilter } from '../shared/http-error.filter';
 import { LoggingInterceptor } from '../shared/logging.interceptor';
@@ -9,14 +11,11 @@ import { OrderDetailsModule } from './order.details/order.details.module';
 import { ProductsReviewModule } from './products.review/products.review.module';
 import { RoleGuard } from './auth/guards/role.guard';
 import { PassportModule } from '@nestjs/passport';
-import { MailModule } from './mail/mail.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { FakeModule } from './fake/fake.module';
 import { ConfigModule } from '@nestjs/config';
-
-import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { databaseModule } from '../orm.config';
-import { PaymentModule } from './payment/payment.module';
+import { PaymentsModule } from './payments/payments.module';
+import { MailingModule } from './mailing/mailing.module';
 
 @Module({
   imports: [
@@ -27,12 +26,12 @@ import { PaymentModule } from './payment/payment.module';
     ProductsModule,
     OrderDetailsModule,
     ProductsReviewModule,
-    MailModule,
+    MailingModule,
     FakeModule,
     PassportModule.register({ session: true }),
     CacheModule.register({ isGlobal: true }),
     ConfigModule.forRoot({ isGlobal: true }),
-    PaymentModule,
+    PaymentsModule,
   ],
   providers: [
     {

@@ -6,12 +6,12 @@ import { UsersEntity } from './users.entity';
 import { ProductsReviewEntity } from '../../products.review/products.review.entity';
 import { GoogleStrategy } from '../strategy/google.strategy';
 import { SessionSerializer } from '../serializer/session.serializer';
-import { MailModule } from '../../mail/mail.module';
+import { MailingModule } from '../../mailing/mailing.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UsersEntity, ProductsReviewEntity]),
-    MailModule,
+    MailingModule,
   ],
   controllers: [UsersController],
   providers: [UsersService, GoogleStrategy, SessionSerializer],

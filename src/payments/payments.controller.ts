@@ -9,17 +9,20 @@ import {
   HttpStatus,
   RawBodyRequest,
 } from '@nestjs/common';
-import { PaymentService } from './payment.service';
-import { CartItem } from './payment.dto';
+import { PaymentsService } from './payments.service';
+import { CartItem } from './payments.dto';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { User } from '../../shared/decorators/users.decorator';
+import { UserRoleEnum } from '../../shared/enums/user.role.enum';
+import { Role } from '../../shared/decorators/roles.decorator';
 
 @Controller('payment')
-export class PaymentController {
-  constructor(private paymentService: PaymentService) {}
+export class PaymentsController {
+  constructor(private paymentService: PaymentsService) {}
 
   @Post('checkout')
   @UseGuards(new AuthGuard())
+  @Role(UserRoleEnum.CUSTOMER)
   async createPayment(
     @User('id') userId: string,
     @Body() cartItems: CartItem[],

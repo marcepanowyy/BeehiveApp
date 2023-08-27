@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Query,
-  UsePipes,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UsePipes } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ValidationPipe } from '../../shared/validation.pipe';
 import { FilteredProductsDto, ProductsDto } from './products.dto';
@@ -20,11 +12,13 @@ export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
   @Get()
+  @Role(UserRoleEnum.MEMBER)
   showAllProducts(@Query('page') page: number) {
     return this.productsService.showAll(page);
   }
 
   @Get(':id')
+  @Role(UserRoleEnum.CUSTOMER)
   readProduct(@Param('id') productId: string) {
     return this.productsService.read(productId);
   }
@@ -32,6 +26,7 @@ export class ProductsController {
 
   @Post()
   @UsePipes(new ValidationPipe())
+  @Role(UserRoleEnum.ADMIN)
   createProduct(@Body() data: ProductsDto) {
     return this.productsService.create(data);
   }

@@ -3,7 +3,7 @@ import { CategoriesEntity } from '../../src/categories/categories.entity';
 import { UsersEntity } from '../../src/auth/users/users.entity';
 import { ProductsEntity } from '../../src/products/products.entity';
 import { OrdersEntity } from '../../src/orders/orders.entity';
-import { ProductForOrder } from '../../src/payment/payment.dto';
+import { ProductForOrder } from '../../src/payments/payments.dto';
 
 // casting because create returns array of object which is falsy
 
