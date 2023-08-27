@@ -72,11 +72,10 @@ export class FakeService {
             this.productsInfo.unitsOnStock.min,
             this.productsInfo.unitsOnStock.max,
           ),
-          price: this.getRandomDecimal(
-            this.productsInfo.price.min,
-            this.productsInfo.price.max,
-            2,
-          ),
+          unitPrice: this.getRandomInteger(
+            this.productsInfo.unitPrice.min,
+            this.productsInfo.unitPrice.max
+          ) / 100,
         };
         const product = await createProduct(
           this.testingContainer,
@@ -109,7 +108,7 @@ export class FakeService {
       );
 
       for(let j = 0; j < randomNumberOfOrders; j++){
-        const orderProducts = [];
+        const orderData = [];
 
         const randomNumberOfProductsInOrder = this.getRandomInteger(this.ordersInfo.productsInOrder.min,
           this.ordersInfo.productsInOrder.max)
@@ -120,18 +119,15 @@ export class FakeService {
           const selectedProductId = productsId[randomProductIndex]
           const quantity = this.getRandomInteger(this.ordersInfo.productsQuantity.min, this.ordersInfo.productsQuantity.max)
 
-          orderProducts.push({
+          orderData.push({
             productId: selectedProductId,
-            quantity
+            quantity,
+            currency: 'usd'
           })
 
         }
-        const orderData = {
-          productsArray: orderProducts
-        }
 
         const randomStatus = this.getRandomInteger(1, 4)
-
         await createOrder(this.testingContainer, orderData, user, randomStatus)
 
       }
@@ -146,11 +142,6 @@ export class FakeService {
 
   getRandomInteger(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  getRandomDecimal(min: number, max: number, decimalPlaces: number): number {
-    const value = Math.random() * (max - min) + min;
-    return parseFloat(value.toFixed(decimalPlaces));
   }
 
   generatePassword(): string {

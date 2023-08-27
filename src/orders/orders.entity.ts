@@ -20,9 +20,9 @@ export class OrdersEntity {
 
   @UpdateDateColumn() updated: Date;
 
-  @Column('integer', { default: DeliveryStatusEnum.PROCESSING }) deliveryStatus: number;
+  @Column('enum', { enum: DeliveryStatusEnum, default: DeliveryStatusEnum.PROCESSING }) deliveryStatus: number;
 
-  @Column('integer', {default: PaymentStatusEnum.AWAITING}) paymentStatus: number
+  @Column('enum', {enum: PaymentStatusEnum, default: PaymentStatusEnum.AWAITING}) paymentStatus: number
 
   // relationships
 

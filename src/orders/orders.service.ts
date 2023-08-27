@@ -33,7 +33,7 @@ export class OrdersService {
       .select([
         'product.id',
         'product.name',
-        'product.price',
+        'product.unitPrice',
         'orderDetails.quantity',
       ])
       .where({ order: order })
@@ -56,7 +56,7 @@ export class OrdersService {
     const products = orderProducts.map(orderProduct => ({
       productId: orderProduct.product.id,
       name: orderProduct.product.name,
-      price: orderProduct.product.price,
+      unitPrice: orderProduct.product.unitPrice,
       quantity: orderProduct.quantity,
     }));
 
@@ -112,7 +112,7 @@ export class OrdersService {
     if (!user)
       throw new HttpException("Invalid user's ID", HttpStatus.NOT_FOUND);
 
-    const order = await this.ordersRepository.create({ customer: user, paymentStatus });
+    const order = await this.ordersRepository.create({ customer: user, paymentStatus});
     await this.ordersRepository.save(order);
 
     for (const product of products) {

@@ -30,28 +30,28 @@ export const sampleProductData = {
     name: 'testProductName1',
     description: 'testProductDescription1',
     unitsOnStock: 2,
-    price: 21.37,
+    unitPrice: 2137,
   },
 
   productData2: {
     name: 'testProductName2',
     description: 'testProductDescription2',
     unitsOnStock: 23,
-    price: 1,
+    unitPrice: 100,
   },
 
   productData3: {
     name: 'testProductName3',
     description: 'testProductDescription3',
     unitsOnStock: 0,
-    price: 999,
+    unitPrice: 99900,
   },
 
   productData4: {
     name: 'testProductName4',
     description: 'testProductDescription4',
     unitsOnStock: 999,
-    price: 999,
+    unitPrice: 99900,
   },
 };
 

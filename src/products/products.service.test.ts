@@ -31,7 +31,7 @@ describe('ProductsService', () => {
     assert.strictEqual(result.name, productData.name);
     assert.strictEqual(result.description, productData.description);
     assert.strictEqual(result.unitsOnStock, productData.unitsOnStock);
-    assert.strictEqual(result.price, productData.price);
+    assert.strictEqual(result.unitPrice, productData.unitPrice);
     assert.strictEqual(result.category, categoryData1.name);
 
   })
@@ -46,7 +46,7 @@ describe('ProductsService', () => {
       name: 'testUpdatedProductName',
       description: 'testUpdatedProductDescription',
       unitsOnStock: 10,
-      price: 1.32,
+      unitPrice: 132,
     }
 
     const result = await testingContainer.services.productsService.update(product.id, ProductPartialData)
@@ -55,11 +55,7 @@ describe('ProductsService', () => {
     assert.strictEqual(result.name, ProductPartialData.name);
     assert.strictEqual(result.description, ProductPartialData.description);
     assert.strictEqual(result.unitsOnStock, ProductPartialData.unitsOnStock);
-
-    //The price field is using the numeric column type. The numeric type in
-    // TypeORM maps the value to a string to preserve full precision and avoid
-    // the loss of significant digits.
-    assert.strictEqual(parseFloat(String(result.price)), ProductPartialData.price);
+    assert.strictEqual(result.unitPrice, ProductPartialData.unitPrice);
 
   })
 
@@ -89,30 +85,30 @@ describe('ProductsService', () => {
 
     const partialFilterData1 = {
       descending: true,
-      maxPrice: 40,
+      maxUnitPrice: 4000,
     }
 
     const partialFilterData2 = {
-      maxPrice: 800,
-      minPrice: 500,
+      maxUnitPrice: 80000,
+      minUnitPrice: 50000,
       categoryIdArr: [category1.id, category2.id]
     }
 
     const partialFilterData3 = {
       descending: true,
-      minPrice: 950,
+      minUnitPrice: 95000,
       categoryIdArr: []
     }
 
     const partialFilterData4 = {
       ascending: true,
-      minPrice: 1,
-      maxPrice: 999,
+      minUnitPrice: 100,
+      maxUnitPrice: 99900,
       categoryIdArr: [category1.id, category2.id]
     }
 
     const partialFilterData5 = {
-      maxPrice: 20,
+      maxUnitPrice: 2000,
       categoryIdArr: [category2.id]
     }
 
@@ -129,7 +125,4 @@ describe('ProductsService', () => {
     assert.deepStrictEqual(res5, [])
 
   })
-
-
-
 });

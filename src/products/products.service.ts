@@ -49,14 +49,14 @@ export class ProductsService {
   }
 
   async create(data: ProductsDto): Promise<ProductsRo> {
-    const { name, description, unitsOnStock, price, categoryId } = data;
+    const { name, description, unitsOnStock, unitPrice, categoryId } = data;
     const category = await this.categoriesRepository.findOne({
       where: { id: categoryId },
     });
     if (!category) {
       throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
     }
-    const productData = { name, description, unitsOnStock, price };
+    const productData = { name, description, unitsOnStock, unitPrice };
     const product = await this.productsRepository.create({
       ...productData,
       category: category,
@@ -70,14 +70,14 @@ export class ProductsService {
     page: number = 1,
   ) {
 
-    const { minPrice, maxPrice, categoryIdArr, ascending, descending } = data;
+    const { minUnitPrice, maxUnitPrice, categoryIdArr, ascending, descending } = data;
     const take = 9;
 
     const queryBuilder = ProductsFilterBuilder.createProductsQueryBuilder(this.productsRepository, this.categoriesRepository);
 
     const query = (await queryBuilder.addCategory(categoryIdArr))
-      .addMinPrice(minPrice)
-      .addMaxPrice(maxPrice)
+      .addMinPrice(minUnitPrice)
+      .addMaxPrice(maxUnitPrice)
       .addOrder(ascending, descending)
       .addPagination(page, take)
       .query

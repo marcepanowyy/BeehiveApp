@@ -16,9 +16,9 @@ export class ProductsDto {
   @IsInt()
   unitsOnStock: number;
 
-  @IsNumber({ maxDecimalPlaces: 2 })
-  @Min(0.01)
-  price: number;
+  @IsInt()
+  @Min(1)
+  unitPrice: number;
 
   @IsNotEmpty()
   @IsString()
@@ -27,11 +27,11 @@ export class ProductsDto {
 
 export class FilteredProductsDto{
 
-  @Min(0.01)
-  minPrice: number
+  @Min(1)
+  minUnitPrice: number
 
-  @Min(0.01)
-  maxPrice: number
+  @Min(1)
+  maxUnitPrice: number
 
   @IsNotEmpty()
   @IsString()
@@ -48,7 +48,7 @@ export class ProductsRo {
   name: string;
   description: string;
   unitsOnStock?: number;
-  price: number;
+  unitPrice: number;
   category?: CategoriesEntity | string;
   orderDetails?: OrderDetailsEntity[];
   reviews?: ProductsReviewEntity[];

@@ -20,9 +20,9 @@ export const FakeServiceConfig = {
       min: 0,
       max: 1000,
     },
-    price: {
-      min: 5,
-      max: 200,
+    unitPrice: {
+      min: 50,
+      max: 100000,
     },
   },
   ordersInfo: {

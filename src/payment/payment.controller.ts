@@ -24,7 +24,8 @@ export class PaymentController {
     @User('id') userId: string,
     @Body() cartItems: CartItem[],
   ) {
-    return this.paymentService.processPayment(userId, cartItems);
+    const session = await this.paymentService.processPayment(userId, cartItems);
+    return {url: session.url}
   }
 
   // running 'stripe listen --forward-to localhost:4000/payment/webhook' in stripe CLI

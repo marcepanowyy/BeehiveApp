@@ -7,16 +7,16 @@ export class ProcessedCartItem {
   productId: string;
   name: string;
   quantity: number;
-  price: number;
+  unitPrice: number;
 }
 
 export class ProductForOrder {
   productId: string;
-  name: string;
+  // name: string;
   quantity: number;
   currency: string;
-  unitAmount: number;
-  image: string | null;
+  // unitAmount: number;
+  // image: string | null;
 }
 
 export class UserFromStripeEvent {

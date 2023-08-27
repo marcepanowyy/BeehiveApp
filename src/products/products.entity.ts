@@ -25,7 +25,7 @@ export class ProductsEntity {
 
   @Column('integer') unitsOnStock: number;
 
-  @Column('decimal', { precision: 10, scale: 2 }) price: number;
+  @Column('integer') unitPrice: number;
 
   // relationships
 

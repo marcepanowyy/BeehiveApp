@@ -10,7 +10,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { sampleUserData } from '../../../shared/test/samples';
 import { createUser } from '../../../shared/test/helpers';
 
-describe.only('UsersService', () => {
+describe('UsersService', () => {
   let testingContainer: ITestingContainer;
   const userData = sampleUserData.userData1;
 
@@ -33,7 +33,7 @@ describe.only('UsersService', () => {
 
     assert.strictEqual(
       result.message,
-      'Account created successfully. Please activate your account.',
+      'Account created successfully. Activate your account to log in.',
     );
   });
 

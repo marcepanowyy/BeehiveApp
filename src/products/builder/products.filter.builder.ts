@@ -38,23 +38,23 @@ export class ProductsFilterBuilder {
 
   addMinPrice(minPrice?: number) {
     if (minPrice) {
-      this._query.andWhere('product.price >= :minPrice', { minPrice });
+      this._query.andWhere('product.unitPrice >= :minPrice', { minPrice });
     }
     return this
   }
 
   addMaxPrice(maxPrice?: number) {
     if (maxPrice) {
-      this._query.andWhere('product.price <= :maxPrice', { maxPrice });
+      this._query.andWhere('product.unitPrice <= :maxPrice', { maxPrice });
     }
     return this
   }
 
   addOrder(ascending?: boolean, descending?: boolean) {
     if (ascending && !descending) {
-      this._query.orderBy('product.price', 'ASC');
+      this._query.orderBy('product.unitPrice', 'ASC');
     } else if (descending && !ascending) {
-      this._query.orderBy('product.price', 'DESC');
+      this._query.orderBy('product.unitPrice', 'DESC');
     }
     return this
   }

@@ -34,14 +34,13 @@ describe('ProductsReviewService', () => {
     user1 = await createUser(testingContainer, userData1)
     user2 = await createUser(testingContainer, userData2)
 
-    const orderData = {
-      productsArray: [
-        {
-          productId: product.id,
-          quantity: 1,
-        },
-      ],
-    };
+    const orderData = [
+      {
+        productId: product.id,
+        quantity: 1,
+        currency: 'usd'
+      },
+    ]
 
     order = await createOrder(testingContainer, orderData, user1)
 

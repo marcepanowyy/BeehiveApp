@@ -3,6 +3,7 @@ import { CategoriesEntity } from '../../src/categories/categories.entity';
 import { UsersEntity } from '../../src/auth/users/users.entity';
 import { ProductsEntity } from '../../src/products/products.entity';
 import { OrdersEntity } from '../../src/orders/orders.entity';
+import { ProductForOrder } from '../../src/payment/payment.dto';
 
 // casting because create returns array of object which is falsy
 
@@ -42,7 +43,7 @@ export async function createProduct(
 
 export async function createOrder(
   testingContainer: ITestingContainer,
-  orderData,
+  orderData: ProductForOrder[],
   customer: UsersEntity,
   randomDeliveryStatus = 1,
   randomPaymentStatus = 1,
@@ -54,10 +55,10 @@ export async function createOrder(
   });
   await testingContainer.repositories.ordersRepository.save(order);
 
-  for (const reqProd of orderData.productsArray) {
+  for (const reqProd of orderData) {
     const product =
       await testingContainer.repositories.productsRepository.findOne({
-        where: { id: reqProd.id },
+        where: { id: reqProd.productId },
       });
     await testingContainer.repositories.productsRepository.update(product.id, {
       unitsOnStock: product.unitsOnStock - reqProd.quantity,
@@ -93,6 +94,6 @@ export interface ProductData {
   name: string,
   description: string,
   unitsOnStock: number,
-  price: number
+  unitPrice: number
 }
 

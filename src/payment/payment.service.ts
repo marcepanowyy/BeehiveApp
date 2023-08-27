@@ -33,7 +33,7 @@ export class PaymentService {
   async processPayment(userId: string, cartItems: CartItem[]) {
     const processedCartItems: ProcessedCartItem[] =
       await this.getProcessedCartItems(cartItems);
-    return await this.createSession(userId, processedCartItems);
+    return this.createSession(userId, processedCartItems);
   }
 
   async handleStripeEvent(event: any) {
@@ -80,6 +80,8 @@ export class PaymentService {
         case 'checkout.session.async_payment_failed': {
           break;
         }
+        default:
+          console.log(`Unhandled event type ${event.type}`);
       }
     }
   }
@@ -89,7 +91,7 @@ export class PaymentService {
       line_items: processedCartItems.map(item => ({
         price_data: {
           currency: 'usd',
-          unit_amount: item.price * 100,
+          unit_amount: item.unitPrice,
           product_data: {
             name: item.name,
             images: [
@@ -125,7 +127,7 @@ export class PaymentService {
         productId: cartItem.productId,
         quantity: cartItem.quantity,
         name: product.name,
-        price: product.price,
+        unitPrice: product.unitPrice,
       });
     }
 
@@ -146,11 +148,11 @@ export class PaymentService {
       const metadata = item.price.product.metadata;
       return {
         productId: metadata.product_id,
-        name: item.description,
+        // name: item.description,
         quantity: item.quantity,
         currency: item.currency,
-        unitAmount: item.price.unit_amount,
-        image: item.price.product.images[0],
+        // unitAmount: item.price.unit_amount,
+        // image: item.price.product.images[0],
       };
     });
   }
