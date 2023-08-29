@@ -8,7 +8,6 @@ import {Category} from "../interfaces/category/Category";
 import {Product} from "../interfaces/product/Product";
 import {UserResponse} from "../interfaces/user/UserResponse";
 import {OrdersResponse} from "../interfaces/order/OrdersResponse";
-import {OrderResponse} from "../interfaces/order/OrderResponse";
 import {RegistrationResponse} from "../interfaces/user/RegistationResponse";
 import {ResetPasswordRequest} from "../interfaces/user/ResetPasswordRequest";
 import {ProductRequest} from "../interfaces/product/ProductRequest";
@@ -28,7 +27,7 @@ export class ApiService {
   }
 
   checkout(products: ProductRequest[]){
-    return this.http.post<{url: string}>("http://localhost:4000/payment/checkout", products)
+    return this.http.post<{url: string}>("http://localhost:4000/payments/checkout", products)
   }
 
   // users

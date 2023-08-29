@@ -5,5 +5,6 @@ export interface Order{
   orderId: string;
   customer: Partial<UserResponse>;
   products: Partial<CartProduct>[];
-  status: string;
+  deliveryStatus: string;
+  paymentStatus: string
 }

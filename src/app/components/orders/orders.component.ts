@@ -24,7 +24,7 @@ export class OrdersComponent implements OnInit{
   pageSize: number = 1
   currPage: number = 1
 
-  columnsToDisplay = ['created', 'status', 'total'];
+  columnsToDisplay = ['created', 'deliveryStatus', 'paymentStatus', 'total'];
   columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
 
   expandedElement: any
