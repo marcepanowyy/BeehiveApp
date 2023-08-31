@@ -1,0 +1,28 @@
+<div class="navbar-container">
+
+<mat-toolbar color="primary" class="toolbar-div">
+
+    <span class="title" style="font-size: 1.5rem; margin-left: 0.5rem">Beehive App</span>
+
+    <span class="example-spacer"></span>
+
+  <a mat-raised-button class="btn" routerLinkActive= 'active' routerLink="Home">Home</a>
+  <a mat-raised-button class="btn" routerLinkActive= 'active' routerLink="Products">Products</a>
+  <a mat-raised-button class="btn" routerLinkActive= 'active' routerLink="Categories">Categories</a>
+<!--  <a mat-raised-button class="btn" routerLinkActive= 'active' routerLink="Wishlist">Wishlist</a>-->
+
+
+  <ng-container *ngIf="!isLoggedIn()">
+    <a mat-raised-button class="btn" routerLinkActive= 'active' routerLink="Login">Login</a>
+    <a mat-raised-button class="btn" routerLinkActive= 'active' routerLink="Register">Register</a>
+  </ng-container>
+
+  <ng-container *ngIf="isLoggedIn()">
+      <a mat-raised-button class="btn" routerLinkActive= 'active' routerLink="Cart">Cart {{getProductsSum()}}</a>
+    <a mat-raised-button class="btn" routerLinkActive= 'active' routerLink="Orders">My Orders</a>
+    <a mat-raised-button class="btn" (click)="logOut()">Log out</a>
+  </ng-container>
+
+</mat-toolbar>
+
+</div>

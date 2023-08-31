@@ -1,0 +1,59 @@
+<div class="cart-container" *ngIf="cartProducts.length > 0">
+
+  <div class="card-container">
+
+    <mat-card *ngFor="let cartProduct of cartProducts">
+
+      <mat-card-header>
+        <div mat-card-avatar class="example-header-image"></div>
+        <mat-card-title class="title1">{{cartProduct.name}}</mat-card-title>
+        <mat-card-subtitle class="subtitle1">{{cartProduct.category}}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-header>
+        <mat-card-title class="title2">Description:</mat-card-title>
+        <mat-card-subtitle class="subtitle2">{{cartProduct.description}}</mat-card-subtitle>
+
+        <mat-card-title class="price">Price: ${{cartProduct.unitPrice / 100}}</mat-card-title>
+        <mat-card-subtitle class="number">Number of articles: {{cartProduct.quantity}}</mat-card-subtitle>
+        <mat-card-subtitle class="number2">Total: ${{(cartProduct.quantity * cartProduct.unitPrice) / 100}}</mat-card-subtitle>
+
+      </mat-card-header>
+
+        <div class="icon-div">
+         <mat-icon (click)="openDialog(cartProduct)" class="dot-div">more_horiz</mat-icon>
+        </div>
+    </mat-card>
+
+  </div>
+
+  <div class="summary-div">
+
+    <mat-card class="summary-card">
+
+      <mat-card-header style="font-size: 1.8rem">Summary</mat-card-header>
+
+      <mat-card-subtitle style="font-size: 1.3rem">Total: ${{calculateTotalPrice()}}</mat-card-subtitle>
+
+      <button mat-raised-button color="primary" (click)="checkout()" style="padding: 1.2rem; font-size: 0.9rem">Checkout</button>
+
+    </mat-card>
+
+  </div>
+
+</div>
+
+
+<div class="no-products-container" *ngIf="cartProducts.length === 0|| !cartProducts">
+
+
+  <mat-card class="no-products-card">
+
+    <mat-card-header>
+      <mat-card-title class="title1" style="font-size: 1.2rem; margin: -1rem 0 1.5rem 0">Your cart is empty</mat-card-title>
+    </mat-card-header>
+
+    <button mat-raised-button color="primary" routerLink="/Products" style="width: 7rem; font-size: 0.8rem">Browse Products</button>
+
+  </mat-card>
+
+</div>

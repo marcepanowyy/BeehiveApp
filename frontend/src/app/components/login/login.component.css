@@ -1,0 +1,20 @@
+*, *:before, *:after{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.stepper-container{
+  width: 100%;
+  padding: 1.5rem;
+  height: calc(100vh - 4.5rem);
+}
+
+.mat-stepper-vertical {
+  margin-top: 8px;
+}
+
+.mat-mdc-form-field {
+  margin-top: 16px;
+}
+

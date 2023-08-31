@@ -1,0 +1,135 @@
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+
+.cart-container{
+  width: 100%;
+  position: relative;
+  min-height: calc(100vh - 4rem);
+  padding: 3rem;
+  background-color: #f6f6f6;
+}
+
+.card-container{
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+}
+
+.example-header-image {
+  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+  background-size: cover;
+  width: 4rem;
+  height: 4rem;
+  margin-top: 0.8rem;
+  margin-left: 0.8rem;
+}
+
+.title1{
+  margin-top: 1rem;
+}
+
+subtitle1{
+  margin-top: 0.2rem;
+}
+
+.title2{
+  margin-top: -1rem;
+  margin-bottom: 0.2rem;
+  margin-left: 1rem;
+}
+
+.subtitle2{
+  margin-left: 1rem;
+}
+
+mat-card{
+  margin-bottom: 1.8rem;
+}
+
+.summary-div{
+  position: fixed;
+  width: 20rem;
+  height: 26rem;
+  top: 7rem;
+  right: 5rem;
+}
+
+.summary-card{
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 3rem;
+  gap: 0.8rem;
+}
+
+.icon-div{
+  position: absolute;
+  top: 1rem;
+  right: 1.2rem;
+  aspect-ratio: 1/1;
+  display: flex;
+  width: 2rem;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-div:hover{
+  background-color: #e8e8e8;
+}
+
+.dot-div{
+  transform: scale(1.2);
+}
+
+.price{
+  padding: 1rem 0 0 1rem;
+  margin-top: 1rem;
+}
+
+.number{
+  padding: 0 0 1rem 1rem;
+  margin-top: 0.2rem;
+}
+
+.number2{
+  padding: 0 0 1rem 1rem;
+}
+
+table {
+  width: 100%;
+}
+
+tr.mat-mdc-footer-row td {
+  font-weight: bold;
+}
+
+
+.no-products-container{
+  background-color: #f6f6f6;
+  width: 100%;
+  height: calc(100vh - 4rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.no-products-card{
+  width: 30%;
+  height: 10rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+

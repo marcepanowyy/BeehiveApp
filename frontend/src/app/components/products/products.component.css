@@ -1,0 +1,67 @@
+*{
+  box-sizing: border-box;
+}
+
+.products-container{
+  position: relative;
+  background-color: #f6f6f6;
+}
+
+.filter-container{
+  position: absolute;
+  width: 20rem;
+  left: 0.5rem;
+  top: 0.5rem;
+  z-index: 1;
+}
+
+.card-container {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.example-card {
+  max-width: 20rem;
+  margin: 1rem;
+  height: 32rem;
+  transform: scale(0.98);
+}
+
+.example-header-image {
+  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+  background-size: cover;
+}
+
+.paginator-div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.paginator {
+  width: 50%;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.example-container {
+  width: 200px;
+  height: 200px;
+}
+
+
+
+.example-sidenav-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 500px;
+  height: 500px;
+}
+
+.example-sidenav {
+  padding: 20px;
+}

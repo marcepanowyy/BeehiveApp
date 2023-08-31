@@ -1,0 +1,102 @@
+
+<div class="products-container">
+
+  <div class="filter-container">
+
+    <mat-accordion>
+
+      <mat-expansion-panel hideToggle>
+
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Filters
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <mat-expansion-panel hideToggle class="absolute-panel">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Categories
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <mat-form-field>
+            <mat-label>Categories</mat-label>
+            <mat-select [formControl]="chosenCategories" multiple (selectionChange)="onCategorySelection($event)">
+              <mat-option *ngFor="let category of categories" [value]="category">{{category.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel hideToggle class="absolute-panel">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Sort by price
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <mat-form-field>
+            <mat-label>Sort by price</mat-label>
+            <mat-select [(value)]="order" (selectionChange)="onOrderSelection($event)">
+              <mat-option>None</mat-option>
+              <mat-option value="ascending">Ascending</mat-option>
+              <mat-option value="descending">Descending</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+        </mat-expansion-panel>
+
+        <mat-expansion-panel hideToggle class="absolute-panel">
+
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Price range
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <mat-slider min="0" max="1000" style="width: 200px" discrete="discrete" step="1" (input)="onPriceInput($event)">
+            <input matSliderStartThumb [(ngModel)]="minPrice">
+            <input matSliderEndThumb [(ngModel)]="maxPrice">
+          </mat-slider>
+
+        </mat-expansion-panel>
+
+      </mat-expansion-panel>
+
+    </mat-accordion>
+
+  </div>
+
+  <div class="card-container">
+
+    <mat-card class="example-card" *ngFor="let product of products">
+      <mat-card-header>
+        <mat-card-title>{{product.name}}</mat-card-title>
+        <mat-card-subtitle style="margin-bottom: 0.8rem">{{product.category}}</mat-card-subtitle>
+      </mat-card-header>
+      <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
+      <mat-card-content>
+        <p style="font-size: 0.9rem">
+          {{product.description}}
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button (click)="openDialog(product)" style="position: absolute; bottom: 1.3rem; right: 1.3rem">Add to cart</button>
+        <mat-card-title style="position: absolute; bottom: 1.8rem; left: 1.2rem">Price: ${{product.unitPrice / 100}}</mat-card-title>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <div class="paginator-div">
+
+    <mat-paginator class="paginator" [length]="totalItems"
+                   [pageSize]="pageSize"
+                   (page)="onPageChange($event)"
+                   aria-label="Select page">
+    </mat-paginator>
+
+  </div>
+
+
+</div>
+
