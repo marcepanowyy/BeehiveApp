@@ -6,6 +6,8 @@ import {
   ApiNoContentResponse,
   ApiOperation, ApiTags,
 } from '@nestjs/swagger';
+import { UserRoleEnum } from '../../shared/enums/user.role.enum';
+import { Role } from '../../shared/decorators/roles.decorator';
 
 @ApiTags('fake')
 @Controller('fake')
@@ -16,6 +18,7 @@ export class FakeController {
 
 
   @Post()
+  @Role(UserRoleEnum.ADMIN)
 
   @ApiOperation({ summary: 'Generate fake data' })
   @ApiCreatedResponse({ description: 'Fake data generated successfully.' })
@@ -26,14 +29,14 @@ export class FakeController {
   }
 
   @Delete()
+  @Role(UserRoleEnum.ADMIN)
 
   @ApiOperation({ summary: 'Delete all database data' })
-  @ApiNoContentResponse({ description: 'Fake data deleted successfully.' })
+  @ApiNoContentResponse({ description: 'Data deleted successfully.' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error.' })
 
   deleteFakeData(){
     return this.fakeService.delete()
   }
-
 
 }

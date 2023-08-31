@@ -46,7 +46,7 @@ export class OrdersController {
 
   @Get('/user')
   @UseGuards(new AuthGuard())
-  @Role(UserRoleEnum.MEMBER)
+  @Role(UserRoleEnum.CUSTOMER)
   @UsePipes(new ValidationPipe())
 
   @ApiOperation({ summary: 'Get orders by user with pagination' })

@@ -27,6 +27,9 @@ export class RoleGuard implements CanActivate {
     }
     const request = context.switchToHttp().getRequest();
     const auth = request.headers.authorization;
+
+    if (!auth) return false
+
     const userId = await this.readIdFromToken(auth);
     const userRole = await this.usersService.getRoleByUserId(userId);
     return this.isAuthorized(userRole, minLevel);

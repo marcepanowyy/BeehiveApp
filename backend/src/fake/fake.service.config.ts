@@ -5,7 +5,7 @@ export const FakeServiceConfig = {
   },
 
   categoriesInfo: {
-    number: 1,
+    number: 25,
     // products number per category
     productsNumber: {
       min: 5,
@@ -15,7 +15,7 @@ export const FakeServiceConfig = {
 
   productsInfo: {
     descriptionLength: {
-      minWords: 25,
+      minWords: 24,
       maxWords: 32,
     },
     unitsOnStock: {
