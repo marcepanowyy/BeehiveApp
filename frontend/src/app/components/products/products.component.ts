@@ -111,8 +111,8 @@ export class ProductsComponent implements OnInit {
   }
 
   onPriceInput(event: any) {
-    this.data.maxPrice = this.maxPrice;
-    this.data.minPrice = this.minPrice;
+    this.data.maxUnitPrice = this.maxPrice * 100;
+    this.data.minUnitPrice = this.minPrice * 100;
     this.filterSubject.next(this.data);
   }
 

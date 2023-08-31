@@ -2,8 +2,8 @@ export interface Filter{
 
   ascending?: boolean;
   descending?: boolean;
-  maxPrice?: number;
-  minPrice?: number;
+  maxUnitPrice?: number;
+  minUnitPrice?: number;
   categoryIdArr?: string[];
 
 }
