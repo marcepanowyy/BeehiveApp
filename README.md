@@ -1,44 +1,43 @@
 ## Beehive App
 
-The Full-Stack Web Application for E-Commerce is a comprehensive solution developed using NestJS for the backend and Angular for the frontend. This platform allows users to register, log in, browse and filter through a variety of products, create their shopping carts, place orders, and complete secure online payments.
-
+This full-stack web app for e-commerce uses NestJS on the backend and Angular on the frontend. It lets users sign up, log in, browse products, create carts, place orders, and make secure online payments.
 ## Key Features:
 
 ### 1. Dockerized PostgreSQL Database
 
-The application is backed by a PostgreSQL database, consisting of tables such as users, orders, order_details, products, reviews, and categories. This database foundation ensures efficient data management and retrieval for various aspects of the application's functionality.
+The app uses a PostgreSQL database with tables for users, orders, products, reviews, and categories, ensuring smooth data management.
 
 [Database diagram](https://drive.google.com/file/d/1QBpfZZ9ZCTI820WZZJGRw-YkmYjs1JKj/view?usp=sharing)
 
 ### 2. OAuth 2.0
 
-The application offers seamless integration with OAuth 2.0, allowing users to log in via their Google accounts, alongside the conventional username and password-based login and registration methods.
+Users can log in with Google accounts or the standard email and password method, thanks to OAuth 2.0 support.
 
 [OAuth 2.0 workflow](https://drive.google.com/file/d/1BvdASB2uph4KcX7912MTShKW02Il21SE/view?usp=sharing) <br>
 [OAuth 2.0 UI interaction](https://drive.google.com/file/d/1_ympdVdz8MkxSy88E-yo-YT-YBcJibsw/view?usp=sharing)
 
 ### 3. Online Payments with Stripe
 
-Integrated with Stripe, the platform enables secure online payments for orders. Customers can conveniently pay using a variety of payment methods.
+Secure online payments are handled through Stripe, offering multiple payment options.
 
 [Stripe workflow](https://drive.google.com/file/d/1idpeoUMmSXgD6KeKY7JMy6_L2Z7QN4xc/view?usp=sharing) <br>
 [Stripe UI interaction](https://drive.google.com/file/d/1yUNH9WBvGL6lCq0S4R5ElUIEs5Bnl2Tp/view?usp=sharing)
 
 ### 4. Email Notifications via SMTP with Dockerized RabbitMQ
 
-RabbitMQ plays a crucial role in managing email notifications, providing an organized way to handle various messages. When users register, activate accounts, request password resets, or place orders, RabbitMQ efficiently queues these events.
+RabbitMQ manages email notifications for account activations, password resets, and order confirmations.
 
 [RabbitMQ workflow](https://drive.google.com/file/d/1TZZ2afcTJw62A1ixCCMo_RLFlYVvYMoh/view?usp=sharing)
 
 ### 5. Swagger Documentation
 
-Comprehensive API documentation is provided through Swagger annotations. Developers have access to clear insights into available endpoints, request parameters, response formats, and more.
+The API is well-documented with Swagger, making it easy for developers to understand the endpoints and how to use them.
 
 [Swagger UI interaction](https://drive.google.com/file/d/1XIVzmlWE3kTpOEtAGpAkCbnDTfHiuicH/view?usp=sharing)
 
 ### 6. Intuitive Angular-Powered GUI
 
-The platform boasts an Angular-powered graphical user interface enhanced by the sleek and user-centric Material UI design framework.
+The app features a user-friendly interface built with Angular and Material UI.
 
 [GUI interaction](https://drive.google.com/file/d/1rG9ZGC5bpMRvnovV8mSmDKk3se38fhGN/view?usp=sharing)
 
